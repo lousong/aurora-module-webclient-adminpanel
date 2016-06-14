@@ -15,3 +15,4 @@ $('body').ready(function () {
 	ModulesManager.init(oAvaliableModules, App.getUserRole(), App.isPublic());
 	App.init();
 });
+// test
