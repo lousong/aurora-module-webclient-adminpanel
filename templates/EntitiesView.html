@@ -1,0 +1,16 @@
+<div class="panel left_panel navigation_panel">
+	<div class="panel_content" style="margin-right: 6px;">
+		<div class="middle_bar">
+			<div class="panel_center">
+				<div class="items_list" data-bind="foreach: entities">
+					<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sName, id); }, css: {'selected': $parent.current() === id}">
+						<span class="title">
+							<span class="icon"></span>
+							<span class="text" data-bind="text: name"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

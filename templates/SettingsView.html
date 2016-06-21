@@ -1,11 +1,31 @@
 <div class="screen AdminPanelLayout" style="display: none;">
+	<div class="tabs_panel">
+		<span class="item logout">
+			<span class="link" data-bind="i18n: {'key': 'CORECLIENT/ACTION_LOGOUT'}"></span>
+		</span>
+		
+		<!-- ko foreach: aEntitiesData -->
+		<span class="item admin" data-bind="css: {'current': name === $parent.currentEntityName()}">
+			<a class="link" href="#" data-bind="attr: {'href': hash}">
+				<span class="text" data-bind="text: linkText"></span>
+			</a>
+		</span>
+		<!-- /ko -->
+	</div>
+	
 	<div class="panels settings">
-		<div class="panel left_panel navigation_panel" data-bind="adjustHeightToContent: {}">
+		<!-- ko foreach: aEntitiesData -->
+			<!-- ko if: name === $parent.currentEntityName() && view -->
+				<!-- ko template: {name: view.ViewTemplate, data: view} --><!-- /ko -->
+			<!-- /ko -->
+		<!-- /ko -->
+		
+		<div class="panel left_panel navigation_panel" data-bind="adjustHeightToContent: {}, visible: showModulesTabs">
 			<div class="panel_content">
 				<div class="middle_bar">
 					<div class="panel_center">
 						<div class="items_list" data-bind="foreach: tabs">
-							<div class="item canSelect" data-bind="visible: typeof(visible) !== 'undefined' ? visible() : true, 
+							<div class="item canSelect" data-bind="visible: typeof(view.visible) !== 'undefined' ? view.visible : true, 
 									attr: {'class': 'item canSelect ' + name, 'id': 'selenium_settings_' + name}, 
 									css: {'selected': $parent.currentTab() && $parent.currentTab().name === name}, 
 									click: function () { $parent.changeTab(name); }">
@@ -19,9 +39,9 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel data">
+		<div class="panel data" data-bind="visible: showModulesTabs">
 			<div class="panel_content" data-bind="with: currentTab">
-				<div data-bind="attr: {'class': 'middle_bar ' + name}">
+				<div data-bind="attr: {'class': 'middle_bar ' + name}, visible: typeof(view.visible) !== 'undefined' ? view.visible : true">
 					<!-- ko template: {name: view.ViewTemplate, data: view} --><!-- /ko -->
 				</div>
 			</div>
