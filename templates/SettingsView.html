@@ -22,7 +22,7 @@
 		
 		<div class="panel left_panel navigation_panel" data-bind="adjustHeightToContent: {}, visible: showModulesTabs">
 			<div class="panel_content">
-				<div class="buttons big_single_button">
+				<div class="buttons big_single_button" data-bind="visible: currentEntityName() !== ''">
 					<span href="javascript: void(0)" class="button" data-bind="click: deleteCurrentEntity">
 						<span data-bind="i18n: {'key': 'CORECLIENT/ACTION_DELETE'}"></span>
 					</span>

@@ -21,9 +21,6 @@ module.exports = function (oAppData, iUserRole, bPublic) {
 			registerAdminPanelTab: function (fGetTabView, oTabName, oTabTitle) {
 				var SettingsView = require('modules/%ModuleName%/js/views/SettingsView.js');
 				SettingsView.registerTab(fGetTabView, oTabName, oTabTitle);
-			},
-			getAbstractAdminPanelFormViewClass: function () {
-				return require('modules/%ModuleName%/js/views/CAbstractSettingsFormView.js');
 			}
 		};
 	}

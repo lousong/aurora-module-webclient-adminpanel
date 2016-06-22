@@ -140,7 +140,7 @@ CSettingsView.prototype.onRoute = function (aParams)
 		oCurrentEntityData.view.changeEntity(oParams.Entities[oParams.Current]);
 		if (oParams.Last === 'create')
 		{
-			oCurrentEntityData.view.openCreateForm();
+			oCurrentEntityData.view.openCreateForm(_.bind(this.cancelCreatingEntity, this));
 		}
 		else
 		{

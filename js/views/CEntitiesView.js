@@ -56,8 +56,9 @@ CEntitiesView.prototype.changeEntity = function (iId)
 	this.current(iId);
 };
 
-CEntitiesView.prototype.openCreateForm = function ()
+CEntitiesView.prototype.openCreateForm = function (fAfterCreating)
 {
+	this.fAfterCreating = fAfterCreating;
 	this.showCreateForm(true);
 };
 
@@ -73,7 +74,10 @@ CEntitiesView.prototype.createEntity = function ()
 		if (oResponse.Result)
 		{
 			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_ENTITY_' + this.sType.toUpperCase()));
-			this.showCreateForm(false);
+			if (_.isFunction(this.fAfterCreating))
+			{
+				this.fAfterCreating();
+			}
 		}
 		else
 		{
