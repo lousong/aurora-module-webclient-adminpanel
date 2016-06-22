@@ -7,6 +7,7 @@ var
 	
 	Text = require('modules/CoreClient/js/utils/Text.js'),
 	
+	App = require('modules/CoreClient/js/App.js'),
 	Routing = require('modules/CoreClient/js/Routing.js'),
 	CAbstractScreenView = require('modules/CoreClient/js/views/CAbstractScreenView.js'),
 	
@@ -79,6 +80,16 @@ CSettingsView.prototype.registerTab = function (fGetTabView, oTabName, oTabTitle
 	}
 };
 
+CSettingsView.prototype.cancelCreatingEntity = function ()
+{
+	Routing.setHash(Links.get(this.currentEntityName(), {}, ''));
+};
+
+CSettingsView.prototype.createEntity = function ()
+{
+	Routing.setHash(Links.get(this.currentEntityName(), {}, 'create'));
+};
+
 CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId)
 {
 	var oEntitiesId = _.clone(this.currentEntitiesId());
@@ -118,6 +129,14 @@ CSettingsView.prototype.onRoute = function (aParams)
 	if (oCurrentEntityData && oCurrentEntityData.view)
 	{
 		oCurrentEntityData.view.changeEntity(oParams.Entities[oParams.Current]);
+		if (oParams.Last === 'create')
+		{
+			oCurrentEntityData.view.openCreateForm();
+		}
+		else
+		{
+			oCurrentEntityData.view.cancelCreatingEntity();
+		}
 	}
 	
 	_.each(this.tabs(), function (oTab) {
@@ -190,6 +209,11 @@ CSettingsView.prototype.onTabsRoute = function (aParams)
 CSettingsView.prototype.changeTab = function (sTabName)
 {
 	Routing.setHash(Links.get(this.currentEntityName(), this.currentEntitiesId(), sTabName));
+};
+
+CSettingsView.prototype.logout = function ()
+{
+	App.logout();
 };
 
 ///**

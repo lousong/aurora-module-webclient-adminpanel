@@ -1,5 +1,11 @@
-<div class="panel left_panel navigation_panel">
+<div class="panel left_panel navigation_panel" style="width: 250px;">
 	<div class="panel_content" style="margin-right: 6px;">
+		<div class="buttons big_single_button">
+			<span href="javascript: void(0)" class="button" data-bind="click: function () { $root.createEntity(); }">
+				<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE_ENTITY_' + sType.toUpperCase()}"></span>
+			</span>
+		</div>
+
 		<div class="middle_bar">
 			<div class="panel_center">
 				<div class="items_list" data-bind="foreach: entities">
@@ -7,6 +13,46 @@
 						<span class="title">
 							<span class="icon"></span>
 							<span class="text" data-bind="text: name"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="panel data" data-bind="visible: showCreateForm">
+	<div class="panel_content">
+		<div class="middle_bar">
+			<div class="panel_top">
+				<h2 class="settings_heading"></h2>
+			</div>
+			<div class="panel_center">
+				<div class="fields">
+					<div class="fieldset">
+						<div class="row">
+							<span class="label" data-bind="i18n: {'key': 'CORECLIENT/LABEL_NAME'}"></span>
+							<span class="value">
+								<input class="input licensing" type="text" data-bind="value: newEntityName" />
+							</span>
+						</div>
+						<div class="row">
+							<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_DESCRIPTION'}"></span>
+							<span class="value">
+								<input class="input licensing" type="text" data-bind="value: newEntityDescription" />
+							</span>
+						</div>
+					</div>		
+
+					<div class="buttons">
+						<span class="button" data-bind="click: createEntity, visible: !isCreating()">
+							<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE'}"></span>
+						</span>
+						<span class="button" data-bind="visible: isCreating()">
+							<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE_IN_PROGRESS'}"></span>
+						</span>
+						<span class="button secondary_button" data-bind="click: function () { $root.cancelCreatingEntity() }, visible: !isCreating()">
+							<span data-bind="i18n: {'key': 'CORECLIENT/ACTION_CANCEL'}"></span>
 						</span>
 					</div>
 				</div>
