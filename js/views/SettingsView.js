@@ -48,8 +48,17 @@ function CSettingsView()
 	}, this));
 	this.currentEntityName = ko.observable('');
 	this.currentEntitiesId = ko.observable({});
+	this.currentEntitiesView = ko.computed(function () {
+		var
+			sCurrName = this.currentEntityName(),
+			oCurrEntitiesData = _.find(this.aEntitiesData, function (oData) {
+				return oData.name === sCurrName;
+			})
+		;
+		return oCurrEntitiesData ? oCurrEntitiesData.view : null;
+	}, this);
 	this.showModulesTabs = ko.computed(function () {
-		return this.currentEntityName() === '' || !!this.currentEntitiesId()[this.currentEntityName()];
+		return this.currentEntityName() === '' || this.currentEntitiesView().hasSelectedEntity();
 	}, this);
 	
 	this.tabs = ko.observableArray([]);
@@ -214,6 +223,14 @@ CSettingsView.prototype.changeTab = function (sTabName)
 CSettingsView.prototype.logout = function ()
 {
 	App.logout();
+};
+
+CSettingsView.prototype.deleteCurrentEntity = function ()
+{
+	if (this.currentEntitiesView())
+	{
+		this.currentEntitiesView().deleteCurrentEntity();
+	}
 };
 
 ///**

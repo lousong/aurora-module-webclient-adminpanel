@@ -1,11 +1,15 @@
 'use strict';
 
 var
+	_ = require('underscore'),
 	ko = require('knockout'),
 	
 	TextUtils = require('modules/CoreClient/js/utils/Text.js'),
 	
 	Screens = require('modules/CoreClient/js/Screens.js'),
+	
+	Popups = require('modules/CoreClient/js/Popups.js'),
+	ConfirmPopup = require('modules/CoreClient/js/popups/ConfirmPopup.js'),
 	
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
 	Settings = require('modules/%ModuleName%/js/Settings.js')
@@ -25,6 +29,12 @@ function CEntitiesView(sEntityName)
 	this.newEntityDescription = ko.observable('');
 	this.showCreateForm = ko.observable(false);
 	this.isCreating = ko.observable(false);
+	this.hasSelectedEntity = ko.computed(function () {
+		var aIds = _.map(this.entities(), function (oEntity) {
+			return oEntity.id;
+		});
+		return _.indexOf(aIds, this.current()) !== -1;
+	}, this);
 }
 
 CEntitiesView.prototype.ViewTemplate = '%ModuleName%_EntitiesView';
@@ -74,6 +84,26 @@ CEntitiesView.prototype.createEntity = function ()
 	}, this);
 	this.newEntityName('');
 	this.newEntityDescription('');
+};
+
+CEntitiesView.prototype.deleteCurrentEntity = function ()
+{
+	Popups.showPopup(ConfirmPopup, [TextUtils.i18n('CORECLIENT/CONFIRM_ARE_YOU_SURE'), _.bind(this.confirmedDeleteCurrentEntity, this)]);
+};
+
+CEntitiesView.prototype.confirmedDeleteCurrentEntity = function ()
+{
+	Ajax.send('DeleteEntity', {Type: this.sType, Id: this.current()}, function (oResponse) {
+		if (oResponse.Result)
+		{
+			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_DELETE_ENTITY_' + this.sType.toUpperCase()));
+		}
+		else
+		{
+			Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_DELETE_ENTITY_' + this.sType.toUpperCase()));
+		}
+		this.requestEntities();
+	}, this);
 };
 
 module.exports = CEntitiesView;
