@@ -26,39 +26,35 @@ function CSettingsView()
 {
 	CAbstractScreenView.call(this);
 	
-	this.aEntitiesData = [
+	this.aScreens = [
 		{
-			hash: Routing.buildHashFromArray(Links.get('')),
-			linkText: Text.i18n('%MODULENAME%/HEADING_SYSTEM_SETTINGS_TABNAME'),
-			name: '',
-			view: null
+			sHash: Routing.buildHashFromArray(Links.get('')),
+			sLinkText: Text.i18n('%MODULENAME%/HEADING_SYSTEM_SETTINGS_TABNAME'),
+			sType: '',
+			oView: null
 		}
 	];
-	_.each(Settings.Entities, _.bind(function (sEntityName) {
-		var
-			oData = Settings.EntitiesData[sEntityName],
-			oEntity = {
-				name: sEntityName,
-				hash: Routing.buildHashFromArray(Links.get(sEntityName)),
-				linkText: oData ? Text.i18n(oData.linkTextKey) : sEntityName,
-				view: new CEntitiesView(sEntityName)
-			}
-		;
-		this.aEntitiesData.push(oEntity);
+	_.each(Settings.EntitiesData, _.bind(function (oEntityData) {
+		this.aScreens.push({
+			sHash: Routing.buildHashFromArray(Links.get(oEntityData.Type)),
+			sLinkText: Text.i18n(oEntityData.LinkTextKey),
+			sType: oEntityData.Type,
+			oView: new CEntitiesView(oEntityData.Type)
+		});
 	}, this));
-	this.currentEntityName = ko.observable('');
+	this.currentEntityType = ko.observable('');
 	this.currentEntitiesId = ko.observable({});
 	this.currentEntitiesView = ko.computed(function () {
 		var
-			sCurrName = this.currentEntityName(),
-			oCurrEntitiesData = _.find(this.aEntitiesData, function (oData) {
-				return oData.name === sCurrName;
+			sCurrType = this.currentEntityType(),
+			oCurrEntitiesData = _.find(this.aScreens, function (oData) {
+				return oData.sType === sCurrType;
 			})
 		;
-		return oCurrEntitiesData ? oCurrEntitiesData.view : null;
+		return oCurrEntitiesData ? oCurrEntitiesData.oView : null;
 	}, this);
 	this.showModulesTabs = ko.computed(function () {
-		return this.currentEntityName() === '' || this.currentEntitiesView().hasSelectedEntity();
+		return this.currentEntityType() === '' || this.currentEntitiesView().hasSelectedEntity();
 	}, this);
 	
 	this.tabs = ko.observableArray([]);
@@ -91,12 +87,12 @@ CSettingsView.prototype.registerTab = function (fGetTabView, oTabName, oTabTitle
 
 CSettingsView.prototype.cancelCreatingEntity = function ()
 {
-	Routing.setHash(Links.get(this.currentEntityName(), {}, ''));
+	Routing.setHash(Links.get(this.currentEntityType(), {}, ''));
 };
 
 CSettingsView.prototype.createEntity = function ()
 {
-	Routing.setHash(Links.get(this.currentEntityName(), {}, 'create'));
+	Routing.setHash(Links.get(this.currentEntityType(), {}, 'create'));
 };
 
 CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId)
@@ -109,10 +105,10 @@ CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId)
 CSettingsView.prototype.onShow = function ()
 {
 	$html.addClass('non-adjustable');
-	_.each(this.aEntitiesData, function (oEntity) {
-		if (oEntity.view && _.isFunction(oEntity.view.onShow))
+	_.each(this.aScreens, function (oEntity) {
+		if (oEntity.oView && _.isFunction(oEntity.oView.onShow))
 		{
-			oEntity.view.onShow();
+			oEntity.oView.onShow();
 		}
 	});
 };
@@ -129,29 +125,29 @@ CSettingsView.prototype.onRoute = function (aParams)
 {
 	var
 		oParams = Links.parse(aParams),
-		oCurrentEntityData = _.find(this.aEntitiesData, function (oData) {
-			return oData.name === oParams.Current;
+		oCurrentEntityData = _.find(this.aScreens, function (oData) {
+			return oData.sType === oParams.CurrentType;
 		})
 	;
-	this.currentEntityName(oParams.Current);
+	this.currentEntityType(oParams.CurrentType);
 	this.currentEntitiesId(oParams.Entities);
-	if (oCurrentEntityData && oCurrentEntityData.view)
+	if (oCurrentEntityData && oCurrentEntityData.oView)
 	{
-		oCurrentEntityData.view.changeEntity(oParams.Entities[oParams.Current]);
+		oCurrentEntityData.oView.changeEntity(oParams.Entities[oParams.CurrentType]);
 		if (oParams.Last === 'create')
 		{
-			oCurrentEntityData.view.openCreateForm(_.bind(this.cancelCreatingEntity, this));
+			oCurrentEntityData.oView.openCreateForm(_.bind(this.cancelCreatingEntity, this));
 		}
 		else
 		{
-			oCurrentEntityData.view.cancelCreatingEntity();
+			oCurrentEntityData.oView.cancelCreatingEntity();
 		}
 	}
 	
 	_.each(this.tabs(), function (oTab) {
 		if (oTab.view && _.isFunction(oTab.view.setAccessLevel))
 		{
-			oTab.view.setAccessLevel(oParams.Current, oParams.Entities[oParams.Current]);
+			oTab.view.setAccessLevel(oParams.CurrentType, oParams.Entities[oParams.CurrentType]);
 		}
 	});
 	this.onTabsRoute([oParams.Last]);
@@ -217,7 +213,7 @@ CSettingsView.prototype.onTabsRoute = function (aParams)
  */
 CSettingsView.prototype.changeTab = function (sTabName)
 {
-	Routing.setHash(Links.get(this.currentEntityName(), this.currentEntitiesId(), sTabName));
+	Routing.setHash(Links.get(this.currentEntityType(), this.currentEntitiesId(), sTabName));
 };
 
 CSettingsView.prototype.logout = function ()

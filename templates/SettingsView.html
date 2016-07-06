@@ -4,25 +4,25 @@
 			<span class="link" data-bind="i18n: {'key': 'CORECLIENT/ACTION_LOGOUT'}"></span>
 		</span>
 		
-		<!-- ko foreach: aEntitiesData -->
-		<span class="item admin" data-bind="css: {'current': name === $parent.currentEntityName()}">
-			<a class="link" href="#" data-bind="attr: {'href': hash}">
-				<span class="text" data-bind="text: linkText"></span>
+		<!-- ko foreach: aScreens -->
+		<span class="item admin" data-bind="css: {'current': sType === $parent.currentEntityType()}">
+			<a class="link" href="#" data-bind="attr: {'href': sHash}">
+				<span class="text" data-bind="text: sLinkText"></span>
 			</a>
 		</span>
 		<!-- /ko -->
 	</div>
 	
 	<div class="panels settings">
-		<!-- ko foreach: aEntitiesData -->
-			<!-- ko if: name === $parent.currentEntityName() && view -->
-				<!-- ko template: {name: view.ViewTemplate, data: view} --><!-- /ko -->
+		<!-- ko foreach: aScreens -->
+			<!-- ko if: sType === $parent.currentEntityType() && oView -->
+				<!-- ko template: {name: oView.ViewTemplate, data: oView} --><!-- /ko -->
 			<!-- /ko -->
 		<!-- /ko -->
 		
 		<div class="panel left_panel navigation_panel" data-bind="adjustHeightToContent: {}, visible: showModulesTabs">
 			<div class="panel_content">
-				<div class="buttons big_single_button" data-bind="visible: currentEntityName() !== ''">
+				<div class="buttons big_single_button" data-bind="visible: currentEntityType() !== ''">
 					<span href="javascript: void(0)" class="button" data-bind="click: deleteCurrentEntity">
 						<span data-bind="i18n: {'key': 'CORECLIENT/ACTION_DELETE'}"></span>
 					</span>

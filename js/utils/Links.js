@@ -7,28 +7,29 @@ var
 	
 	Settings = require('modules/%ModuleName%/js/Settings.js'),
 	
-	LinksUtils = {}
+	Links = {}
 ;
 
 /**
  * @param {Array=} aEntities
- * @param {string=} sCurrEntity = ''
+ * @param {string=} sCurrEntityType = ''
+ * @param {string=} sLast = ''
  * @return {Array}
  */
-LinksUtils.get = function (sCurrEntity, aEntities, sLast)
+Links.get = function (sCurrEntityType, aEntities, sLast)
 {
 	var aResult = [Settings.HashModuleName];
 	
 	aEntities = aEntities || [];
 	
-	_.each(Settings.Entities, function (sEntityName) {
-		if (Types.isPositiveNumber(aEntities[sEntityName]))
+	_.each(Settings.EntitiesData, function (oEntityData) {
+		if (Types.isPositiveNumber(aEntities[oEntityData.Type]))
 		{
-			aResult.push(sEntityName.substr(0,1) + aEntities[sEntityName]);
+			aResult.push(oEntityData.Type.substr(0,1) + aEntities[oEntityData.Type]);
 		}
-		else if (sCurrEntity === sEntityName)
+		else if (sCurrEntityType === oEntityData.Type)
 		{
-			aResult.push(sEntityName);
+			aResult.push(oEntityData.Type);
 		}
 	});
 	
@@ -45,33 +46,33 @@ LinksUtils.get = function (sCurrEntity, aEntities, sLast)
  * 
  * @return {Object}
  */
-LinksUtils.parse = function (aParams)
+Links.parse = function (aParams)
 {
 	var
 		iIndex = 0,
 		oEntities = {},
-		sCurrEntity = ''
+		sCurrEntityType = ''
 	;
 	
-	_.each(Settings.Entities, function (sEntity) {
-		if (aParams[iIndex] && sEntity === aParams[iIndex])
+	_.each(Settings.EntitiesData, function (oEntityData) {
+		if (aParams[iIndex] && oEntityData.Type === aParams[iIndex])
 		{
-			sCurrEntity = sEntity;
+			sCurrEntityType = oEntityData.Type;
 			iIndex++;
 		}
-		if (aParams[iIndex] && sEntity.substr(0, 1) === aParams[iIndex].substr(0, 1) && Types.pInt(aParams[iIndex].substr(1)) > 0)
+		if (aParams[iIndex] && oEntityData.Type.substr(0, 1) === aParams[iIndex].substr(0, 1) && Types.pInt(aParams[iIndex].substr(1)) > 0)
 		{
-			oEntities[sEntity] = Types.pInt(aParams[iIndex].substr(1));
-			sCurrEntity = sEntity;
+			oEntities[oEntityData.Type] = Types.pInt(aParams[iIndex].substr(1));
+			sCurrEntityType = oEntityData.Type;
 			iIndex++;
 		}
 	});
 	
 	return {
 		Entities: oEntities,
-		Current: sCurrEntity,
+		CurrentType: sCurrEntityType,
 		Last: Types.isNonEmptyString(aParams[iIndex]) ? aParams[iIndex] : ''
 	};
 };
 
-module.exports = LinksUtils;
+module.exports = Links;

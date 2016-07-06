@@ -6,17 +6,18 @@ module.exports = {
 	ServerModuleName: 'Core',
 	HashModuleName: 'admin',
 	
-	Entities: ['tenants', 'users'],
-	EntitiesData: {
-		'tenants': {
-			linkTextKey: '%MODULENAME%/HEADING_TENANTS_SETTINGS_TABNAME',
-			objectName: 'Tenant'
+	EntitiesData: [
+		{
+			Type: 'Tenant',
+			ScreenHash: 'tenants',
+			LinkTextKey: '%MODULENAME%/HEADING_TENANTS_SETTINGS_TABNAME'
 		},
-		'users': {
-			linkTextKey: '%MODULENAME%/HEADING_USERS_SETTINGS_TABNAME',
-			objectName: 'User'
+		{
+			Type: 'User',
+			ScreenHash: 'users',
+			LinkTextKey: '%MODULENAME%/HEADING_USERS_SETTINGS_TABNAME'
 		}
-	},
+	],
 	
 	TabsOrder: ['core-licensing', 'core-db', 'core-security', 'core-logging', 'common', 'mail', 'mail-domains', 'mail-accounts', 'contacts', 'calendar', 'files', 'mobilesync', 'outlooksync', 'helpdesk', 'openpgp'],
 	
