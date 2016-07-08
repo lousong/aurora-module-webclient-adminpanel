@@ -25,11 +25,11 @@ Links.get = function (sCurrEntityType, aEntities, sLast)
 	_.each(Settings.EntitiesData, function (oEntityData) {
 		if (Types.isPositiveNumber(aEntities[oEntityData.Type]))
 		{
-			aResult.push(oEntityData.Type.substr(0,1) + aEntities[oEntityData.Type]);
+			aResult.push(oEntityData.ScreenHash.substr(0,1) + aEntities[oEntityData.Type]);
 		}
 		else if (sCurrEntityType === oEntityData.Type)
 		{
-			aResult.push(oEntityData.Type);
+			aResult.push(oEntityData.ScreenHash);
 		}
 	});
 	
@@ -55,12 +55,12 @@ Links.parse = function (aParams)
 	;
 	
 	_.each(Settings.EntitiesData, function (oEntityData) {
-		if (aParams[iIndex] && oEntityData.Type === aParams[iIndex])
+		if (aParams[iIndex] && oEntityData.ScreenHash === aParams[iIndex])
 		{
 			sCurrEntityType = oEntityData.Type;
 			iIndex++;
 		}
-		if (aParams[iIndex] && oEntityData.Type.substr(0, 1) === aParams[iIndex].substr(0, 1) && Types.pInt(aParams[iIndex].substr(1)) > 0)
+		if (aParams[iIndex] && oEntityData.ScreenHash.substr(0, 1) === aParams[iIndex].substr(0, 1) && Types.pInt(aParams[iIndex].substr(1)) > 0)
 		{
 			oEntities[oEntityData.Type] = Types.pInt(aParams[iIndex].substr(1));
 			sCurrEntityType = oEntityData.Type;

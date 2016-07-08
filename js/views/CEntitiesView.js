@@ -11,22 +11,19 @@ var
 	Popups = require('modules/CoreClient/js/Popups.js'),
 	ConfirmPopup = require('modules/CoreClient/js/popups/ConfirmPopup.js'),
 	
-	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
-	Settings = require('modules/%ModuleName%/js/Settings.js')
+	Ajax = require('modules/%ModuleName%/js/Ajax.js')
 ;
 
 /**
- * @param {string} sEntityName
+ * @param {string} sEntityType
  * @constructor
  */
-function CEntitiesView(sEntityName)
+function CEntitiesView(sEntityType)
 {
-	this.sName = sEntityName;
-	this.sType = Settings.EntitiesData[sEntityName] ? Settings.EntitiesData[sEntityName].objectName : sEntityName;
+	this.sType = sEntityType;
+	this.oEntityCreateView = this.getEntityCreateView();
 	this.entities = ko.observableArray([]);
 	this.current = ko.observable(0);
-	this.newEntityName = ko.observable('');
-	this.newEntityDescription = ko.observable('');
 	this.showCreateForm = ko.observable(false);
 	this.isCreating = ko.observable(false);
 	this.hasSelectedEntity = ko.computed(function () {
@@ -38,6 +35,17 @@ function CEntitiesView(sEntityName)
 }
 
 CEntitiesView.prototype.ViewTemplate = '%ModuleName%_EntitiesView';
+
+CEntitiesView.prototype.getEntityCreateView = function ()
+{
+	switch (this.sType)
+	{
+		case 'Tenant':
+			return require('modules/%ModuleName%/js/views/EditTenantView.js');
+		case 'User':
+			return require('modules/%ModuleName%/js/views/EditUserView.js');
+	}
+};
 
 CEntitiesView.prototype.onShow = function ()
 {
@@ -70,7 +78,7 @@ CEntitiesView.prototype.cancelCreatingEntity = function ()
 CEntitiesView.prototype.createEntity = function ()
 {
 	this.isCreating(true);
-	Ajax.send('CreateEntity', {Type: this.sType, Name: this.newEntityName(), Description: this.newEntityDescription()}, function (oResponse) {
+	Ajax.send('CreateEntity', {Type: this.sType, Data: this.oEntityCreateView.getParametersForSave()}, function (oResponse) {
 		if (oResponse.Result)
 		{
 			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_ENTITY_' + this.sType.toUpperCase()));
@@ -86,8 +94,8 @@ CEntitiesView.prototype.createEntity = function ()
 		this.requestEntities();
 		this.isCreating(false);
 	}, this);
-	this.newEntityName('');
-	this.newEntityDescription('');
+	
+	this.oEntityCreateView.clearFields();
 };
 
 CEntitiesView.prototype.deleteCurrentEntity = function ()

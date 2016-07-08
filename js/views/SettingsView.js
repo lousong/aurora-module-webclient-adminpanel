@@ -99,7 +99,7 @@ CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId)
 {
 	var oEntitiesId = _.clone(this.currentEntitiesId());
 	oEntitiesId[sEntityName] = iEntityId;
-	Routing.setHash(Links.get(sEntityName, oEntitiesId, this.currentTab()));
+	Routing.setHash(Links.get(sEntityName, oEntitiesId, this.currentTab() ? this.currentTab().name : ''));
 };
 
 CSettingsView.prototype.onShow = function ()
@@ -127,46 +127,40 @@ CSettingsView.prototype.onRoute = function (aParams)
 		oParams = Links.parse(aParams),
 		oCurrentEntityData = _.find(this.aScreens, function (oData) {
 			return oData.sType === oParams.CurrentType;
-		})
-	;
-	this.currentEntityType(oParams.CurrentType);
-	this.currentEntitiesId(oParams.Entities);
-	if (oCurrentEntityData && oCurrentEntityData.oView)
-	{
-		oCurrentEntityData.oView.changeEntity(oParams.Entities[oParams.CurrentType]);
-		if (oParams.Last === 'create')
-		{
-			oCurrentEntityData.oView.openCreateForm(_.bind(this.cancelCreatingEntity, this));
-		}
-		else
-		{
-			oCurrentEntityData.oView.cancelCreatingEntity();
-		}
-	}
-	
-	_.each(this.tabs(), function (oTab) {
-		if (oTab.view && _.isFunction(oTab.view.setAccessLevel))
-		{
-			oTab.view.setAccessLevel(oParams.CurrentType, oParams.Entities[oParams.CurrentType]);
-		}
-	});
-	this.onTabsRoute([oParams.Last]);
-};
-
-CSettingsView.prototype.onTabsRoute = function (aParams)
-{
-	var
-		sNewTabName = aParams.shift(),
+		}),
+		sNewTabName = [oParams.Last].shift(),
 		oCurrentTab = this.currentTab(),
 		oNewTab = _.find(this.tabs(), function (oTab) {
 			return oTab.name === sNewTabName;
 		}),
 		fShowNewTab = function () {
+			this.currentEntityType(oParams.CurrentType);
+			this.currentEntitiesId(oParams.Entities);
+			if (oCurrentEntityData && oCurrentEntityData.oView)
+			{
+				oCurrentEntityData.oView.changeEntity(oParams.Entities[oParams.CurrentType]);
+				if (oParams.Last === 'create')
+				{
+					oCurrentEntityData.oView.openCreateForm(_.bind(this.cancelCreatingEntity, this));
+				}
+				else
+				{
+					oCurrentEntityData.oView.cancelCreatingEntity();
+				}
+			}
+
+			_.each(this.tabs(), function (oTab) {
+				if (oTab.view && _.isFunction(oTab.view.setAccessLevel))
+				{
+					oTab.view.setAccessLevel(oParams.CurrentType, oParams.Entities[oParams.CurrentType]);
+				}
+			});
+			
 			if (oNewTab)
 			{
 				if ($.isFunction(oNewTab.view.onRoute))
 				{
-					oNewTab.view.onRoute(aParams);
+					oNewTab.view.onRoute([oParams.Last]);
 				}
 				this.currentTab(oNewTab);
 			}
@@ -174,7 +168,7 @@ CSettingsView.prototype.onTabsRoute = function (aParams)
 		fRevertRouting = _.bind(function () {
 			if (oCurrentTab)
 			{
-//				Routing.replaceHashDirectly([Settings.HashModuleName, oCurrentTab.name]);
+				Routing.replaceHashDirectly(Links.get(this.currentEntityType(), this.currentEntitiesId(), this.currentTab() ? this.currentTab().name : ''));
 			}
 		}, this),
 		bShow = true

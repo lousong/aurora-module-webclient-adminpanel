@@ -11,6 +11,15 @@ module.exports = function (oAppData, iUserRole, bPublic) {
 		Settings.init(oSettings);
 
 		return {
+			start: function () {
+				var
+					TextUtils = require('modules/CoreClient/js/utils/Text.js'),
+					SettingsView = require('modules/%ModuleName%/js/views/SettingsView.js')
+				;
+				SettingsView.registerTab(function () { return require('modules/%ModuleName%/js/views/CommonSettingsPaneView.js'); },
+					'common',
+					TextUtils.i18n('ADMINPANELCLIENT/LABEL_COMMON_SETTINGS_TAB'));
+			},
 			getScreens: function () {
 				var oScreens = {};
 				oScreens[Settings.HashModuleName] = function () {

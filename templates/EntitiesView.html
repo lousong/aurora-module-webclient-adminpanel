@@ -3,7 +3,7 @@
 		<div class="middle_bar">
 			<div class="panel_center">
 				<div class="items_list" data-bind="foreach: entities">
-					<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sName, id); }, css: {'selected': $parent.current() === id}">
+					<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sType, id); }, css: {'selected': $parent.current() === id}">
 						<span class="title">
 							<span class="icon"></span>
 							<span class="text" data-bind="text: name"></span>
@@ -24,25 +24,13 @@
 	<div class="panel_content">
 		<div class="middle_bar">
 			<div class="panel_top">
-				<h2 class="settings_heading"></h2>
+				<h2 class="settings_heading" data-bind="text: oEntityCreateView.sHeading"></h2>
 			</div>
 			<div class="panel_center">
 				<div class="fields">
-					<div class="fieldset">
-						<div class="row">
-							<span class="label" data-bind="i18n: {'key': 'CORECLIENT/LABEL_NAME'}"></span>
-							<span class="value">
-								<input class="input licensing" type="text" data-bind="value: newEntityName" />
-							</span>
-						</div>
-						<div class="row">
-							<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_DESCRIPTION'}"></span>
-							<span class="value">
-								<input class="input licensing" type="text" data-bind="value: newEntityDescription" />
-							</span>
-						</div>
-					</div>		
-
+					
+					<!-- ko template: {name: oEntityCreateView.ViewTemplate, data: oEntityCreateView} --><!-- /ko -->
+					
 					<div class="buttons">
 						<span class="button" data-bind="click: createEntity, visible: !isCreating()">
 							<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE'}"></span>
