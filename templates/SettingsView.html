@@ -30,10 +30,10 @@
 				<div class="middle_bar">
 					<div class="panel_center">
 						<div class="items_list" data-bind="foreach: tabs">
-							<div class="item canSelect" data-bind="visible: typeof(view.visible) !== 'undefined' ? view.visible : true, 
-									attr: {'class': 'item canSelect ' + name, 'id': 'selenium_settings_' + name}, 
+							<div class="item canSelect" data-bind="visible: view && (typeof(view.visible) !== 'undefined') ? view.visible : true, 
+									attr: {'class': 'item ' + name + (view ? ' canSelect' : ' heading'), 'id': 'selenium_settings_' + name}, 
 									css: {'selected': $parent.currentTab() && $parent.currentTab().name === name}, 
-									click: function () { $parent.changeTab(name); }">
+									click: function () { if (view) { $parent.changeTab(name); } }">
 								<span class="title">
 									<span class="icon"></span>
 									<span class="text" data-bind="text: title"></span>

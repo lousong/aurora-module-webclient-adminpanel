@@ -19,6 +19,9 @@ module.exports = function (oAppData, iUserRole, bPublic) {
 				SettingsView.registerTab(function () { return require('modules/%ModuleName%/js/views/CommonSettingsPaneView.js'); },
 					'common',
 					TextUtils.i18n('ADMINPANELCLIENT/LABEL_COMMON_SETTINGS_TAB'));
+				SettingsView.registerTab(function () { return null; },
+					'modules',
+					TextUtils.i18n('ADMINPANELCLIENT/LABEL_MODULES_SETTINGS_TAB'));
 			},
 			getScreens: function () {
 				var oScreens = {};
