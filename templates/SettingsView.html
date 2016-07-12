@@ -45,11 +45,13 @@
 			</div>
 		</div>
 		<div class="panel data" data-bind="visible: showModulesTabs">
+			<!-- ko if: currentTab() && (!currentTab().view.visible || currentTab().view.visible()) -->
 			<div class="panel_content" data-bind="with: currentTab">
-				<div data-bind="attr: {'class': 'middle_bar ' + name}, visible: typeof(view.visible) !== 'undefined' ? view.visible : true">
+				<div data-bind="attr: {'class': 'middle_bar ' + name}">
 					<!-- ko template: {name: view.ViewTemplate, data: view} --><!-- /ko -->
 				</div>
 			</div>
+			<!-- /ko -->
 		</div>
 	</div>
 </div>

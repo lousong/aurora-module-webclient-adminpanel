@@ -47,7 +47,7 @@ CCommonSettingsPaneView.prototype.ViewTemplate = '%ModuleName%_CommonSettingsPan
  */
 CCommonSettingsPaneView.prototype.getCurrentValues = function ()
 {
-	return this.entityCreateView().getCurrentValues();
+	return this.entityCreateView() ? this.entityCreateView().getCurrentValues() : [];
 };
 
 /**
@@ -55,14 +55,16 @@ CCommonSettingsPaneView.prototype.getCurrentValues = function ()
  */
 CCommonSettingsPaneView.prototype.revertGlobalValues = function ()
 {
-	console.log('revertGlobalValues');
-	this.entityCreateView().clearFields();
+	if (this.entityCreateView())
+	{
+		this.entityCreateView().clearFields();
+	}
 	this.updateSavedState();
 };
 
 CCommonSettingsPaneView.prototype.save = function (oParent)
 {
-	Ajax.send('SaveEntity', {Type: this.type(), Data: this.entityCreateView().getParametersForSave()}, function (oResponse) {
+	Ajax.send('SaveEntity', {Type: this.type(), Data: this.entityCreateView() ? this.entityCreateView().getParametersForSave() : {}}, function (oResponse) {
 		if (oResponse.Result)
 		{
 			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_UPDATE_ENTITY_' + this.type().toUpperCase()));
@@ -83,6 +85,7 @@ CCommonSettingsPaneView.prototype.save = function (oParent)
 
 CCommonSettingsPaneView.prototype.setAccessLevel = function (sEntityType, iEntityId)
 {
+	this.visible(sEntityType !== '');
 	this.type(sEntityType);
 	this.id(iEntityId);
 };
@@ -90,7 +93,10 @@ CCommonSettingsPaneView.prototype.setAccessLevel = function (sEntityType, iEntit
 CCommonSettingsPaneView.prototype.onRoute = function ()
 {
 	Ajax.send('GetEntity', {Type: this.type(), Id: this.id()}, function (oResponse) {
-		this.entityCreateView().parse(this.id(), oResponse.Result);
+		if (this.entityCreateView())
+		{
+			this.entityCreateView().parse(this.id(), oResponse.Result);
+		}
 		this.updateSavedState();
 	}, this);
 };
