@@ -95,11 +95,24 @@ CSettingsView.prototype.createEntity = function ()
 	Routing.setHash(Links.get(this.currentEntityType(), {}, 'create'));
 };
 
-CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId)
+/**
+ * Sets hash to route to screen with specified entity type and|or entity identificator and|or settings tab.
+ * 
+ * @param {string} sEntityName Entity type to display.
+ * @param {number} iEntityId Identificator of entity to display.
+ * @param {string} sTabName Name of settings tab to display.
+ */
+CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId, sTabName)
 {
-	var oEntitiesId = _.clone(this.currentEntitiesId());
+	var
+		oEntitiesId = _.clone(this.currentEntitiesId()),
+		bHasTab = !!_.find(this.tabs(), function (oTab) {
+			return oTab.name === sTabName;
+		}),
+		sCurrTabName = this.currentTab() ? this.currentTab().name : ''
+	;
 	oEntitiesId[sEntityName] = iEntityId;
-	Routing.setHash(Links.get(sEntityName, oEntitiesId, this.currentTab() ? this.currentTab().name : ''));
+	Routing.setHash(Links.get(sEntityName, oEntitiesId, bHasTab ? sTabName : sCurrTabName));
 };
 
 CSettingsView.prototype.onShow = function ()
@@ -141,7 +154,9 @@ CSettingsView.prototype.onRoute = function (aParams)
 				oCurrentEntityData.oView.changeEntity(oParams.Entities[oParams.CurrentType]);
 				if (oParams.Last === 'create')
 				{
-					oCurrentEntityData.oView.openCreateForm(_.bind(this.cancelCreatingEntity, this));
+					oCurrentEntityData.oView.openCreateForm(_.bind(function (iEntityId) {
+						this.changeEntity(this.currentEntityType(), iEntityId, 'basicauth-accounts');
+					}, this));
 				}
 				else
 				{

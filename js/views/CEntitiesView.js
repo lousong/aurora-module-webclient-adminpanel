@@ -66,6 +66,7 @@ CEntitiesView.prototype.changeEntity = function (iId)
 
 CEntitiesView.prototype.openCreateForm = function (fAfterCreating)
 {
+	this.oEntityCreateView.clearFields();
 	this.fAfterCreating = fAfterCreating;
 	this.showCreateForm(true);
 };
@@ -84,7 +85,7 @@ CEntitiesView.prototype.createEntity = function ()
 			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_ENTITY_' + this.sType.toUpperCase()));
 			if (_.isFunction(this.fAfterCreating))
 			{
-				this.fAfterCreating();
+				this.fAfterCreating(oResponse.Result.iObjectId);
 			}
 		}
 		else
