@@ -7,11 +7,11 @@ module.exports = {
 	HashModuleName: 'admin',
 	
 	EntitiesData: [
-		{
-			Type: 'Tenant',
-			ScreenHash: 'tenants',
-			LinkTextKey: '%MODULENAME%/HEADING_TENANTS_SETTINGS_TABNAME'
-		},
+//		{
+//			Type: 'Tenant',
+//			ScreenHash: 'tenants',
+//			LinkTextKey: '%MODULENAME%/HEADING_TENANTS_SETTINGS_TABNAME'
+//		},
 		{
 			Type: 'User',
 			ScreenHash: 'users',
