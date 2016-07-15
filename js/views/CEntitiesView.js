@@ -104,19 +104,27 @@ CEntitiesView.prototype.deleteCurrentEntity = function ()
 	Popups.showPopup(ConfirmPopup, [TextUtils.i18n('CORECLIENT/CONFIRM_ARE_YOU_SURE'), _.bind(this.confirmedDeleteCurrentEntity, this)]);
 };
 
-CEntitiesView.prototype.confirmedDeleteCurrentEntity = function ()
+/**
+ * Sends request to the server to delete entity if admin confirmed this action.
+ * 
+ * @param {boolean} bDelete Indicates if admin confirmed deletion.
+ */
+CEntitiesView.prototype.confirmedDeleteCurrentEntity = function (bDelete)
 {
-	Ajax.send('DeleteEntity', {Type: this.sType, Id: this.current()}, function (oResponse) {
-		if (oResponse.Result)
-		{
-			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_DELETE_ENTITY_' + this.sType.toUpperCase()));
-		}
-		else
-		{
-			Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_DELETE_ENTITY_' + this.sType.toUpperCase()));
-		}
-		this.requestEntities();
-	}, this);
+	if (bDelete)
+	{
+		Ajax.send('DeleteEntity', {Type: this.sType, Id: this.current()}, function (oResponse) {
+			if (oResponse.Result)
+			{
+				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_DELETE_ENTITY_' + this.sType.toUpperCase()));
+			}
+			else
+			{
+				Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_DELETE_ENTITY_' + this.sType.toUpperCase()));
+			}
+			this.requestEntities();
+		}, this);
+	}
 };
 
 module.exports = CEntitiesView;
