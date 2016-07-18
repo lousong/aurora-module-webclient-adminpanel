@@ -34,6 +34,12 @@ function CCommonSettingsPaneView()
 				return require('modules/%ModuleName%/js/views/EditUserView.js');
 		}
 	}, this);
+	
+	this.entityCreateView.subscribe(function () {
+		this.updateSavedState();
+	}, this);
+	
+	this.updateSavedState();
 }
 
 _.extendOwn(CCommonSettingsPaneView.prototype, CAbstractSettingsFormView.prototype);
