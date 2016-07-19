@@ -1,17 +1,12 @@
-<div class="fieldset">
-	<div class="row">
-		<span class="label" data-bind="i18n: {'key': 'CORECLIENT/LABEL_NAME'}"></span>
-		<span class="value">
-			<input class="input licensing" type="text" data-bind="value: name" />
-		</span>
-	</div>
-	<div class="row" style="display: none;">
-		<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_ROLE'}"></span>
-		<span class="value">
-			<select class="input start" data-bind="value: role, options: aRoles, optionsText: 'text', optionsValue: 'value'"></select>
-		</span>
-	</div>
-	<div class="row">
-		<span class="link" data-bind="i18n: {'key': '%MODULENAME%/ACTION_DELETE_USER'}, click: function () { $root.deleteCurrentEntity(); }"></span>
-	</div>
+<div class="row">
+	<span class="label" data-bind="i18n: {'key': 'CORECLIENT/LABEL_NAME'}"></span>
+	<span class="value">
+		<input class="input licensing" type="text" data-bind="value: name" />
+	</span>
+</div>
+<div class="row" style="display: none;">
+	<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_ROLE'}"></span>
+	<span class="value">
+		<select class="input start" data-bind="value: role, options: aRoles, optionsText: 'text', optionsValue: 'value'"></select>
+	</span>
 </div>

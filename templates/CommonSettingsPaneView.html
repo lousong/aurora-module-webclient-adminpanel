@@ -5,7 +5,12 @@
 	<div class="panel_center">
 		<div class="fields">
 
-			<!-- ko template: {name: entityCreateView().ViewTemplate, data: entityCreateView()} --><!-- /ko -->
+			<div class="fieldset">
+				<!-- ko template: {name: entityCreateView().ViewTemplate, data: entityCreateView()} --><!-- /ko -->
+				<div class="row">
+					<span class="link" data-bind="i18n: {'key': '%MODULENAME%/ACTION_DELETE_' + type().toUpperCase()}, click: function () { $root.deleteCurrentEntity(); }"></span>
+				</div>
+			</div>
 
 			<div class="buttons">
 				<span class="button" data-bind="click: function () { save($root); }">
