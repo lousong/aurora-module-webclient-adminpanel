@@ -232,6 +232,7 @@ CSettingsView.prototype.logout = function ()
 
 CSettingsView.prototype.deleteCurrentEntity = function ()
 {
+	console.log('CSettingsView deleteCurrentEntity', this.currentEntitiesView());
 	if (this.currentEntitiesView())
 	{
 		this.currentEntitiesView().deleteCurrentEntity();
