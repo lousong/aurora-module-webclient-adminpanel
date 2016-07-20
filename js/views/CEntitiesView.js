@@ -49,7 +49,6 @@ CEntitiesView.prototype.getEntityCreateView = function ()
 
 CEntitiesView.prototype.onShow = function ()
 {
-	console.log('onShow');
 	this.requestEntities();
 };
 

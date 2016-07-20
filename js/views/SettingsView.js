@@ -124,12 +124,6 @@ CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId, sTabNam
 CSettingsView.prototype.onShow = function ()
 {
 	$html.addClass('non-adjustable');
-//	_.each(this.aScreens, function (oEntity) {
-//		if (oEntity.oView && _.isFunction(oEntity.oView.onShow))
-//		{
-//			oEntity.oView.onShow();
-//		}
-//	});
 };
 
 CSettingsView.prototype.onHide = function ()
@@ -157,7 +151,6 @@ CSettingsView.prototype.onRoute = function (aParams)
 			this.currentEntitiesId(oParams.Entities);
 			if (oCurrentEntityData && oCurrentEntityData.oView)
 			{
-//				oCurrentEntityData.oView.onShow();
 				oCurrentEntityData.oView.changeEntity(oParams.Entities[oParams.CurrentType]);
 				if (oParams.Last === 'create')
 				{
