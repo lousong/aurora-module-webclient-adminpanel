@@ -20,6 +20,8 @@ var
 ;
 
 /**
+ * Constructor of admin panel settings view.
+ * 
  * @constructor
  */
 function CSettingsView()
@@ -35,11 +37,27 @@ function CSettingsView()
 		}
 	];
 	_.each(Settings.EntitiesData, _.bind(function (oEntityData) {
+		var
+			oView = new CEntitiesView(oEntityData.Type),
+			fChangeEntity = _.bind(function (sType, iEntityId, sTabName) {
+				if (sTabName === 'create')
+				{
+					this.createEntity();
+				}
+				else if (sType === this.currentEntityType())
+				{
+					this.changeEntity(sType, iEntityId, sTabName || '');
+				}
+			}, this)
+		;
+		
+		oView.setChangeEntityHandler(fChangeEntity);
+		
 		this.aScreens.push({
 			sHash: Routing.buildHashFromArray(Links.get(oEntityData.Type)),
 			sLinkText: Text.i18n(oEntityData.LinkTextKey),
 			sType: oEntityData.Type,
-			oView: new CEntitiesView(oEntityData.Type)
+			oView: oView
 		});
 	}, this));
 	this.currentEntityType = ko.observable('');
@@ -72,12 +90,19 @@ _.extendOwn(CSettingsView.prototype, CAbstractScreenView.prototype);
 
 CSettingsView.prototype.ViewTemplate = '%ModuleName%_SettingsView';
 
+/**
+ * Registers admin panel tab.
+ * 
+ * @param {Function} fGetTabView Function that return view model of the tab.
+ * @param {Object} oTabName Tab name.
+ * @param {Object} oTabTitle Tab title.
+ */
 CSettingsView.prototype.registerTab = function (fGetTabView, oTabName, oTabTitle)
 {
 	if (_.isFunction(fGetTabView))
 	{
 		var iLastIndex = Settings.TabsOrder.length;
-
+		
 		this.tabs.push({
 			view: fGetTabView(),
 			name: oTabName,
@@ -91,11 +116,17 @@ CSettingsView.prototype.registerTab = function (fGetTabView, oTabName, oTabTitle
 	}
 };
 
+/**
+ * Sets hash without creating entity.
+ */
 CSettingsView.prototype.cancelCreatingEntity = function ()
 {
 	Routing.setHash(Links.get(this.currentEntityType(), {}, ''));
 };
 
+/**
+ * Sets hash for creating entity.
+ */
 CSettingsView.prototype.createEntity = function ()
 {
 	Routing.setHash(Links.get(this.currentEntityType(), {}, 'create'));
@@ -132,104 +163,133 @@ CSettingsView.prototype.onHide = function ()
 };
 
 /**
- * @param {Array} aParams
+ * Parses parameters from url hash, hides current admin panel tab if nessessary and after that finds a new one and shows it.
+ * 
+ * @param {Array} aParams Parameters from url hash.
  */
 CSettingsView.prototype.onRoute = function (aParams)
 {
 	var
 		oParams = Links.parse(aParams),
-		oCurrentEntityData = _.find(this.aScreens, function (oData) {
-			return oData.sType === oParams.CurrentType;
-		}),
-		sNewTabName = [oParams.Last].shift(),
+		bSameType = this.currentEntityType() === oParams.CurrentType,
+		bSameId = this.currentEntitiesId()[oParams.CurrentType] === oParams.Entities[oParams.CurrentType],
+		bSameTab = this.currentTab() && this.currentTab().name === oParams.Last,
 		oCurrentTab = this.currentTab(),
-		oNewTab = _.find(this.tabs(), function (oTab) {
-			return oTab.name === sNewTabName;
-		}),
-		fShowNewTab = function () {
-			this.currentEntityType(oParams.CurrentType);
-			this.currentEntitiesId(oParams.Entities);
-			if (oCurrentEntityData && oCurrentEntityData.oView)
-			{
-				oCurrentEntityData.oView.changeEntity(oParams.Entities[oParams.CurrentType]);
-				if (oParams.Last === 'create')
-				{
-					oCurrentEntityData.oView.openCreateForm(_.bind(function (iEntityId) {
-						this.changeEntity(this.currentEntityType(), iEntityId, 'basicauth-accounts');
-					}, this));
-				}
-				else
-				{
-					oCurrentEntityData.oView.cancelCreatingEntity();
-				}
-			}
-
-			_.each(this.tabs(), function (oTab) {
-				if (oTab.view && _.isFunction(oTab.view.setAccessLevel))
-				{
-					oTab.view.setAccessLevel(oParams.CurrentType, oParams.Entities[oParams.CurrentType]);
-				}
-			});
-			
-			if (oNewTab)
-			{
-				if ($.isFunction(oNewTab.view.onRoute))
-				{
-					oNewTab.view.onRoute([oParams.Last]);
-				}
-				this.currentTab(oNewTab);
-			}
-		}.bind(this),
-		fRevertRouting = _.bind(function () {
+		fAfterTabHide = _.bind(function () {
+			this.showNewScreenView(oParams);
+			this.showNewTabView(oParams.Last); // only after showing new entities view
+		}, this),
+		fAfterRefuseTabHide = _.bind(function () {
 			if (oCurrentTab)
 			{
 				Routing.replaceHashDirectly(Links.get(this.currentEntityType(), this.currentEntitiesId(), this.currentTab() ? this.currentTab().name : ''));
 			}
-		}, this),
-		bShow = true
+		}, this)
 	;
 	
-	if (oNewTab && oNewTab.view.visible())
+	if (!bSameType || !bSameId || !bSameTab)
 	{
 		if (oCurrentTab && $.isFunction(oCurrentTab.view.hide))
 		{
-			oCurrentTab.view.hide(fShowNewTab, fRevertRouting);
-			bShow = false;
+			oCurrentTab.view.hide(fAfterTabHide, fAfterRefuseTabHide);
 		}
-	}
-	else if (!oCurrentTab)
-	{
-		oNewTab = _.find(this.tabs(), function (oTab) {
-			return oTab.name === 'common' && oTab.view.visible();
-		});
-		
-		if (!oNewTab)
+		else
 		{
-			oNewTab = _.find(this.tabs(), function (oTab) {
-				return oTab.view.visible();
-			});
+			fAfterTabHide();
 		}
-	}
-	
-	if (bShow)
-	{
-		fShowNewTab();
 	}
 };
 
 /**
- * @param {string} sTabName
+ * Shows new screen view.
+ * 
+ * @param {Object} oParams Parameters with information about new screen.
+ */
+CSettingsView.prototype.showNewScreenView = function (oParams)
+{
+	var
+		oCurrentEntityData = _.find(this.aScreens, function (oData) {
+			return oData.sType === oParams.CurrentType;
+		})
+	;
+	
+	this.currentEntityType(oParams.CurrentType);
+	this.currentEntitiesId(oParams.Entities);
+
+	if (oCurrentEntityData && oCurrentEntityData.oView)
+	{
+		if (oParams.Last === 'create')
+		{
+			oCurrentEntityData.oView.openCreateForm();
+		}
+		else
+		{
+			oCurrentEntityData.oView.cancelCreatingEntity();
+		}
+		oCurrentEntityData.oView.changeEntity(oParams.Entities[oParams.CurrentType]);
+	}
+};
+
+/**
+ * Shows tab with specified tab name. Should be called only after calling showNewScreenView method.
+ * 
+ * @param {string} sNewTabName New tab name.
+ */
+CSettingsView.prototype.showNewTabView = function (sNewTabName)
+{
+	// Sets access level to all tabs so they can correct their visibilities
+	_.each(this.tabs(), _.bind(function (oTab) {
+		if (oTab.view && _.isFunction(oTab.view.setAccessLevel))
+		{
+			oTab.view.setAccessLevel(this.currentEntityType(), this.currentEntitiesId()[this.currentEntityType()]);
+		}
+	}, this));
+	
+	// Finds tab with name from the url hash
+	var oNewTab = _.find(this.tabs(), function (oTab) {
+		return oTab.name === sNewTabName;
+	});
+	
+	// If the tab wasn't found finds the first avaliable visible tab
+	if (!oNewTab || !(oNewTab.view && oNewTab.view.visible()))
+	{
+		oNewTab = _.find(this.tabs(), function (oTab) {
+			return oTab.view && oTab.view.visible();
+		});
+	}
+	
+	// If tab was found calls its onRoute function and sets new current tab
+	if (oNewTab)
+	{
+		if ($.isFunction(oNewTab.view.onRoute))
+		{
+			oNewTab.view.onRoute();
+		}
+		this.currentTab(oNewTab);
+	}
+};
+
+/**
+ * Sets hash for showing another admin panel tab.
+ * 
+ * @param {string} sTabName Tab name.
  */
 CSettingsView.prototype.changeTab = function (sTabName)
 {
 	Routing.setHash(Links.get(this.currentEntityType(), this.currentEntitiesId(), sTabName));
 };
 
+/**
+ * Calls logout function of application.
+ */
 CSettingsView.prototype.logout = function ()
 {
 	App.logout();
 };
 
+/**
+ * Deletes current entity.
+ */
 CSettingsView.prototype.deleteCurrentEntity = function ()
 {
 	if (this.currentEntitiesView())
@@ -237,13 +297,5 @@ CSettingsView.prototype.deleteCurrentEntity = function ()
 		this.currentEntitiesView().deleteCurrentEntity();
 	}
 };
-
-///**
-// * @param {Array} aAddHash
-// */
-//CSettingsView.prototype.setAddHash = function (aAddHash)
-//{
-//	Routing.setHash(_.union([Settings.HashModuleName, this.currentTab() ? this.currentTab().name : ''], aAddHash));
-//};
 
 module.exports = new CSettingsView();
