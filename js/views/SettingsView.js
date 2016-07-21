@@ -154,12 +154,12 @@ CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId, sTabNam
 
 CSettingsView.prototype.onShow = function ()
 {
-	$html.addClass('non-adjustable');
+//	$html.addClass('non-adjustable');
 };
 
 CSettingsView.prototype.onHide = function ()
 {
-	$html.removeClass('non-adjustable');
+//	$html.removeClass('non-adjustable');
 };
 
 /**

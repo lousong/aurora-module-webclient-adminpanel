@@ -1,4 +1,4 @@
-<div class="panel left_panel navigation_panel" style="width: 250px;">
+<div class="panel left_panel" style="width: 250px;">
 	<div class="panel_content">
 		<div class="buttons big_single_button">
 			<span href="javascript: void(0)" class="button" data-bind="click: function () { $root.createEntity(); }">
@@ -6,13 +6,15 @@
 			</span>
 		</div>
 		<div class="middle_bar">
-			<div class="panel_center">
-				<div class="items_list" data-bind="foreach: entities">
-					<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sType, id); }, css: {'selected': $parent.current() === id}">
-						<span class="title">
-							<span class="icon"></span>
-							<span class="text" data-bind="text: name"></span>
-						</span>
+			<div class="panel_center" data-bind="customScrollbar: {x: false}">
+				<div class="scroll-inner">
+					<div class="items_list" data-bind="foreach: entities">
+						<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sType, id); }, css: {'selected': $parent.current() === id}">
+							<span class="title">
+								<span class="icon"></span>
+								<span class="text" data-bind="text: name"></span>
+							</span>
+						</div>
 					</div>
 				</div>
 			</div>
