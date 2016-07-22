@@ -8,15 +8,14 @@ var
 	Text = require('modules/CoreClient/js/utils/Text.js'),
 	
 	App = require('modules/CoreClient/js/App.js'),
+	Screens = require('modules/CoreClient/js/Screens.js'),
 	Routing = require('modules/CoreClient/js/Routing.js'),
 	CAbstractScreenView = require('modules/CoreClient/js/views/CAbstractScreenView.js'),
 	
 	Links = require('modules/%ModuleName%/js/utils/Links.js'),
 	
 	Settings = require('modules/%ModuleName%/js/Settings.js'),
-	CEntitiesView = require('modules/%ModuleName%/js/views/CEntitiesView.js'),
-	
-	$html = $('html')
+	CEntitiesView = require('modules/%ModuleName%/js/views/CEntitiesView.js')
 ;
 
 /**
@@ -152,14 +151,28 @@ CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId, sTabNam
 	Routing.setHash(Links.get(sEntityName, oEntitiesId, bHasTab ? sTabName : sCurrTabName));
 };
 
-CSettingsView.prototype.onShow = function ()
+/**
+ * Runs after knockout binding. Checks if settings tab have error to show on start and shows them.
+ */
+CSettingsView.prototype.onBind = function ()
 {
-//	$html.addClass('non-adjustable');
-};
-
-CSettingsView.prototype.onHide = function ()
-{
-//	$html.removeClass('non-adjustable');
+	var aErrors = [];
+	
+	_.each(this.tabs(), function (oTab) {
+		if (oTab.view && _.isFunction(oTab.view.getStartError))
+		{
+			var sError = oTab.view.getStartError();
+			if (sError !== '')
+			{
+				aErrors.push(sError);
+			}
+		}
+	});
+	
+	if (aErrors.length > 0)
+	{
+		Screens.showError(aErrors.join('<br /><br />'), true, true);
+	}
 };
 
 /**
