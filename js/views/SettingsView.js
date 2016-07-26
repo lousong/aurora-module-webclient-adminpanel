@@ -83,11 +83,14 @@ function CSettingsView()
 	this.tabs = ko.observableArray([]);
 	
 	this.currentTab = ko.observable(null);
+	
+	App.broadcastEvent('%ModuleName%::ConstructView::after', {'Name': this.ViewConstructorName, 'View': this});
 }
 
 _.extendOwn(CSettingsView.prototype, CAbstractScreenView.prototype);
 
 CSettingsView.prototype.ViewTemplate = '%ModuleName%_SettingsView';
+CSettingsView.prototype.ViewConstructorName = 'CSettingsView';
 
 /**
  * Registers admin panel tab.
