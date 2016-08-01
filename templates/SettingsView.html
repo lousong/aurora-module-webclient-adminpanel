@@ -20,7 +20,7 @@
 			<!-- /ko -->
 		<!-- /ko -->
 		
-		<div class="panel data modules" style="width: 200px" data-bind="adjustHeightToContent: {}, visible: showModulesTabs">
+		<div class="panel data modules" style="width: 200px" data-bind="visible: showModulesTabs">
 			<div class="panel_content">
 				<div class="middle_bar unselectable" data-bind="customScrollbar: {x: false}">
 					<div class="scroll-inner">
@@ -45,14 +45,16 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel data" data-bind="visible: showModulesTabs">
-			<!-- ko if: currentTab() && (!currentTab().view.visible || currentTab().view.visible()) -->
-			<div class="panel_content" data-bind="with: currentTab">
-				<div data-bind="attr: {'class': 'middle_bar ' + name}">
-					<!-- ko template: {name: view.ViewTemplate, data: view} --><!-- /ko -->
+		<div class="panel data" data-bind="customScrollbar: {x: false}, visible: showModulesTabs">
+			<div class="scroll-inner">
+				<!-- ko if: currentTab() && (!currentTab().view.visible || currentTab().view.visible()) -->
+				<div class="panel_content" data-bind="with: currentTab">
+					<div data-bind="attr: {'class': 'middle_bar ' + name}">
+						<!-- ko template: {name: view.ViewTemplate, data: view} --><!-- /ko -->
+					</div>
 				</div>
+				<!-- /ko -->
 			</div>
-			<!-- /ko -->
 		</div>
 	</div>
 </div>
