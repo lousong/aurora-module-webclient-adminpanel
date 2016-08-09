@@ -6,8 +6,8 @@ $('body').ready(function () {
 
 	var
 		oAvaliableModules = {
-			'AdminPanelClient': require('modules/AdminPanelClient/js/manager.js'),
-			'FilesClient': require('modules/FilesClient/js/manager.js')
+			'AdminPanelWebclient': require('modules/AdminPanelWebclient/js/manager.js'),
+			'FilesWebclient': require('modules/FilesWebclient/js/manager.js')
 		},
 		ModulesManager = require('modules/CoreClient/js/ModulesManager.js'),
 		App = require('modules/CoreClient/js/App.js')

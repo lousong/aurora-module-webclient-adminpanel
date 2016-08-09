@@ -85,7 +85,7 @@ CEntitiesView.prototype.requestEntities = function ()
 		}
 		else if (this.justCreatedId() !== 0)
 		{
-			this.fChangeEntityHandler(this.sType, this.justCreatedId(), 'basicauth-accounts');
+			this.fChangeEntityHandler(this.sType, this.justCreatedId(), 'standardauth-accounts');
 		}
 	}, this);
 };
