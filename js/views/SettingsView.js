@@ -5,12 +5,12 @@ var
 	$ = require('jquery'),
 	ko = require('knockout'),
 	
-	Text = require('modules/CoreClient/js/utils/Text.js'),
+	Text = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	
-	App = require('modules/CoreClient/js/App.js'),
-	Screens = require('modules/CoreClient/js/Screens.js'),
-	Routing = require('modules/CoreClient/js/Routing.js'),
-	CAbstractScreenView = require('modules/CoreClient/js/views/CAbstractScreenView.js'),
+	App = require('%PathToCoreWebclientModule%/js/App.js'),
+	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
+	Routing = require('%PathToCoreWebclientModule%/js/Routing.js'),
+	CAbstractScreenView = require('%PathToCoreWebclientModule%/js/views/CAbstractScreenView.js'),
 	
 	Links = require('modules/%ModuleName%/js/utils/Links.js'),
 	

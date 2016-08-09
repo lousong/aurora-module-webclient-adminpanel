@@ -13,7 +13,7 @@ module.exports = function (oAppData, iUserRole, bPublic) {
 		return {
 			start: function () {
 				var
-					TextUtils = require('modules/CoreClient/js/utils/Text.js'),
+					TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 					SettingsView = require('modules/%ModuleName%/js/views/SettingsView.js')
 				;
 				SettingsView.registerTab(function () { return require('modules/%ModuleName%/js/views/CommonSettingsPaneView.js'); },
