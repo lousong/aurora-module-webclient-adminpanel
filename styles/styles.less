@@ -20,19 +20,11 @@
 
 		.icon {
 			display: inline-block;
+			display: none;
 			height: 19px;
 			margin-right: 4px;
 			vertical-align: middle;
 			width: 18px;
-
-			.init-icon-font();
-
-			&:before {
-				display: inline-block;
-				font-size: 20px;
-				height: 100%;
-				width: 100%;
-			}
 		}
 		
 		&.selected {
@@ -44,43 +36,6 @@
 			background: #fcfcfc;
 			color: #ccc;
 			text-transform: uppercase;
-		}
-
-		&.common .icon:before {
-			content: "\e639";
-		}
-
-		&.mail .icon:before,
-		&.mail-accounts .icon:before {
-			content: "\e638";
-		}
-
-		&.calendar .icon:before {
-			content: "\e63a";
-		}
-
-		&.services .icon:before {
-			content: "\e672";
-		}
-
-		&.files .icon:before {
-			content: "\e656";
-		}
-
-		&.mobilesync .icon:before {
-			content: "\e636";
-		}
-
-		&.outlooksync .icon:before {
-			content: "\e635";
-		}
-
-		&.helpdesk .icon:before {
-			content: "\e637";
-		}
-
-		&.openpgp .icon:before {
-			content: "\e658";
 		}
 	}
 	
