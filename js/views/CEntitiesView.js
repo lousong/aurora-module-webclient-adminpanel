@@ -157,7 +157,7 @@ CEntitiesView.prototype.createEntity = function ()
  */
 CEntitiesView.prototype.deleteCurrentEntity = function ()
 {
-	Popups.showPopup(ConfirmPopup, [TextUtils.i18n('CORECLIENT/CONFIRM_ARE_YOU_SURE'), _.bind(this.confirmedDeleteCurrentEntity, this)]);
+	Popups.showPopup(ConfirmPopup, [TextUtils.i18n('COREWEBCLIENT/CONFIRM_ARE_YOU_SURE'), _.bind(this.confirmedDeleteCurrentEntity, this)]);
 };
 
 /**
