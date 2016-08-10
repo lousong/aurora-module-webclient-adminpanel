@@ -70,7 +70,7 @@ CCommonSettingsPaneView.prototype.revertGlobalValues = function ()
 
 CCommonSettingsPaneView.prototype.save = function (oParent)
 {
-	Ajax.send('SaveEntity', {Type: this.type(), Data: this.entityCreateView() ? this.entityCreateView().getParametersForSave() : {}}, function (oResponse) {
+	Ajax.send('UpdateEntity', {Type: this.type(), Data: this.entityCreateView() ? this.entityCreateView().getParametersForSave() : {}}, function (oResponse) {
 		if (oResponse.Result)
 		{
 			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_UPDATE_ENTITY_' + this.type().toUpperCase()));

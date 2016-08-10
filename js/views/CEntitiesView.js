@@ -32,7 +32,7 @@ function CEntitiesView(sEntityType)
 	this.isCreating = ko.observable(false);
 	this.hasSelectedEntity = ko.computed(function () {
 		var aIds = _.map(this.entities(), function (oEntity) {
-			return oEntity.id;
+			return oEntity.Id;
 		});
 		return _.indexOf(aIds, this.current()) !== -1;
 	}, this);
@@ -43,7 +43,7 @@ function CEntitiesView(sEntityType)
 	ko.computed(function () {
 		if (this.justCreatedId() === 0 && !this.showCreateForm() && !this.hasSelectedEntity() && this.entities().length > 0)
 		{
-			this.fChangeEntityHandler(this.sType, this.entities()[0].id);
+			this.fChangeEntityHandler(this.sType, this.entities()[0].Id);
 		}
 	}, this);
 }
@@ -77,7 +77,7 @@ CEntitiesView.prototype.onShow = function ()
  */
 CEntitiesView.prototype.requestEntities = function ()
 {
-	Ajax.send('GetEntities', {Type: this.sType}, function (oResponse) {
+	Ajax.send('GetEntityList', {Type: this.sType}, function (oResponse) {
 		this.entities(oResponse.Result);
 		if (this.entities().length === 0)
 		{
@@ -138,7 +138,7 @@ CEntitiesView.prototype.createEntity = function ()
 		if (oResponse.Result)
 		{
 			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_ENTITY_' + this.sType.toUpperCase()));
-			this.justCreatedId(oResponse.Result.iObjectId);
+			this.justCreatedId(Types.pInt(oResponse.Result));
 			this.cancelCreatingEntity();
 		}
 		else
