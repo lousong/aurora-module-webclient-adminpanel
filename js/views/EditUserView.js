@@ -3,7 +3,9 @@
 var
 	ko = require('knockout'),
 	
-	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js')
+	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
+	
+	App = require('%PathToCoreWebclientModule%/js/App.js')
 ;
 
 /**
@@ -20,9 +22,12 @@ function CEditUserView()
 		{text: TextUtils.i18n('%MODULENAME%/LABEL_GUEST'), value: Enums.UserRole.RegisteredUser}
 	];
 	this.role = ko.observable(Enums.UserRole.PowerUser);
+	
+	App.broadcastEvent('%ModuleName%::ConstructView::after', {'Name': this.ViewConstructorName, 'View': this});
 }
 
 CEditUserView.prototype.ViewTemplate = '%ModuleName%_EditUserView';
+CEditUserView.prototype.ViewConstructorName = 'CEditUserView';
 
 CEditUserView.prototype.getCurrentValues = function ()
 {
