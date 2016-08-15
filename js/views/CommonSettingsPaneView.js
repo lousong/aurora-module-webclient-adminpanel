@@ -70,23 +70,26 @@ CCommonSettingsPaneView.prototype.revertGlobalValues = function ()
 
 CCommonSettingsPaneView.prototype.save = function (oParent)
 {
-	Ajax.send('UpdateEntity', {Type: this.type(), Data: this.entityCreateView() ? this.entityCreateView().getParametersForSave() : {}}, function (oResponse) {
-		if (oResponse.Result)
-		{
-			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_UPDATE_ENTITY_' + this.type().toUpperCase()));
-		}
-		else
-		{
-			Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_UPDATE_ENTITY_' + this.type().toUpperCase()));
-		}
-		
-		if (oParent && _.isFunction(oParent.currentEntitiesView) && _.isFunction(oParent.currentEntitiesView().requestEntities))
-		{
-			oParent.currentEntitiesView().requestEntities();
-		}
-		
-		this.updateSavedState();
-	}, this);
+	if (this.entityCreateView() && (!_.isFunction(this.entityCreateView().isValidSaveData) || this.entityCreateView().isValidSaveData()))
+	{
+		Ajax.send('UpdateEntity', {Type: this.type(), Data: this.entityCreateView() ? this.entityCreateView().getParametersForSave() : {}}, function (oResponse) {
+			if (oResponse.Result)
+			{
+				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_UPDATE_ENTITY_' + this.type().toUpperCase()));
+			}
+			else
+			{
+				Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_UPDATE_ENTITY_' + this.type().toUpperCase()));
+			}
+
+			if (oParent && _.isFunction(oParent.currentEntitiesView) && _.isFunction(oParent.currentEntitiesView().requestEntities))
+			{
+				oParent.currentEntitiesView().requestEntities();
+			}
+
+			this.updateSavedState();
+		}, this);
+	}
 };
 
 CCommonSettingsPaneView.prototype.setAccessLevel = function (sEntityType, iEntityId)

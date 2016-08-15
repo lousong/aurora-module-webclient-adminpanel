@@ -85,7 +85,7 @@ CEntitiesView.prototype.requestEntities = function ()
 		}
 		else if (this.justCreatedId() !== 0)
 		{
-			this.fChangeEntityHandler(this.sType, this.justCreatedId(), 'standardauth-accounts');
+			this.fChangeEntityHandler(this.sType, this.justCreatedId());
 		}
 	}, this);
 };
@@ -133,23 +133,26 @@ CEntitiesView.prototype.cancelCreatingEntity = function ()
  */
 CEntitiesView.prototype.createEntity = function ()
 {
-	this.isCreating(true);
-	Ajax.send('CreateEntity', {Type: this.sType, Data: this.oEntityCreateView.getParametersForSave()}, function (oResponse) {
-		if (oResponse.Result)
-		{
-			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_ENTITY_' + this.sType.toUpperCase()));
-			this.justCreatedId(Types.pInt(oResponse.Result));
-			this.cancelCreatingEntity();
-		}
-		else
-		{
-			Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_CREATE_ENTITY_' + this.sType.toUpperCase()));
-		}
-		this.requestEntities();
-		this.isCreating(false);
-	}, this);
-	
-	this.oEntityCreateView.clearFields();
+	if (this.oEntityCreateView && (!_.isFunction(this.oEntityCreateView.isValidSaveData) || this.oEntityCreateView.isValidSaveData()))
+	{
+		this.isCreating(true);
+		Ajax.send('CreateEntity', {Type: this.sType, Data: this.oEntityCreateView.getParametersForSave()}, function (oResponse) {
+			if (oResponse.Result)
+			{
+				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_ENTITY_' + this.sType.toUpperCase()));
+				this.justCreatedId(Types.pInt(oResponse.Result));
+				this.cancelCreatingEntity();
+			}
+			else
+			{
+				Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_CREATE_ENTITY_' + this.sType.toUpperCase()));
+			}
+			this.requestEntities();
+			this.isCreating(false);
+		}, this);
+
+		this.oEntityCreateView.clearFields();
+	}
 };
 
 /**

@@ -1,10 +1,12 @@
 'use strict';
 
 var
+	$ = require('jquery'),
 	ko = require('knockout'),
 	
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	
+	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 	App = require('%PathToCoreWebclientModule%/js/App.js')
 ;
 
@@ -59,11 +61,21 @@ CEditUserView.prototype.parse = function (iEntityId, oResult)
 	}
 };
 
+CEditUserView.prototype.isValidSaveData = function ()
+{
+	var bValid = $.trim(this.name()) !== '';
+	if (!bValid)
+	{
+		Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_USER_NAME_EMPTY'));
+	}
+	return bValid;
+};
+
 CEditUserView.prototype.getParametersForSave = function ()
 {
 	return {
 		Id: this.id(),
-		Name: this.name(),
+		Name: $.trim(this.name()),
 		Role: this.role()
 	};
 };
