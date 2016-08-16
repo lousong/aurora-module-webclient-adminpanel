@@ -20,10 +20,10 @@ function CEditUserView()
 	this.name = ko.observable('');
 	this.aRoles = [
 		{text: TextUtils.i18n('%MODULENAME%/LABEL_ADMINISTRATOR'), value: Enums.UserRole.SuperAdmin},
-		{text: TextUtils.i18n('%MODULENAME%/LABEL_USER'), value: Enums.UserRole.PowerUser},
-		{text: TextUtils.i18n('%MODULENAME%/LABEL_GUEST'), value: Enums.UserRole.RegisteredUser}
+		{text: TextUtils.i18n('%MODULENAME%/LABEL_USER'), value: Enums.UserRole.NormalUser},
+		{text: TextUtils.i18n('%MODULENAME%/LABEL_GUEST'), value: Enums.UserRole.Customer}
 	];
-	this.role = ko.observable(Enums.UserRole.PowerUser);
+	this.role = ko.observable(Enums.UserRole.NormalUser);
 	
 	App.broadcastEvent('%ModuleName%::ConstructView::after', {'Name': this.ViewConstructorName, 'View': this});
 }
@@ -44,7 +44,7 @@ CEditUserView.prototype.clearFields = function ()
 {
 	this.id(0);
 	this.name('');
-	this.role(Enums.UserRole.PowerUser);
+	this.role(Enums.UserRole.NormalUser);
 };
 
 CEditUserView.prototype.parse = function (iEntityId, oResult)
