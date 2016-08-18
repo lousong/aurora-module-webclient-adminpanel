@@ -31,8 +31,8 @@
 			<div class="panel_center">
 				<div class="fields">
 					
-					<div class="fieldset">
-						<!-- ko template: {name: oEntityCreateView.ViewTemplate, data: oEntityCreateView} --><!-- /ko -->
+					<div class="fieldset" data-bind="with: oEntityCreateView">
+						<!-- ko template: {name: ViewTemplate, data: $data} --><!-- /ko -->
 					</div>
 					
 					<div class="buttons">
