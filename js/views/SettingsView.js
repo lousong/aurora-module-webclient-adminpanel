@@ -174,7 +174,7 @@ CSettingsView.prototype.onBind = function ()
 	
 	if (aErrors.length > 0)
 	{
-		Screens.showError(aErrors.join('<br /><br />'), true, true);
+		Screens.showError(aErrors.join('<br /><br />'), true);
 	}
 };
 
