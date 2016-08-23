@@ -6,6 +6,7 @@ var
 	
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	
+	App = require('%PathToCoreWebclientModule%/js/App.js'),
 	ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 	
@@ -108,6 +109,7 @@ CCommonSettingsPaneView.prototype.onRoute = function ()
 		}
 		this.updateSavedState();
 	}, this);
+	App.broadcastEvent('CCommonSettingsPaneView::onRoute::after', {'View': this.entityCreateView(), 'Id': this.id()});
 };
 
 module.exports = new CCommonSettingsPaneView();
