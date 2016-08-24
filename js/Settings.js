@@ -19,7 +19,7 @@ module.exports = {
 		}
 	],
 	
-	TabsOrder: ['core-licensing', 'core-security', 'core-db', 'core-logging', 'common', 'modules', 'mail', 'mail-domains', 'mail-accounts', 'contacts', 'calendar', 'files', 'mobilesync', 'outlooksync', 'helpdesk', 'openpgp'],
+	TabsOrder: ['admin-licensing', 'admin-security', 'admin-db', 'admin-logging', 'common', 'modules', 'mail', 'mail-domains', 'mail-accounts', 'contacts', 'calendar', 'files', 'mobilesync', 'outlooksync', 'helpdesk', 'openpgp'],
 	
 	init: function (oAppDataSection) {
 		if (oAppDataSection)

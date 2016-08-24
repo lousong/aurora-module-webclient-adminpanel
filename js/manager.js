@@ -19,6 +19,27 @@ module.exports = function (oAppData, iUserRole, bPublic) {
 		return {
 			start: function () {
 				aAdminPanelTabsParams.push({
+					GetTabView: function () { return require('modules/%ModuleName%/js/views/DbAdminSettingsView.js'); },
+					TabName: Settings.HashModuleName + '-db',
+					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_DB_SETTINGS_TAB')
+				});
+//				aAdminPanelTabsParams.push({
+//					GetTabView: function () { return require('modules/%ModuleName%/js/views/LicensingAdminSettingsView.js'); },
+//					TabName: Settings.HashModuleName + '-licensing',
+//					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_LICENSING_SETTINGS_TAB')
+//				});
+				aAdminPanelTabsParams.push({
+					GetTabView: function () { return require('modules/%ModuleName%/js/views/SecurityAdminSettingsView.js'); },
+					TabName: Settings.HashModuleName + '-security',
+					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_SECURITY_SETTINGS_TAB')
+				});
+//				aAdminPanelTabsParams.push({
+//					GetTabView: function () { return require('modules/%ModuleName%/js/views/LoggingAdminSettingsView.js'); },
+//					TabName: Settings.HashModuleName + '-logging',
+//					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_LOGGING_SETTINGS_TAB')
+//				});
+				
+				aAdminPanelTabsParams.push({
 					GetTabView: function () { return require('modules/%ModuleName%/js/views/CommonSettingsPaneView.js'); },
 					TabName: 'common',
 					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_COMMON_SETTINGS_TAB')
