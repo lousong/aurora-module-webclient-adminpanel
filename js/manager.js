@@ -1,7 +1,9 @@
 'use strict';
 
-module.exports = function (oAppData, iUserRole, bPublic) {
-	if (iUserRole === Enums.UserRole.SuperAdmin)
+module.exports = function (oAppData) {
+	var App = require('%PathToCoreWebclientModule%/js/App.js');
+	
+	if (App.getUserRole() === Enums.UserRole.SuperAdmin)
 	{
 		var
 			_ = require('underscore'),
