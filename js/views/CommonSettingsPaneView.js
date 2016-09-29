@@ -4,6 +4,7 @@ var
 	_ = require('underscore'),
 	ko = require('knockout'),
 	
+	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
@@ -102,14 +103,17 @@ CCommonSettingsPaneView.prototype.setAccessLevel = function (sEntityType, iEntit
 
 CCommonSettingsPaneView.prototype.onRoute = function ()
 {
-	Ajax.send('GetEntity', {Type: this.type(), Id: this.id()}, function (oResponse) {
-		if (this.entityCreateView())
-		{
-			this.entityCreateView().parse(this.id(), oResponse.Result);
-		}
-		this.updateSavedState();
-	}, this);
-	App.broadcastEvent('CCommonSettingsPaneView::onRoute::after', {'View': this.entityCreateView(), 'Id': this.id()});
+	if (Types.isPositiveNumber(this.id()))
+	{
+		Ajax.send('GetEntity', {Type: this.type(), Id: this.id()}, function (oResponse) {
+			if (this.entityCreateView())
+			{
+				this.entityCreateView().parse(this.id(), oResponse.Result);
+			}
+			this.updateSavedState();
+		}, this);
+		App.broadcastEvent('CCommonSettingsPaneView::onRoute::after', {'View': this.entityCreateView(), 'Id': this.id()});
+	}
 };
 
 module.exports = new CCommonSettingsPaneView();
