@@ -103,17 +103,14 @@ CCommonSettingsPaneView.prototype.setAccessLevel = function (sEntityType, iEntit
 
 CCommonSettingsPaneView.prototype.onRoute = function ()
 {
-	if (Types.isPositiveNumber(this.id()))
-	{
-		Ajax.send('GetEntity', {Type: this.type(), Id: this.id()}, function (oResponse) {
-			if (this.entityCreateView())
-			{
-				this.entityCreateView().parse(this.id(), oResponse.Result);
-			}
-			this.updateSavedState();
-		}, this);
-		App.broadcastEvent('CCommonSettingsPaneView::onRoute::after', {'View': this.entityCreateView(), 'Id': this.id()});
-	}
+	Ajax.send('GetEntity', {Type: this.type(), Id: this.id()}, function (oResponse) {
+		if (this.entityCreateView())
+		{
+			this.entityCreateView().parse(this.id(), oResponse.Result);
+		}
+		this.updateSavedState();
+	}, this);
+	App.broadcastEvent('CCommonSettingsPaneView::onRoute::after', {'View': this.entityCreateView(), 'Id': this.id()});
 };
 
 module.exports = new CCommonSettingsPaneView();
