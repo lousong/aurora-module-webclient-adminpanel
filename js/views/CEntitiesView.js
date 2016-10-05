@@ -45,7 +45,7 @@ function CEntitiesView(sEntityType)
 		{
 			this.fChangeEntityHandler(this.sType, this.entities()[0].Id);
 		}
-	}, this);
+	}, this).extend({ throttle: 1 });
 }
 
 CEntitiesView.prototype.ViewTemplate = '%ModuleName%_EntitiesView';
