@@ -12,7 +12,7 @@
 						<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sType, Id); }, css: {'selected': $parent.current() === Id}">
 							<span class="title">
 								<span class="icon"></span>
-								<span class="text" data-bind="text: Name"></span>
+								<span class="text" data-bind="text: Name || PublicId"></span>
 							</span>
 						</div>
 					</div>

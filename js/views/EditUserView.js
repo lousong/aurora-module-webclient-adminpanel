@@ -17,7 +17,7 @@ function CEditUserView()
 {
 	this.sHeading = TextUtils.i18n('%MODULENAME%/HEADING_CREATE_USER');
 	this.id = ko.observable(0);
-	this.name = ko.observable('');
+	this.publicId = ko.observable('');
 	this.aRoles = [
 		{text: TextUtils.i18n('%MODULENAME%/LABEL_ADMINISTRATOR'), value: Enums.UserRole.SuperAdmin},
 		{text: TextUtils.i18n('%MODULENAME%/LABEL_USER'), value: Enums.UserRole.NormalUser},
@@ -35,7 +35,7 @@ CEditUserView.prototype.getCurrentValues = function ()
 {
 	return [
 		this.id(),
-		this.name(),
+		this.publicId(),
 		this.role()
 	];
 };
@@ -43,7 +43,7 @@ CEditUserView.prototype.getCurrentValues = function ()
 CEditUserView.prototype.clearFields = function ()
 {
 	this.id(0);
-	this.name('');
+	this.publicId('');
 	this.role(Enums.UserRole.NormalUser);
 };
 
@@ -52,7 +52,7 @@ CEditUserView.prototype.parse = function (iEntityId, oResult)
 	if (oResult)
 	{
 		this.id(iEntityId);
-		this.name(oResult.Name);
+		this.publicId(oResult.PublicId);
 		this.role(oResult.Role);
 	}
 	else
@@ -63,7 +63,7 @@ CEditUserView.prototype.parse = function (iEntityId, oResult)
 
 CEditUserView.prototype.isValidSaveData = function ()
 {
-	var bValid = $.trim(this.name()) !== '';
+	var bValid = $.trim(this.publicId()) !== '';
 	if (!bValid)
 	{
 		Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_USER_NAME_EMPTY'));
@@ -75,7 +75,7 @@ CEditUserView.prototype.getParametersForSave = function ()
 {
 	return {
 		Id: this.id(),
-		Name: $.trim(this.name()),
+		PublicId: $.trim(this.publicId()),
 		Role: this.role()
 	};
 };
