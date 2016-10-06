@@ -136,7 +136,7 @@ CEntitiesView.prototype.createEntity = function ()
 	if (this.oEntityCreateView && (!_.isFunction(this.oEntityCreateView.isValidSaveData) || this.oEntityCreateView.isValidSaveData()))
 	{
 		this.isCreating(true);
-		Ajax.send('CreateEntity', {Type: this.sType, Data: this.oEntityCreateView.getParametersForSave()}, function (oResponse) {
+		Ajax.send(this.sType === 'Tenant' ? 'CreateTenant' : 'CreateUser', this.oEntityCreateView.getParametersForSave(), function (oResponse) {
 			if (oResponse.Result)
 			{
 				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_ENTITY_' + this.sType.toUpperCase()));
