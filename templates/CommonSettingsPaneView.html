@@ -7,15 +7,17 @@
 
 			<div class="fieldset">
 				<!-- ko template: {name: entityCreateView().ViewTemplate, data: entityCreateView()} --><!-- /ko -->
-				<div class="row">
-					<span class="link" data-bind="i18n: {'key': '%MODULENAME%/ACTION_DELETE_' + type().toUpperCase()}, click: function () { $root.deleteCurrentEntity(); }"></span>
-				</div>
 			</div>
 
 			<div class="buttons">
-				<span class="button" data-bind="click: function () { save($root); }">
-					<span data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SAVE'}, visible: !isSaving()"></span>
-					<span data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SAVE_IN_PROGRESS'}, visible: isSaving()"></span>
+				<span class="button left_button" data-bind="click: function () { $root.deleteCurrentEntity(); }">
+					<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_DELETE_' + type().toUpperCase()}"></span>
+				</span>
+				<span class="button" data-bind="click: function () { save($root); }, visible: !isSaving()">
+					<span data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SAVE'}"></span>
+				</span>
+				<span class="button" data-bind="visible: isSaving()">
+					<span data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SAVE_IN_PROGRESS'}"></span>
 				</span>
 			</div>
 		</div>
