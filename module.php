@@ -20,4 +20,9 @@
 
 class AdminPanelWebclientModule extends AApiModule
 {
+	public function CreateUser($TenantId = 0, $PublicId = '', $Role = \EUserRole::NormalUser)
+	{
+		return \CApi::GetModuleDecorator('Core')->CreateUser($TenantId, $PublicId, $Role);
+	}
+	
 }
