@@ -1,7 +1,7 @@
 <div class="row">
 	<span class="label" data-bind="i18n: {'key': 'COREWEBCLIENT/LABEL_EMAIL'}"></span>
 	<span class="value">
-		<input class="input" type="text" data-bind="value: publicId, valueUpdate: 'afterkeydown', 
+		<input class="input" type="text" data-bind="value: publicId, valueUpdate: 'afterkeydown', enable: id() === 0, css: {'disabled': id() !== 0},
 			onEnter: function () { if ($parents[1] && $parents[1].createEntity) { $parents[1].createEntity(); } else if ($parents[0] && $parents[0].save) { $parents[0].save($root); } }" />
 	</span>
 </div>
