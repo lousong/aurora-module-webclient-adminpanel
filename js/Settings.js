@@ -3,7 +3,7 @@
 var Types = require('%PathToCoreWebclientModule%/js/utils/Types.js');
 
 module.exports = {
-	ServerModuleName: 'Core',
+	ServerModuleName: 'AdminPanelWebclient',
 	HashModuleName: 'admin',
 	
 	EntitiesData: [

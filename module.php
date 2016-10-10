@@ -20,9 +20,48 @@
 
 class AdminPanelWebclientModule extends AApiModule
 {
+	public function GetAppData()
+	{
+		return \CApi::GetModuleDecorator('Core')->GetAppData();
+	}
+	
+	public function TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword = null)
+	{
+		return \CApi::GetModuleDecorator('Core')->TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword);
+	}
+	
+	public function CreateTables()
+	{
+		return \CApi::GetModuleDecorator('Core')->CreateTables();
+	}
+	
+	public function GetEntityList($Type)
+	{
+		return \CApi::GetModuleDecorator('Core')->GetEntityList($Type);
+	}
+	
+	public function GetEntity($Type, $Id)
+	{
+		return \CApi::GetModuleDecorator('Core')->GetEntity($Type, $Id);
+	}
+	
+	public function CreateTenant($ChannelId = 0, $Name = '', $Description = '')
+	{
+		return \CApi::GetModuleDecorator('Core')->CreateTenant($ChannelId, $Name, $Description);
+	}
+	
 	public function CreateUser($TenantId = 0, $PublicId = '', $Role = \EUserRole::NormalUser)
 	{
 		return \CApi::GetModuleDecorator('Core')->CreateUser($TenantId, $PublicId, $Role);
 	}
 	
+	public function UpdateEntity($Type, $Data)
+	{
+		return \CApi::GetModuleDecorator('Core')->UpdateEntity($Type, $Data);
+	}
+	
+	public function DeleteEntity($Type, $Id)
+	{
+		return \CApi::GetModuleDecorator('Core')->DeleteEntity($Type, $Id);
+	}
 }

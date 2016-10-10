@@ -10,8 +10,9 @@ var
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 	CAbstractSettingsFormView = ModulesManager.run('SettingsWebclient', 'getAbstractSettingsFormViewClass'),
 	
-	Ajax = require('%PathToCoreWebclientModule%/js/Ajax.js'),
-	Settings = require('%PathToCoreWebclientModule%/js/Settings.js')
+	Settings = require('%PathToCoreWebclientModule%/js/Settings.js'),
+	
+	Ajax = require('modules/%ModuleName%/js/Ajax.js')
 ;
 
 /**
@@ -96,7 +97,7 @@ CDbAdminSettingsView.prototype.setAccessLevel = function (sEntityType, iEntityId
 
 CDbAdminSettingsView.prototype.testConnection = function ()
 {
-	Ajax.send('Core', 'TestDbConnection', this.getParametersForSave(), function (oResponse) {
+	Ajax.send('TestDbConnection', this.getParametersForSave(), function (oResponse) {
 		if (oResponse.Result)
 		{
 			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_DB_CONNECT_SUCCESSFUL'));
@@ -110,7 +111,7 @@ CDbAdminSettingsView.prototype.testConnection = function ()
 
 CDbAdminSettingsView.prototype.createTables = function ()
 {
-	Ajax.send('Core', 'CreateTables', null, function (oResponse) {
+	Ajax.send('CreateTables', null, function (oResponse) {
 		if (oResponse.Result)
 		{
 			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_TABLES_SUCCESSFUL'));
