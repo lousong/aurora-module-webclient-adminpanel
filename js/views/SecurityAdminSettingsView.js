@@ -6,11 +6,10 @@ var
 	
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	
-	ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
-	CAbstractSettingsFormView = ModulesManager.run('SettingsWebclient', 'getAbstractSettingsFormViewClass'),
+	Settings = require('%PathToCoreWebclientModule%/js/Settings.js'),
 	
-	Settings = require('%PathToCoreWebclientModule%/js/Settings.js')
+	CAbstractSettingsFormView = require('modules/%ModuleName%/js/views/CAbstractSettingsFormView.js')
 ;
 
 /**

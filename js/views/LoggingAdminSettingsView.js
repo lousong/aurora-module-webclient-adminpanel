@@ -4,10 +4,9 @@ var
 	_ = require('underscore'),
 	ko = require('knockout'),
 	
-	ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js'),
-	CAbstractSettingsFormView = ModulesManager.run('SettingsWebclient', 'getAbstractSettingsFormViewClass'),
+	Settings = require('%PathToCoreWebclientModule%/js/Settings.js'),
 	
-	Settings = require('%PathToCoreWebclientModule%/js/Settings.js')
+	CAbstractSettingsFormView = require('modules/%ModuleName%/js/views/CAbstractSettingsFormView.js')
 ;
 
 /**

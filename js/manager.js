@@ -63,6 +63,9 @@ module.exports = function (oAppData) {
 				};
 				return oScreens;
 			},
+			getAbstractSettingsFormViewClass: function () {
+				return require('modules/%ModuleName%/js/views/CAbstractSettingsFormView.js');
+			},
 			registerAdminPanelTab: function (fGetTabView, sTabName, sTabTitle) {
 				aAdminPanelTabsParams.push({
 					GetTabView: fGetTabView,
