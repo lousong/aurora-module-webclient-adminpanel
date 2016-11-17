@@ -1,21 +1,32 @@
+.panels {
+	overflow: auto;
+}
 .panel {
 	&.data {
-		width: 800px;
-		background: #f9f9f9;
+		min-width: 380px;
+		width: 600px;
+		
 		
 		&.modules {
+			min-width: 200px;
+			width: 200px;
 			overflow: hidden;
 		}
 		
+		.panel_top {
+			border: 0px;
+			padding: 0px;
+		}
+		
 		.panel_content {
-			.resize-compensation-top(0px);
+			//.resize-compensation-top(0px);
 		}
 		
 		.middle_bar {
-			.resize-compensation-top(72px);
+			//.resize-compensation-top(72px);
 			
 			&.modules {
-				.resize-compensation-top(72px);
+//				.resize-compensation-top(72px);
 			}
 		}
 		
@@ -31,29 +42,6 @@
 			margin: 0px 0px 15px 0px;
 		}
 	}
-	
-	&.left_panel {
-		
-		.panel_content {
-			.resize-compensation-top(62px);
-		}
-		
-		.middle_bar {
-			
-		}
-	}
-	
-}
-
-
-
-.panel_top {
-	border: 0px;
-	padding: 0px;
-}
-
-.panel_center {
-	background: none;
 }
 
 .settings_heading {
