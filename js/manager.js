@@ -1,7 +1,10 @@
 'use strict';
 
 module.exports = function (oAppData) {
-	var App = require('%PathToCoreWebclientModule%/js/App.js');
+	var 
+		App = require('%PathToCoreWebclientModule%/js/App.js')
+		//Promise = require("bluebird")
+	;
 	
 	if (App.getUserRole() === Enums.UserRole.SuperAdmin)
 	{
@@ -55,11 +58,22 @@ module.exports = function (oAppData) {
 			getScreens: function () {
 				var oScreens = {};
 				oScreens[Settings.HashModuleName] = function () {
-					var SettingsView = require('modules/%ModuleName%/js/views/SettingsView.js');
-					_.each(aAdminPanelTabsParams, function (oParams) {
-						SettingsView.registerTab(oParams.GetTabView, oParams.TabName, oParams.TabTitle);
+					
+					return new Promise(function(resolve, reject) {
+						require.ensure(
+							['modules/%ModuleName%/js/views/SettingsView.js'],
+							function(require) {
+								var oSettingsView = require('modules/%ModuleName%/js/views/SettingsView.js');
+								
+								_.each(aAdminPanelTabsParams, function (oParams) {
+									oSettingsView.registerTab(oParams.GetTabView, oParams.TabName, oParams.TabTitle);
+								});
+							
+								resolve(oSettingsView);
+							},
+							"admin-bundle"
+						);
 					});
-					return SettingsView;
 				};
 				return oScreens;
 			},
