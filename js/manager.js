@@ -2,8 +2,8 @@
 
 module.exports = function (oAppData) {
 	var 
-		App = require('%PathToCoreWebclientModule%/js/App.js')
-		//Promise = require("bluebird")
+		App = require('%PathToCoreWebclientModule%/js/App.js'),
+		Promise = require("bluebird")
 	;
 	
 	if (App.getUserRole() === Enums.UserRole.SuperAdmin)
@@ -68,6 +68,8 @@ module.exports = function (oAppData) {
 								_.each(aAdminPanelTabsParams, function (oParams) {
 									oSettingsView.registerTab(oParams.GetTabView, oParams.TabName, oParams.TabTitle);
 								});
+								
+								oSettingsView.sortRegisterTabs();
 							
 								resolve(oSettingsView);
 							},

@@ -95,7 +95,7 @@ CSettingsView.prototype.ViewConstructorName = 'CSettingsView';
 /**
  * Registers admin panel tab.
  * 
- * @param {Function} fGetTabView Function that return view model of the tab.
+ * @param {Function} fGetTabView Function that returns Promise which resolves into view model of the tab.
  * @param {Object} oTabName Tab name.
  * @param {Object} oTabTitle Tab title.
  */
@@ -103,19 +103,27 @@ CSettingsView.prototype.registerTab = function (fGetTabView, oTabName, oTabTitle
 {
 	if (_.isFunction(fGetTabView))
 	{
-		var iLastIndex = Settings.TabsOrder.length;
+		var aTabs = this.tabs;
 		
-		this.tabs.push({
-			view: fGetTabView(),
-			name: oTabName,
-			title: oTabTitle
+		new Promise(fGetTabView).then(function (oTabView) {
+			aTabs.push({
+				view: oTabView,
+				name: oTabName,
+				title: oTabTitle
+			});
 		});
-
-		this.tabs(_.sortBy(this.tabs(), function (oTab) {
-			var iIndex = _.indexOf(Settings.TabsOrder, oTab.name);
-			return iIndex !== -1 ? iIndex : iLastIndex;
-		}));
 	}
+};
+
+/**
+ * Sorts tabs by some modules order list
+ */
+CSettingsView.prototype.sortRegisterTabs = function ()
+{
+	this.tabs(_.sortBy(this.tabs(), function (oTab) {
+		var iIndex = _.indexOf(Settings.TabsOrder, oTab.name);
+		return iIndex !== -1 ? iIndex : Settings.TabsOrder.length;
+	}));
 };
 
 /**
