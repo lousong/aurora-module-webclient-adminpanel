@@ -4,6 +4,7 @@ var
 	_ = require('underscore'),
 	$ = require('jquery'),
 	ko = require('knockout'),
+	Promise = require("bluebird"),
 	
 	Text = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	
