@@ -24,33 +24,81 @@ module.exports = function (oAppData) {
 		return {
 			start: function () {
 				aAdminPanelTabsParams.push({
-					GetTabView: function () { return require('modules/%ModuleName%/js/views/DbAdminSettingsView.js'); },
+					GetTabView: function(resolve) {
+						require.ensure(
+							['modules/%ModuleName%/js/views/DbAdminSettingsView.js'],
+							function() {
+								resolve(require('modules/%ModuleName%/js/views/DbAdminSettingsView.js'));
+							},
+							"admin-bundle"
+						);
+					},
 					TabName: Settings.HashModuleName + '-db',
 					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_DB_SETTINGS_TAB')
 				});
 //				aAdminPanelTabsParams.push({
-//					GetTabView: function () { return require('modules/%ModuleName%/js/views/LicensingAdminSettingsView.js'); },
+//					GetTabView: function(resolve) {
+//						require.ensure(
+//							['modules/%ModuleName%/js/views/LicensingAdminSettingsView.js'],
+//							function() {
+//								resolve(require('modules/%ModuleName%/js/views/LicensingAdminSettingsView.js'));
+//							},
+//							"admin-bundle"
+//						);
+//					},
 //					TabName: Settings.HashModuleName + '-licensing',
 //					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_LICENSING_SETTINGS_TAB')
 //				});
 				aAdminPanelTabsParams.push({
-					GetTabView: function () { return require('modules/%ModuleName%/js/views/SecurityAdminSettingsView.js'); },
+					GetTabView: function(resolve) {
+						require.ensure(
+							['modules/%ModuleName%/js/views/SecurityAdminSettingsView.js'],
+							function() {
+								resolve(require('modules/%ModuleName%/js/views/SecurityAdminSettingsView.js'));
+							},
+							"admin-bundle"
+						);
+					},
 					TabName: Settings.HashModuleName + '-security',
 					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_SECURITY_SETTINGS_TAB')
 				});
 //				aAdminPanelTabsParams.push({
-//					GetTabView: function () { return require('modules/%ModuleName%/js/views/LoggingAdminSettingsView.js'); },
+//					GetTabView: function(resolve) {
+//						require.ensure(
+//							['modules/%ModuleName%/js/views/LoggingAdminSettingsView.js'],
+//							function() {
+//								resolve(require('modules/%ModuleName%/js/views/LoggingAdminSettingsView.js'));
+//							},
+//							"admin-bundle"
+//						);
+//					},
 //					TabName: Settings.HashModuleName + '-logging',
 //					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_LOGGING_SETTINGS_TAB')
 //				});
 				
 				aAdminPanelTabsParams.push({
-					GetTabView: function () { return require('modules/%ModuleName%/js/views/CommonSettingsPaneView.js'); },
+					GetTabView: function(resolve) {
+						require.ensure(
+							['modules/%ModuleName%/js/views/CommonSettingsPaneView.js'],
+							function() {
+								resolve(require('modules/%ModuleName%/js/views/CommonSettingsPaneView.js'));
+							},
+							"admin-bundle"
+						);
+					},
 					TabName: 'common',
 					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_COMMON_SETTINGS_TAB')
 				});
 //				aAdminPanelTabsParams.push({
-//					GetTabView: function () { return null; },
+//					GetTabView: function(resolve) {
+//						require.ensure(
+//							['modules/%ModuleName%/js/views/...'],
+//							function() {
+//								resolve(require('modules/%ModuleName%/js/views/...'));
+//							},
+//							"admin-bundle"
+//						);
+//					},
 //					TabName: 'modules',
 //					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_MODULES_SETTINGS_TAB')
 //				});
