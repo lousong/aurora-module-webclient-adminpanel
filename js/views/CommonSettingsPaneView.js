@@ -96,19 +96,22 @@ CCommonSettingsPaneView.prototype.setAccessLevel = function (sEntityType, iEntit
 {
 	this.visible(sEntityType !== '');
 	this.type(sEntityType);
-	this.id(iEntityId);
+	this.id(Types.pInt(iEntityId));
 };
 
 CCommonSettingsPaneView.prototype.onRoute = function ()
 {
 	if (Types.isPositiveNumber(this.id()))
 	{
-		Ajax.send('GetEntity', {Type: this.type(), Id: this.id()}, function (oResponse) {
-			if (this.entityCreateView())
+		Ajax.send('GetEntity', {Type: this.type(), Id: this.id()}, function (oResponse, oRequest) {
+			if (this.id() === oRequest.Parameters.Id)
 			{
-				this.entityCreateView().parse(this.id(), oResponse.Result);
+				if (this.entityCreateView())
+				{
+					this.entityCreateView().parse(this.id(), oResponse.Result);
+				}
+				this.updateSavedState();
 			}
-			this.updateSavedState();
 		}, this);
 	}
 	else
