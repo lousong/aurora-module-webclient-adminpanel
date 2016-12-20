@@ -7,6 +7,7 @@ var
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
 	
+	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 	
 	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
@@ -145,7 +146,7 @@ CEntitiesView.prototype.createEntity = function ()
 			}
 			else
 			{
-				Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_CREATE_ENTITY_' + this.sType.toUpperCase()));
+				Api.showErrorByCode(oResponse, TextUtils.i18n('%MODULENAME%/ERROR_CREATE_ENTITY_' + this.sType.toUpperCase()));
 			}
 			this.requestEntities();
 			this.isCreating(false);
