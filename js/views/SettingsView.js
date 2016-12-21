@@ -144,10 +144,10 @@ CSettingsView.prototype.createEntity = function ()
 };
 
 /**
- * Sets hash to route to screen with specified entity type and|or entity identificator and|or settings tab.
+ * Sets hash to route to screen with specified entity type and|or entity identifier and|or settings tab.
  * 
  * @param {string} sEntityName Entity type to display.
- * @param {number} iEntityId Identificator of entity to display.
+ * @param {number} iEntityId Identifier of entity to display.
  * @param {string} sTabName Name of settings tab to display.
  */
 CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId, sTabName)
