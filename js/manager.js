@@ -14,7 +14,7 @@ module.exports = function (oAppData) {
 			TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 			
 			Settings = require('modules/%ModuleName%/js/Settings.js'),
-			oSettings = oAppData['%ModuleName%'] || {},
+			oSettings = _.extend({}, oAppData['Core'] || {}, oAppData['%ModuleName%'] || {}),
 			
 			aAdminPanelTabsParams = []
 		;

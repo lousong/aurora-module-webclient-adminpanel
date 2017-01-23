@@ -20,11 +20,6 @@
 
 class AdminPanelWebclientModule extends AApiModule
 {
-	public function GetSettings()
-	{
-		return \CApi::GetModuleDecorator('Core')->GetSettings();
-	}
-	
 	public function TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword = null)
 	{
 		return \CApi::GetModuleDecorator('Core')->TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword);
