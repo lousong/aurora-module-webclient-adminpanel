@@ -34,10 +34,14 @@ function CAbstractSettingsFormView(sServerModule)
 
 CAbstractSettingsFormView.prototype.ViewTemplate = ''; // should be overriden
 
-CAbstractSettingsFormView.prototype.onRoute = function ()
+CAbstractSettingsFormView.prototype.onRoute = function (aParams)
 {
 	this.bShown = true;
 	this.revert();
+	if (_.isFunction(this.onRouteChild))
+	{
+		this.onRouteChild(aParams);
+	}
 };
 
 /**

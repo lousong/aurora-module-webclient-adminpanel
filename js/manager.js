@@ -136,6 +136,10 @@ module.exports = function (oAppData) {
 					TabName: sTabName,
 					TabTitle: sTabTitle
 				});
+			},
+			setAddHash: function (aAddHash) {
+				var SettingsView = require('modules/%ModuleName%/js/views/SettingsView.js');
+				SettingsView.setAddHash(aAddHash);
 			}
 		};
 	}

@@ -196,13 +196,14 @@ CSettingsView.prototype.onRoute = function (aParams)
 {
 	var
 		oParams = Links.parse(aParams),
+		aTabParams = aParams.slice(1),
 		bSameType = this.currentEntityType() === oParams.CurrentType,
 		bSameId = this.currentEntitiesId()[oParams.CurrentType] === oParams.Entities[oParams.CurrentType],
 		bSameTab = this.currentTab() && this.currentTab().name === oParams.Last,
 		oCurrentTab = this.currentTab(),
 		fAfterTabHide = _.bind(function () {
 			this.showNewScreenView(oParams);
-			this.showNewTabView(oParams.Last); // only after showing new entities view
+			this.showNewTabView(oParams.Last, aTabParams); // only after showing new entities view
 		}, this),
 		fAfterRefuseTabHide = _.bind(function () {
 			if (oCurrentTab)
@@ -222,6 +223,10 @@ CSettingsView.prototype.onRoute = function (aParams)
 		{
 			fAfterTabHide();
 		}
+	}
+	else if (oCurrentTab)
+	{
+		oCurrentTab.view.onRoute(aTabParams);
 	}
 };
 
@@ -259,8 +264,9 @@ CSettingsView.prototype.showNewScreenView = function (oParams)
  * Shows tab with specified tab name. Should be called only after calling showNewScreenView method.
  * 
  * @param {string} sNewTabName New tab name.
+ * @param {array} aTabParams
  */
-CSettingsView.prototype.showNewTabView = function (sNewTabName)
+CSettingsView.prototype.showNewTabView = function (sNewTabName, aTabParams)
 {
 	// Sets access level to all tabs so they can correct their visibilities
 	_.each(this.tabs(), _.bind(function (oTab) {
@@ -288,7 +294,7 @@ CSettingsView.prototype.showNewTabView = function (sNewTabName)
 	{
 		if ($.isFunction(oNewTab.view.onRoute))
 		{
-			oNewTab.view.onRoute();
+			oNewTab.view.onRoute(aTabParams);
 		}
 		this.currentTab(oNewTab);
 	}
@@ -321,6 +327,14 @@ CSettingsView.prototype.deleteCurrentEntity = function ()
 	{
 		this.currentEntitiesView().deleteCurrentEntity();
 	}
+};
+
+/**
+ * @param {Array} aAddHash
+ */
+CSettingsView.prototype.setAddHash = function (aAddHash)
+{
+	Routing.setHash(_.union([Settings.HashModuleName, this.currentTab() ? this.currentTab().name : ''], aAddHash));
 };
 
 module.exports = new CSettingsView();
