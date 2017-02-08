@@ -171,100 +171,105 @@
 			}
 		}
 	}
-	.accounts_list {
-		background: #fafafa;
-		border: 1px solid #d5d9dc;
-		border-radius: 4px;
-		margin: 0px 20px;
-		overflow: hidden;
+}
 
-		.clearfixHelper();
+.account_list {
+	background: #fafafa;
+	border: 1px solid #d5d9dc;
+	border-radius: 4px;
+	margin: 0px 20px;
+	overflow: hidden;
 
-		.item {
-			border-bottom: 1px solid #d5d9dc;
-			color: #626262;
-			cursor: pointer;
-			padding: 6px 10px;
+	.clearfixHelper();
 
-			&.fetcher {
-				.icon {
-					display: inline-block;
-					font-size: 20px;
-					height: 18px;
-					vertical-align: bottom;
-					width: 18px;
+	.item {
+		border-bottom: 1px solid #d5d9dc;
+		color: #626262;
+		cursor: pointer;
+		padding: 6px 10px;
 
-					.init-icon-font();
-				}
+		&.fetcher {
+			.icon {
+				display: inline-block;
+				font-size: 20px;
+				height: 18px;
+				vertical-align: bottom;
+				width: 18px;
 
-				.icon.fetcher:before {
-					content: "\e65b";
-				}
-
-				.icon.loyal {
-					font-family: monospace;
-					font-size: 19px;
-					height: 17px;
-					margin-left: 10px;
-				}
-
-				.label {
-					color: #929292;
-				}
-
-				.title {
-					font-weight: bold;
-				}
-
-				.info {
-					float: right;
-				}
+				.init-icon-font();
 			}
 
-			&:last-child {
-				border-bottom: 0px;
+			.icon.fetcher:before {
+				content: "\e65b";
 			}
 
-			&.selected {
-				background: #f1f1f1;
-				color: #4d4d4d;
+			.icon.loyal {
+				font-family: monospace;
+				font-size: 19px;
+				height: 17px;
+				margin-left: 10px;
+			}
+
+			.label {
+				color: #929292;
+			}
+
+			.title {
 				font-weight: bold;
 			}
 
-			.link.fetcher {
-				float: right;
-				font-weight: normal;
-				margin-left: 12px;
-			}
-
-			.button {
-				background: none repeat scroll 0 0 #6fa8de;
-				border: 1px solid #5d97cd;
-				border-radius: 4px 4px 4px 4px;
-				color: #ffffff;
-				cursor: pointer;
-				display: inline-block;
-				font-size: 9pt !important;
-				padding: 1px 5px;
-				text-shadow: 0 1px 0 #4d759b;
-			}
-		}
-		
-		.buttons {
-			margin: 15px 0px;
-
-			.button {
-				font-size: 10pt;
+			.info {
 				float: right;
 			}
 		}
 
-		.title {
+		&:last-child {
+			border-bottom: 0px;
+		}
+
+		&.selected {
+			background: #f1f1f1;
+			color: #4d4d4d;
+			font-weight: bold;
+		}
+
+		.link.fetcher {
+			float: right;
+			font-weight: normal;
+			margin-left: 12px;
+		}
+
+		.button {
+			background: none repeat scroll 0 0 #6fa8de;
+			border: 1px solid #5d97cd;
+			border-radius: 4px 4px 4px 4px;
+			color: #ffffff;
+			cursor: pointer;
 			display: inline-block;
-			font-size: 9pt;
-			padding: 0px;
+			font-size: 9pt !important;
+			padding: 1px 5px;
+			text-shadow: 0 1px 0 #4d759b;
 		}
 	}
+
+	.buttons {
+		margin: 15px 0px;
+
+		.button {
+			font-size: 10pt;
+			float: right;
+		}
+	}
+
+	.title {
+		display: inline-block;
+		font-size: 9pt;
+		padding: 0px;
+	}
+}
+
+.mail-servers .account_list {
+	margin-bottom: 30px;
 }
 
 .mail-servers .panel_top .buttons {
