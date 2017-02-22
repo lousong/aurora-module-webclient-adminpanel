@@ -18,7 +18,9 @@
  * @internal
  */
 
-class AdminPanelWebclientModule extends AApiModule
+namespace Aurora\Modules;
+
+class AdminPanelWebclientModule extends \AApiModule
 {
 	public function TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword = null)
 	{
