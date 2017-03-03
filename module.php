@@ -20,7 +20,7 @@
 
 namespace Aurora\Modules;
 
-class AdminPanelWebclientModule extends \Aurora\System\AbstractModule
+class AdminPanelWebclientModule extends \Aurora\System\Module\AbstractModule
 {
 	public function TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword = null)
 	{
