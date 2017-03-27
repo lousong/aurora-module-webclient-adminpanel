@@ -20,6 +20,8 @@ module.exports = function (oAppData) {
 		;
 
 		Settings.init(oSettings);
+		
+		require('modules/%ModuleName%/js/enums.js');
 
 		return {
 			start: function () {
@@ -89,19 +91,6 @@ module.exports = function (oAppData) {
 					TabName: 'common',
 					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_COMMON_SETTINGS_TAB')
 				});
-//				aAdminPanelTabsParams.push({
-//					GetTabView: function(resolve) {
-//						require.ensure(
-//							['modules/%ModuleName%/js/views/...'],
-//							function() {
-//								resolve(require('modules/%ModuleName%/js/views/...'));
-//							},
-//							"admin-bundle"
-//						);
-//					},
-//					TabName: 'modules',
-//					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_MODULES_SETTINGS_TAB')
-//				});
 			},
 			getScreens: function () {
 				var oScreens = {};

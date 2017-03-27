@@ -13,12 +13,7 @@
 					<label for="enableLogging" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_ENABLE'}"></label>
 				</span>
 				<span class="value" style="float: right;">
-					<select class="input" data-bind="value: loggingLevel">
-						<option value="Full" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_DEBUG'}"></option>
-						<option value="Warning" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_WARNINGS'}"></option>
-						<option value="Error" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_ERRORS'}"></option>
-						<option value="Spec" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_SPEC_USER'}"></option>
-					</select>
+					<select class="input" data-bind="value: loggingLevel, options: aLevelOptions, optionsText: 'text', optionsValue: 'value'"></select>
 				</span>
 				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_VERBOSITY'}" style="float: right; text-align: right;"></span>
 			</div>
@@ -27,7 +22,7 @@
 				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR'}, click: function () { clearLog(false); }" style="float: right;"></span>
 			</div>
 			<div class="row buttons" style="margin-bottom: 26px;">
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_VIEW'}, click: function () { viewLog(false); }" style="float: left;"></span>
+				<span class="button" data-bind="text: viewLogText, click: function () { viewLog(false); }" style="float: left;"></span>
 			</div>
 			<div class="row">
 				<span class="value">
@@ -43,7 +38,7 @@
 				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR'}, click: function () { clearLog(true); }" style="float: right;"></span>
 			</div>
 			<div class="row buttons">
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_VIEW'}, click: function () { viewLog(true); }" style="float: left;"></span>
+				<span class="button" data-bind="text: viewEventsLogText, click: function () { viewLog(true); }" style="float: left;"></span>
 			</div>
 		</div>		
 

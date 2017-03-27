@@ -6,6 +6,7 @@ var
 	ko = require('knockout'),
 	
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
+	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
 	
 	Ajax = require('%PathToCoreWebclientModule%/js/Ajax.js'),
 	WindowOpener = require('%PathToCoreWebclientModule%/js/WindowOpener.js'),
@@ -22,13 +23,40 @@ function CLoggingAdminSettingsView()
 {
 	CAbstractSettingsFormView.call(this, Settings.ServerModuleName);
 	
+	this.iViewLogSizeBytes = 10240;
+	this.aLevelOptions = [
+		{text: TextUtils.i18n('%MODULENAME%/LABEL_LOGGING_DEBUG'), value: Enums.LogLevel.Full},
+		{text: TextUtils.i18n('%MODULENAME%/LABEL_LOGGING_WARNINGS'), value: Enums.LogLevel.Warning},
+		{text: TextUtils.i18n('%MODULENAME%/LABEL_LOGGING_ERRORS'), value: Enums.LogLevel.Error}
+	];
+	
 	this.logSize = ko.observable(Settings.LogSizeBytes);
 	this.downloadLogText = ko.computed(function () {
 		return TextUtils.i18n('%MODULENAME%/BUTTON_LOGGING_DOWNLOAD', {'SIZE': TextUtils.getFriendlySize(this.logSize())});
 	}, this);
+	this.viewLogText = ko.computed(function () {
+		if (this.logSize() < this.iViewLogSizeBytes)
+		{
+			return TextUtils.i18n('%MODULENAME%/BUTTON_LOGGING_VIEW');
+		}
+		else
+		{
+			return TextUtils.i18n('%MODULENAME%/BUTTON_LOGGING_VIEW_LAST', {'SIZE': TextUtils.getFriendlySize(this.iViewLogSizeBytes)});
+		}
+	}, this);
 	this.eventsLogSize = ko.observable(Settings.EventLogSizeBytes);
 	this.downloadEventsLogText = ko.computed(function () {
 		return TextUtils.i18n('%MODULENAME%/BUTTON_LOGGING_DOWNLOAD_EVENTS', {'SIZE': TextUtils.getFriendlySize(this.eventsLogSize())});
+	}, this);
+	this.viewEventsLogText = ko.computed(function () {
+		if (this.eventsLogSize() < this.iViewLogSizeBytes)
+		{
+			return TextUtils.i18n('%MODULENAME%/BUTTON_LOGGING_VIEW');
+		}
+		else
+		{
+			return TextUtils.i18n('%MODULENAME%/BUTTON_LOGGING_VIEW_LAST', {'SIZE': TextUtils.getFriendlySize(this.iViewLogSizeBytes)});
+		}
 	}, this);
 	
 	/* Editable fields */
@@ -42,16 +70,39 @@ _.extendOwn(CLoggingAdminSettingsView.prototype, CAbstractSettingsFormView.proto
 
 CLoggingAdminSettingsView.prototype.ViewTemplate = '%ModuleName%_LoggingAdminSettingsView';
 
-CLoggingAdminSettingsView.prototype.getCurrentValues = function()
+CLoggingAdminSettingsView.prototype.onRouteChild = function ()
+{
+	this.setUpdateStatusTimer();
+};
+
+CLoggingAdminSettingsView.prototype.setUpdateStatusTimer = function ()
+{
+	if (this.bShown)
+	{
+		setTimeout(_.bind(function () {
+			Ajax.send(Settings.ServerModuleName, 'GetLogFilesSize', null, function (oResponse) {
+				if (oResponse.Result)
+				{
+					Settings.updateLogsSize(oResponse.Result.LogSizeBytes, oResponse.Result.EventLogSizeBytes);
+					this.logSize(Settings.LogSizeBytes);
+					this.eventsLogSize(Settings.EventLogSizeBytes);
+				}
+				this.setUpdateStatusTimer();
+			}, this);
+		}, this), 5000);
+	}
+};
+
+CLoggingAdminSettingsView.prototype.getCurrentValues = function ()
 {
 	return [
 		this.enableLogging(),
 		this.enableEventLogging(),
-		this.loggingLevel()
+		Types.pInt(this.loggingLevel())
 	];
 };
 
-CLoggingAdminSettingsView.prototype.revertGlobalValues = function()
+CLoggingAdminSettingsView.prototype.revertGlobalValues = function ()
 {
 	this.enableLogging(Settings.EnableLogging);
 	this.enableEventLogging(Settings.EnableEventLogging);
@@ -63,7 +114,7 @@ CLoggingAdminSettingsView.prototype.getParametersForSave = function ()
 	return {
 		'EnableLogging': this.enableLogging(),
 		'EnableEventLogging': this.enableEventLogging(),
-		'LoggingLevel': this.loggingLevel()
+		'LoggingLevel': Types.pInt(this.loggingLevel())
 	};
 };
 

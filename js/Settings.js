@@ -29,17 +29,24 @@ module.exports = {
 				this.TabsOrder = oAppDataSection.TabsOrder;
 			}
 			this.EnableLogging = !!oAppDataSection.EnableLogging;
-			this.LogSizeBytes = Types.pString(oAppDataSection.LogSizeBytes);
+			this.LogSizeBytes = Types.pInt(oAppDataSection.LogSizeBytes);
 			this.EnableEventLogging = !!oAppDataSection.EnableEventLogging;
-			this.EventLogSizeBytes = Types.pString(oAppDataSection.EventLogSizeBytes);
-			this.LoggingLevel = Types.pString(oAppDataSection.LoggingLevel);
+			this.EventLogSizeBytes = Types.pInt(oAppDataSection.EventLogSizeBytes);
+			this.LoggingLevel = Types.pInt(oAppDataSection.LoggingLevel);
+			this.ELogLevel = oAppDataSection.ELogLevel;
 		}
 	},
 	
-	updateLogging: function (bEnableLogging, bEnableEventLogging, sLoggingLevel)
+	updateLogging: function (bEnableLogging, bEnableEventLogging, iLoggingLevel)
 	{
-		this.EnableLogging = bEnableLogging;
-		this.EnableEventLogging = bEnableEventLogging;
-		this.LoggingLevel = sLoggingLevel;
+		this.EnableLogging = !!bEnableLogging;
+		this.EnableEventLogging = !!bEnableEventLogging;
+		this.LoggingLevel = Types.pInt(iLoggingLevel);
+	},
+	
+	updateLogsSize: function (iLogSizeBytes, iEventLogSizeBytes)
+	{
+			this.LogSizeBytes = Types.pInt(iLogSizeBytes);
+			this.EventLogSizeBytes = Types.pInt(iEventLogSizeBytes);
 	}
 };
