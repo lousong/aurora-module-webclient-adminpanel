@@ -61,4 +61,32 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 	{
 		return \Aurora\System\Api::GetModuleDecorator('Core')->DeleteEntity($Type, $Id);
 	}
+	
+	public function UpdateSettings($LicenseKey = null, $DbLogin = null,
+			$DbPassword = null, $DbName = null, $DbHost = null,
+			$AdminLogin = null, $Password = null, $NewPassword = null,
+			$Language = null, $TimeFormat = null, $EnableLogging = null,
+			$EnableEventLogging = null, $LoggingLevel = null)
+	{
+		return \Aurora\System\Api::GetModuleDecorator('Core')->UpdateSettings($LicenseKey, $DbLogin,
+			$DbPassword, $DbName, $DbHost,
+			$AdminLogin, $Password, $NewPassword,
+			$Language, $TimeFormat, $EnableLogging,
+			$EnableEventLogging, $LoggingLevel);
+	}
+	
+	public function GetLogFile($EventsLog)
+	{
+		return \Aurora\System\Api::GetModuleDecorator('Core')->GetLogFile($EventsLog);
+	}
+	
+	public function GetLog($EventsLog, $PartSize = 10240)
+	{
+		return \Aurora\System\Api::GetModuleDecorator('Core')->GetLog($EventsLog, $PartSize);
+	}
+	
+	public function ClearLog($EventsLog)
+	{
+		return \Aurora\System\Api::GetModuleDecorator('Core')->ClearLog($EventsLog);
+	}
 }

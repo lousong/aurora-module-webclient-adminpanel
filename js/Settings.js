@@ -28,6 +28,18 @@ module.exports = {
 			{
 				this.TabsOrder = oAppDataSection.TabsOrder;
 			}
+			this.EnableLogging = !!oAppDataSection.EnableLogging;
+			this.LogSizeBytes = Types.pString(oAppDataSection.LogSizeBytes);
+			this.EnableEventLogging = !!oAppDataSection.EnableEventLogging;
+			this.EventLogSizeBytes = Types.pString(oAppDataSection.EventLogSizeBytes);
+			this.LoggingLevel = Types.pString(oAppDataSection.LoggingLevel);
 		}
+	},
+	
+	updateLogging: function (bEnableLogging, bEnableEventLogging, sLoggingLevel)
+	{
+		this.EnableLogging = bEnableLogging;
+		this.EnableEventLogging = bEnableEventLogging;
+		this.LoggingLevel = sLoggingLevel;
 	}
 };

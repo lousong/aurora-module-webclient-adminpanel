@@ -23,27 +23,27 @@
 				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_VERBOSITY'}" style="float: right; text-align: right;"></span>
 			</div>
 			<div class="row buttons" style="margin-bottom: 6px;">
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_DOWNLOAD'}" style="float: left;"></span>
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR'}" style="float: right;"></span>
+				<span class="button" data-bind="text: downloadLogText, click: function () { downloadLog(false); }" style="float: left;"></span>
+				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR'}, click: function () { clearLog(false); }" style="float: right;"></span>
 			</div>
 			<div class="row buttons" style="margin-bottom: 26px;">
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_VIEW'}" style="float: left;"></span>
+				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_VIEW'}, click: function () { viewLog(false); }" style="float: left;"></span>
 			</div>
 			<div class="row">
 				<span class="value">
 					<label class="custom_checkbox" data-bind="css: {'checked': enableEventLogging}">
 						<span class="icon"></span>
-						<input type="enableEventLogging" id="showWorkday" data-bind="checked: enableEventLogging" />
+						<input type="checkbox" id="enableEventLogging" data-bind="checked: enableEventLogging" />
 					</label>
 					<label for="enableEventLogging" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_ENABLE_EVENTS'}"></label>
 				</span>
 			</div>
 			<div class="row buttons" style="margin-bottom: 6px;">
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_DOWNLOAD_EVENTS'}" style="float: left;"></span>
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR'}" style="float: right;"></span>
+				<span class="button" data-bind="text: downloadEventsLogText, click: function () { downloadLog(true); }" style="float: left;"></span>
+				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR'}, click: function () { clearLog(true); }" style="float: right;"></span>
 			</div>
 			<div class="row buttons">
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_VIEW'}" style="float: left;"></span>
+				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_VIEW'}, click: function () { viewLog(true); }" style="float: left;"></span>
 			</div>
 		</div>		
 
