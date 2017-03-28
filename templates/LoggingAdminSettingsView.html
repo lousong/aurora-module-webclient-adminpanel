@@ -12,17 +12,17 @@
 					</label>
 					<label for="enableLogging" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_ENABLE'}"></label>
 				</span>
-				<span class="value" style="float: right;">
+			</div>
+			<div class="row">
+				<span class="value" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_VERBOSITY'}" style="float: left;line-height: 32px;margin-right: 10px;"></span>
+				<span class="value" style="float: left;">
 					<select class="input" data-bind="value: loggingLevel, options: aLevelOptions, optionsText: 'text', optionsValue: 'value'"></select>
 				</span>
-				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_VERBOSITY'}" style="float: right; text-align: right;"></span>
 			</div>
-			<div class="row buttons" style="margin-bottom: 6px;">
+			<div class="row buttons" style="margin-bottom: 30px;">
 				<span class="button" data-bind="text: downloadLogText, click: function () { downloadLog(false); }" style="float: left;"></span>
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR'}, click: function () { clearLog(false); }" style="float: right;"></span>
-			</div>
-			<div class="row buttons" style="margin-bottom: 26px;">
-				<span class="button" data-bind="text: viewLogText, click: function () { viewLog(false); }" style="float: left;"></span>
+				<span class="button" data-bind="text: viewLogText, click: function () { viewLog(false); }" style="float: left; margin-left: 10px;"></span>
+				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR'}, click: function () { clearLog(false); }" style="float: left; margin-left: 10px;"></span>
 			</div>
 			<div class="row">
 				<span class="value">
@@ -33,14 +33,23 @@
 					<label for="enableEventLogging" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_ENABLE_EVENTS'}"></label>
 				</span>
 			</div>
-			<div class="row buttons" style="margin-bottom: 6px;">
+			<div class="row buttons" style="margin-bottom: 30px;">
 				<span class="button" data-bind="text: downloadEventsLogText, click: function () { downloadLog(true); }" style="float: left;"></span>
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR'}, click: function () { clearLog(true); }" style="float: right;"></span>
+				<span class="button" data-bind="text: viewEventsLogText, click: function () { viewLog(true); }" style="float: left; margin-left: 10px;"></span>
+				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR'}, click: function () { clearLog(true); }" style="float: left; margin-left: 10px;"></span>
 			</div>
-			<div class="row buttons">
-				<span class="button" data-bind="text: viewEventsLogText, click: function () { viewLog(true); }" style="float: left;"></span>
+			
+			<div class="row" data-bind="visible: usersWithSeparateLog().length > 0">
+				<span class="value">
+					<span data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOGGING_USERS_WITH_SEPARATE_LOG'}"></span>
+					<span data-bind="text: usersWithSeparateLog"></span>
+				</span>
 			</div>
-		</div>		
+			<div class="row buttons" data-bind="visible: usersWithSeparateLog().length > 0">
+				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_TURN_OFF_SEPARATE_LOGS'}, click: turnOffSeparateLogs" style="float: left;"></span>
+				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_LOGGING_CLEAR_SEPARATE_LOGS'}, click: clearSeparateLogs" style="float: left; margin-left: 10px;"></span>
+			</div>
+		</div>
 
 		<div class="buttons">
 			<span class="button" data-bind="click: save, visible: !isSaving()">

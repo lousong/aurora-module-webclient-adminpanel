@@ -59,6 +59,8 @@ function CLoggingAdminSettingsView()
 		}
 	}, this);
 	
+	this.usersWithSeparateLog = ko.observable('');
+	
 	/* Editable fields */
 	this.enableLogging = ko.observable(Settings.EnableLogging);
 	this.enableEventLogging = ko.observable(Settings.EnableEventLogging);
@@ -73,6 +75,23 @@ CLoggingAdminSettingsView.prototype.ViewTemplate = '%ModuleName%_LoggingAdminSet
 CLoggingAdminSettingsView.prototype.onRouteChild = function ()
 {
 	this.setUpdateStatusTimer();
+	Ajax.send(Settings.ServerModuleName, 'GetUsersWithSeparateLog', null, function (oResponse) {
+		if (oResponse.Result && _.isArray(oResponse.Result))
+		{
+			this.usersWithSeparateLog(oResponse.Result.join(', '));
+		}
+	}, this);
+};
+
+CLoggingAdminSettingsView.prototype.turnOffSeparateLogs = function ()
+{
+	this.usersWithSeparateLog('');
+	Ajax.send(Settings.ServerModuleName, 'TurnOffSeparateLogs');
+};
+
+CLoggingAdminSettingsView.prototype.clearSeparateLogs = function ()
+{
+	Ajax.send(Settings.ServerModuleName, 'ClearSeparateLogs');
 };
 
 CLoggingAdminSettingsView.prototype.setUpdateStatusTimer = function ()

@@ -24,6 +24,7 @@ function CEditUserView()
 		{text: TextUtils.i18n('%MODULENAME%/LABEL_GUEST'), value: Enums.UserRole.Customer}
 	];
 	this.role = ko.observable(Enums.UserRole.NormalUser);
+	this.writeSeparateLog = ko.observable(false);
 	
 	App.broadcastEvent('%ModuleName%::ConstructView::after', {'Name': this.ViewConstructorName, 'View': this});
 }
@@ -36,7 +37,8 @@ CEditUserView.prototype.getCurrentValues = function ()
 	return [
 		this.id(),
 		this.publicId(),
-		this.role()
+		this.role(),
+		this.writeSeparateLog()
 	];
 };
 
@@ -45,6 +47,7 @@ CEditUserView.prototype.clearFields = function ()
 	this.id(0);
 	this.publicId('');
 	this.role(Enums.UserRole.NormalUser);
+	this.writeSeparateLog(false);
 };
 
 CEditUserView.prototype.parse = function (iEntityId, oResult)
@@ -54,6 +57,7 @@ CEditUserView.prototype.parse = function (iEntityId, oResult)
 		this.id(iEntityId);
 		this.publicId(oResult.PublicId);
 		this.role(oResult.Role);
+		this.writeSeparateLog(!!oResult.WriteSeparateLog);
 	}
 	else
 	{
@@ -76,7 +80,8 @@ CEditUserView.prototype.getParametersForSave = function ()
 	return {
 		Id: this.id(),
 		PublicId: $.trim(this.publicId()),
-		Role: this.role()
+		Role: this.role(),
+		WriteSeparateLog: this.writeSeparateLog()
 	};
 };
 

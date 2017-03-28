@@ -94,4 +94,19 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 	{
 		return \Aurora\System\Api::GetModuleDecorator('Core')->ClearLog($EventsLog);
 	}
+	
+	public function GetUsersWithSeparateLog()
+	{
+		return \Aurora\System\Api::GetModuleDecorator('Core')->GetUsersWithSeparateLog();
+	}
+	
+	public function TurnOffSeparateLogs()
+	{
+		return \Aurora\System\Api::GetModuleDecorator('Core')->TurnOffSeparateLogs();
+	}
+	
+	public function ClearSeparateLogs()
+	{
+		return \Aurora\System\Api::GetModuleDecorator('Core')->ClearSeparateLogs();
+	}
 }
