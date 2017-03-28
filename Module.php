@@ -22,6 +22,52 @@ namespace Aurora\Modules\AdminPanelWebclient;
 
 class Module extends \Aurora\System\Module\AbstractWebclientModule
 {
+	
+	public function init() 
+	{
+		$this->AddEntry('adminpanel', 'EntryPub');
+	}
+	
+	public function EntryPub()
+	{
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::TenantAdmin);
+		
+		$sResult = '';
+		$oApiIntegrator = \Aurora\System\Api::GetSystemManager('integrator');
+
+		if ($oApiIntegrator)
+		{
+			$oCoreClientModule = \Aurora\System\Api::GetModule('CoreWebclient');
+			if ($oCoreClientModule instanceof \Aurora\System\Module\AbstractModule) 
+			{
+				$sResult = \file_get_contents($oCoreClientModule->GetPath().'/templates/Index.html');
+				if (\is_string($sResult)) 
+				{
+					$oSettings =& \Aurora\System\Api::GetSettings();
+					$sFrameOptions = $oSettings->GetConf('XFrameOptions', '');
+					if (0 < \strlen($sFrameOptions)) 
+					{
+						@\header('X-Frame-Options: '.$sFrameOptions);
+					}
+
+					$aConfig = array(
+						'public_app' => false,
+						'modules_list' => array("AdminPanelWebclient")
+					);
+
+					$sResult = \strtr($sResult, array(
+						'{{AppVersion}}' => AURORA_APP_VERSION,
+						'{{IntegratorDir}}' => $oApiIntegrator->isRtl() ? 'rtl' : 'ltr',
+						'{{IntegratorLinks}}' => $oApiIntegrator->buildHeadersLink(),
+						'{{IntegratorBody}}' => $oApiIntegrator->buildBody($aConfig)
+					));
+				}
+			}
+		}
+
+		return $sResult;
+	}
+	
 	public function TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword = null)
 	{
 		return \Aurora\System\Api::GetModuleDecorator('Core')->TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword);
