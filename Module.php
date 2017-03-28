@@ -25,12 +25,12 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 	
 	public function init() 
 	{
-		$this->AddEntry('adminpanel', 'EntryPub');
+		$this->AddEntry('adminpanel', 'EntryAdminpanel');
 	}
 	
-	public function EntryPub()
+	public function EntryAdminpanel()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::TenantAdmin);
+//		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::TenantAdmin);
 		
 		$sResult = '';
 		$oApiIntegrator = \Aurora\System\Api::GetSystemManager('integrator');
