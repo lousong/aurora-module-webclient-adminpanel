@@ -4,6 +4,7 @@ var
 	_ = require('underscore'),
 	$ = require('jquery'),
 	ko = require('knockout'),
+	FileSaver = require('%PathToCoreWebclientModule%/js/vendors/FileSaver.js'),
 	
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
@@ -59,7 +60,7 @@ function CLoggingAdminSettingsView()
 		}
 	}, this);
 	
-	this.usersWithSeparateLog = ko.observable('');
+	this.usersWithSeparateLog = ko.observableArray([]);
 	
 	/* Editable fields */
 	this.enableLogging = ko.observable(Settings.EnableLogging);
@@ -78,14 +79,14 @@ CLoggingAdminSettingsView.prototype.onRouteChild = function ()
 	Ajax.send(Settings.ServerModuleName, 'GetUsersWithSeparateLog', null, function (oResponse) {
 		if (oResponse.Result && _.isArray(oResponse.Result))
 		{
-			this.usersWithSeparateLog(oResponse.Result.join(', '));
+			this.usersWithSeparateLog(oResponse.Result);
 		}
 	}, this);
 };
 
 CLoggingAdminSettingsView.prototype.turnOffSeparateLogs = function ()
 {
-	this.usersWithSeparateLog('');
+	this.usersWithSeparateLog([]);
 	Ajax.send(Settings.ServerModuleName, 'TurnOffSeparateLogs');
 };
 
@@ -99,10 +100,10 @@ CLoggingAdminSettingsView.prototype.setUpdateStatusTimer = function ()
 	if (this.bShown)
 	{
 		setTimeout(_.bind(function () {
-			Ajax.send(Settings.ServerModuleName, 'GetLogFilesSize', null, function (oResponse) {
+			Ajax.send(Settings.ServerModuleName, 'GetLogFilesData', null, function (oResponse) {
 				if (oResponse.Result)
 				{
-					Settings.updateLogsSize(oResponse.Result.LogSizeBytes, oResponse.Result.EventLogSizeBytes);
+					Settings.updateLogsData(oResponse.Result);
 					this.logSize(Settings.LogSizeBytes);
 					this.eventsLogSize(Settings.EventLogSizeBytes);
 				}
@@ -150,11 +151,15 @@ CLoggingAdminSettingsView.prototype.setAccessLevel = function (sEntityType, iEnt
 	this.visible(sEntityType === '');
 };
 
-CLoggingAdminSettingsView.prototype.downloadLog = function (bEventsLog)
+CLoggingAdminSettingsView.prototype.downloadLog = function (bEventsLog, sPublicId)
 {
-	Ajax.send(Settings.ServerModuleName, 'GetLogFile', {'EventsLog': bEventsLog}, function (oResponse) {
-		console.log('oResponse.Result', oResponse.Result);
-	}, this);
+	Ajax.send(Settings.ServerModuleName, 'GetLogFile', {'EventsLog': bEventsLog, 'PublicId': sPublicId || ''}, function (oResponse) {
+		var
+			oBlob = new Blob([oResponse.ResponseText], {'type': 'text/plain;charset=utf-8'}),
+			sFilePrefix = Types.pString(sPublicId) !== '' ? sPublicId + '-' : ''
+		;
+		FileSaver.saveAs(oBlob, bEventsLog ? Settings.EventLogFileName : sFilePrefix + Settings.LogFileName);
+	}, this, undefined, { Format: 'Raw' });
 };
 
 CLoggingAdminSettingsView.prototype.viewLog = function (bEventsLog)

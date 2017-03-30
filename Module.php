@@ -75,14 +75,14 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 			$EnableEventLogging, $LoggingLevel);
 	}
 	
-	public function GetLogFilesSize()
+	public function GetLogFilesData()
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->GetLogFilesSize();
+		return \Aurora\System\Api::GetModuleDecorator('Core')->GetLogFilesData();
 	}
 	
-	public function GetLogFile($EventsLog)
+	public function GetLogFile($EventsLog = false, $PublicId = '')
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->GetLogFile($EventsLog);
+		return \Aurora\System\Api::GetModuleDecorator('Core')->GetLogFile($EventsLog, $PublicId);
 	}
 	
 	public function GetLog($EventsLog, $PartSize = 10240)
