@@ -85,15 +85,27 @@ module.exports = function (oAppData) {
 						require.ensure(
 							['modules/%ModuleName%/js/views/SettingsView.js'],
 							function(require) {
-								var oSettingsView = require('modules/%ModuleName%/js/views/SettingsView.js');
+								var
+									oSettingsView = require('modules/%ModuleName%/js/views/SettingsView.js'),
+									aPromises = []
+								;
 								
 								_.each(aAdminPanelTabsParams, function (oParams) {
-									oSettingsView.registerTab(oParams.GetTabView, oParams.TabName, oParams.TabTitle);
+									var oPromise = oSettingsView.registerTab(oParams.GetTabView, oParams.TabName, oParams.TabTitle);
+									
+									if (oPromise)
+									{
+										aPromises.push(oPromise);
+									}
 								});
 								
-								oSettingsView.sortRegisterTabs();
-							
-								resolve(oSettingsView);
+								Promise.all(aPromises).then(function () { 
+									oSettingsView.sortRegisterTabs();
+									resolve(oSettingsView);
+								}, function () {
+									oSettingsView.sortRegisterTabs();
+									resolve(oSettingsView);
+								});
 							},
 							"admin-bundle"
 						);

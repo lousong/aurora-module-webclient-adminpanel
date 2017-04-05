@@ -106,7 +106,7 @@ CSettingsView.prototype.registerTab = function (fGetTabView, oTabName, oTabTitle
 	{
 		var aTabs = this.tabs;
 		
-		new Promise(fGetTabView).then(function (oTabView) {
+		return new Promise(fGetTabView).then(function (oTabView) {
 			aTabs.push({
 				view: oTabView,
 				name: oTabName,
@@ -114,6 +114,7 @@ CSettingsView.prototype.registerTab = function (fGetTabView, oTabName, oTabTitle
 			});
 		});
 	}
+	return false;
 };
 
 /**
