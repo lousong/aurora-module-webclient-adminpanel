@@ -21,8 +21,6 @@ module.exports = function (oAppData) {
 
 		Settings.init(oSettings);
 		
-		require('modules/%ModuleName%/js/enums.js');
-
 		return {
 			start: function () {
 				aAdminPanelTabsParams.push({
@@ -63,19 +61,6 @@ module.exports = function (oAppData) {
 					},
 					TabName: Settings.HashModuleName + '-security',
 					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_SECURITY_SETTINGS_TAB')
-				});
-				aAdminPanelTabsParams.push({
-					GetTabView: function(resolve) {
-						require.ensure(
-							['modules/%ModuleName%/js/views/LoggingAdminSettingsView.js'],
-							function() {
-								resolve(require('modules/%ModuleName%/js/views/LoggingAdminSettingsView.js'));
-							},
-							"admin-bundle"
-						);
-					},
-					TabName: Settings.HashModuleName + '-logging',
-					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_LOGGING_SETTINGS_TAB')
 				});
 				
 				aAdminPanelTabsParams.push({

@@ -75,39 +75,4 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 			$Language, $TimeFormat, $EnableLogging,
 			$EnableEventLogging, $LoggingLevel);
 	}
-	
-	public function GetLogFilesData()
-	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->GetLogFilesData();
-	}
-	
-	public function GetLogFile($EventsLog = false, $PublicId = '')
-	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->GetLogFile($EventsLog, $PublicId);
-	}
-	
-	public function GetLog($EventsLog, $PartSize = 10240)
-	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->GetLog($EventsLog, $PartSize);
-	}
-	
-	public function ClearLog($EventsLog)
-	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->ClearLog($EventsLog);
-	}
-	
-	public function GetUsersWithSeparateLog()
-	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->GetUsersWithSeparateLog();
-	}
-	
-	public function TurnOffSeparateLogs()
-	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->TurnOffSeparateLogs();
-	}
-	
-	public function ClearSeparateLogs()
-	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->ClearSeparateLogs();
-	}
 }

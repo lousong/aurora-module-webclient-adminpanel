@@ -19,7 +19,7 @@ module.exports = {
 		}
 	],
 	
-	TabsOrder: ['admin-licensing', 'admin-security', 'admin-db', 'admin-logging', 'common', 'modules', 'mail', 'mail-domains', 'mail-accounts', 'contacts', 'calendar', 'files', 'mobilesync', 'outlooksync', 'helpdesk', 'openpgp'],
+	TabsOrder: ['admin-licensing', 'admin-security', 'admin-db', 'log-viewer', 'common', 'modules', 'mail', 'mail-domains', 'mail-accounts', 'contacts', 'calendar', 'files', 'mobilesync', 'outlooksync', 'helpdesk', 'openpgp'],
 	
 	init: function (oAppDataSection) {
 		if (oAppDataSection)
@@ -28,26 +28,6 @@ module.exports = {
 			{
 				this.TabsOrder = oAppDataSection.TabsOrder;
 			}
-			this.EnableLogging = !!oAppDataSection.EnableLogging;
-			this.EnableEventLogging = !!oAppDataSection.EnableEventLogging;
-			this.LoggingLevel = Types.pInt(oAppDataSection.LoggingLevel);
-			this.updateLogsData(oAppDataSection.LogFilesData);
-			this.ELogLevel = oAppDataSection.ELogLevel;
 		}
-	},
-	
-	updateLogging: function (bEnableLogging, bEnableEventLogging, iLoggingLevel)
-	{
-		this.EnableLogging = !!bEnableLogging;
-		this.EnableEventLogging = !!bEnableEventLogging;
-		this.LoggingLevel = Types.pInt(iLoggingLevel);
-	},
-	
-	updateLogsData: function (oLogFilesData)
-	{
-		this.LogSizeBytes = Types.pInt(oLogFilesData.LogSizeBytes);
-		this.EventLogSizeBytes = Types.pInt(oLogFilesData.EventLogSizeBytes);
-		this.LogFileName = Types.pString(oLogFilesData.LogFileName);
-		this.EventLogFileName = Types.pString(oLogFilesData.EventLogFileName);
 	}
 };
