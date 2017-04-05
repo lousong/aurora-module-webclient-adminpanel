@@ -48,9 +48,9 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 		return \Aurora\System\Api::GetModuleDecorator('Core')->CreateTenant($ChannelId, $Name, $Description);
 	}
 	
-	public function CreateUser($TenantId = 0, $PublicId = '', $Role = \EUserRole::NormalUser)
+	public function CreateUser($TenantId = 0, $PublicId = '', $Role = \EUserRole::NormalUser, $WriteSeparateLog = false)
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->CreateUser($TenantId, $PublicId, $Role);
+		return \Aurora\System\Api::GetModuleDecorator('Core')->CreateUser($TenantId, $PublicId, $Role, $WriteSeparateLog);
 	}
 	
 	public function UpdateEntity($Type, $Data)
