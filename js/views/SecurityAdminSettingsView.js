@@ -28,11 +28,19 @@ function CSecurityAdminSettingsView()
 	
 	this.passFocused = ko.observable(false);
 	this.newPassFocused = ko.observable(false);
+	
+	this.startError = ko.observable('');
+	this.setStartError();
 }
 
 _.extendOwn(CSecurityAdminSettingsView.prototype, CAbstractSettingsFormView.prototype);
 
 CSecurityAdminSettingsView.prototype.ViewTemplate = '%ModuleName%_SecurityAdminSettingsView';
+
+CSecurityAdminSettingsView.prototype.setStartError = function ()
+{
+	this.startError(!Settings.AdminHasPassword ? TextUtils.i18n('%MODULENAME%/ERROR_ADMIN_EMPTY_PASSWORD') : '');
+};
 
 /**
  * Returns error text to show on start if there is no admin password.
@@ -41,7 +49,7 @@ CSecurityAdminSettingsView.prototype.ViewTemplate = '%ModuleName%_SecurityAdminS
  */
 CSecurityAdminSettingsView.prototype.getStartError = function ()
 {
-	return !Settings.AdminHasPassword ? TextUtils.i18n('%MODULENAME%/ERROR_ADMIN_EMPTY_PASSWORD') : '';
+	return this.startError;
 };
 
 CSecurityAdminSettingsView.prototype.getCurrentValues = function()
@@ -85,7 +93,8 @@ CSecurityAdminSettingsView.prototype.getParametersForSave = function ()
  */
 CSecurityAdminSettingsView.prototype.applySavedValues = function (oParameters)
 {
-	Settings.updateSecurity(oParameters.AdminLogin);
+	Settings.updateSecurity(oParameters.AdminLogin, oParameters.NewPassword !== '');
+	this.setStartError();
 };
 
 CSecurityAdminSettingsView.prototype.setAccessLevel = function (sEntityType, iEntityId)

@@ -28,11 +28,19 @@ function CDbAdminSettingsView()
 	this.dbName = ko.observable(Settings.DbName);
 	this.dbHost = ko.observable(Settings.DbHost);
 	/*-- Editable fields */
+	
+	this.startError = ko.observable('');
+	this.setStartError();
 }
 
 _.extendOwn(CDbAdminSettingsView.prototype, CAbstractSettingsFormView.prototype);
 
 CDbAdminSettingsView.prototype.ViewTemplate = '%ModuleName%_DbAdminSettingsView';
+
+CDbAdminSettingsView.prototype.setStartError = function ()
+{
+	this.startError((Settings.DbLogin === '' || Settings.DbName === '' || Settings.DbHost === '') ? TextUtils.i18n('%MODULENAME%/ERROR_DB_ACCESS') : '');
+};
 
 /**
  * Returns error text to show on start if the tab has empty fields.
@@ -41,7 +49,7 @@ CDbAdminSettingsView.prototype.ViewTemplate = '%ModuleName%_DbAdminSettingsView'
  */
 CDbAdminSettingsView.prototype.getStartError = function ()
 {
-	return (Settings.DbLogin === '' || Settings.DbName === '' || Settings.DbHost === '') ? TextUtils.i18n('%MODULENAME%/ERROR_DB_ACCESS') : '';
+	return this.startError;
 };
 
 CDbAdminSettingsView.prototype.getCurrentValues = function()
@@ -86,6 +94,7 @@ CDbAdminSettingsView.prototype.getParametersForSave = function ()
 CDbAdminSettingsView.prototype.applySavedValues = function (oParameters)
 {
 	Settings.updateDb(oParameters.DbLogin, oParameters.DbName, oParameters.DbHost);
+	this.setStartError();
 };
 
 CDbAdminSettingsView.prototype.setAccessLevel = function (sEntityType, iEntityId)

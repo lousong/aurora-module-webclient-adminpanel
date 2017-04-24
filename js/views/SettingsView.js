@@ -85,6 +85,8 @@ function CSettingsView()
 	
 	this.currentTab = ko.observable(null);
 	
+	this.aStartErrors = [];
+	
 	App.broadcastEvent('%ModuleName%::ConstructView::after', {'Name': this.ViewConstructorName, 'View': this});
 }
 
@@ -169,23 +171,36 @@ CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId, sTabNam
  */
 CSettingsView.prototype.onBind = function ()
 {
-	var aErrors = [];
-	
-	_.each(this.tabs(), function (oTab) {
+	_.each(this.tabs(), _.bind(function (oTab) {
 		if (oTab.view && _.isFunction(oTab.view.getStartError))
 		{
-			var sError = oTab.view.getStartError();
-			if (sError !== '')
+			var koError = oTab.view.getStartError();
+			if (_.isFunction(koError))
 			{
-				aErrors.push(sError);
+				koError.subscribe(function () {
+					this.showStartError();
+				}, this);
+				this.aStartErrors.push(koError);
 			}
+		}
+	}, this));
+	
+	this.showStartError();
+};
+
+CSettingsView.prototype.showStartError = function ()
+{
+	var aErrors = [];
+	
+	_.each(this.aStartErrors, function (koError) {
+		var sError = koError();
+		if (sError !== '')
+		{
+			aErrors.push(sError);
 		}
 	});
 	
-	if (aErrors.length > 0)
-	{
-		Screens.showError(aErrors.join('<br /><br />'), true);
-	}
+	Screens.showError(aErrors.join('<br /><br />'), true);
 };
 
 /**
