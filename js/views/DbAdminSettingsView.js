@@ -10,7 +10,10 @@ var
 	Settings = require('%PathToCoreWebclientModule%/js/Settings.js'),
 	
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
-	CAbstractSettingsFormView = require('modules/%ModuleName%/js/views/CAbstractSettingsFormView.js')
+	CAbstractSettingsFormView = require('modules/%ModuleName%/js/views/CAbstractSettingsFormView.js'),
+	
+	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
+	ConfirmPopup = require('%PathToCoreWebclientModule%/js/popups/ConfirmPopup.js')
 ;
 
 /**
@@ -118,16 +121,36 @@ CDbAdminSettingsView.prototype.testConnection = function ()
 
 CDbAdminSettingsView.prototype.createTables = function ()
 {
-	Ajax.send('CreateTables', null, function (oResponse) {
-		if (oResponse.Result)
-		{
-			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_TABLES_SUCCESSFUL'));
-		}
-		else
-		{
-			Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_CREATE_TABLES_FAILED'));
-		}
-	}, this);
+	if (this.sSavedState !== this.getCurrentState())
+	{
+		Popups.showPopup(ConfirmPopup, [TextUtils.i18n('%MODULENAME%/CONFIRM_SAVE_CHANGES_BEFORE_CREATE_TABLES'), _.bind(function (bOk) {
+			if (bOk)
+			{
+				var oIsSavingSubscribtion = this.isSaving.subscribe(function (bSaving) {
+					if (!bSaving)
+					{
+						Ajax.send('CreateTables', null, function (oResponse) {
+							if (oResponse.Result)
+							{
+								Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_TABLES_SUCCESSFUL'));
+							}
+							else
+							{
+								Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_CREATE_TABLES_FAILED'));
+							}
+						}, this);
+						
+						oIsSavingSubscribtion.dispose();
+					}
+				}, this);
+				
+				this.save();
+			}
+
+		}, this)]);
+	}
+	
+	return;	
 };
 
 module.exports = new CDbAdminSettingsView();
