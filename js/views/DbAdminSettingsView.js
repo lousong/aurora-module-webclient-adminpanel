@@ -121,6 +121,19 @@ CDbAdminSettingsView.prototype.testConnection = function ()
 
 CDbAdminSettingsView.prototype.createTables = function ()
 {
+	var fCreateTables = function () {
+		Ajax.send('CreateTables', null, function (oResponse) {
+			if (oResponse.Result)
+			{
+				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_TABLES_SUCCESSFUL'));
+			}
+			else
+			{
+				Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_CREATE_TABLES_FAILED'));
+			}
+		});
+	};
+	
 	if (this.sSavedState !== this.getCurrentState())
 	{
 		Popups.showPopup(ConfirmPopup, [TextUtils.i18n('%MODULENAME%/CONFIRM_SAVE_CHANGES_BEFORE_CREATE_TABLES'), _.bind(function (bOk) {
@@ -129,28 +142,19 @@ CDbAdminSettingsView.prototype.createTables = function ()
 				var oIsSavingSubscribtion = this.isSaving.subscribe(function (bSaving) {
 					if (!bSaving)
 					{
-						Ajax.send('CreateTables', null, function (oResponse) {
-							if (oResponse.Result)
-							{
-								Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_TABLES_SUCCESSFUL'));
-							}
-							else
-							{
-								Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_CREATE_TABLES_FAILED'));
-							}
-						}, this);
-						
+						fCreateTables();
 						oIsSavingSubscribtion.dispose();
 					}
 				}, this);
 				
 				this.save();
 			}
-
 		}, this)]);
 	}
-	
-	return;	
+	else
+	{
+		fCreateTables();
+	}
 };
 
 module.exports = new CDbAdminSettingsView();
