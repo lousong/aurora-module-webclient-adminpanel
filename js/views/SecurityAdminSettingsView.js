@@ -39,7 +39,21 @@ CSecurityAdminSettingsView.prototype.ViewTemplate = '%ModuleName%_SecurityAdminS
 
 CSecurityAdminSettingsView.prototype.setStartError = function ()
 {
-	this.startError(!Settings.AdminHasPassword ? TextUtils.i18n('%MODULENAME%/ERROR_ADMIN_EMPTY_PASSWORD') : '');
+	var aErrors = [];
+
+	if (!Settings.AdminHasPassword)
+	{
+		aErrors.push(TextUtils.i18n('%MODULENAME%/ERROR_ADMIN_EMPTY_PASSWORD'));
+	}
+	if (!Settings.DataExistAndWritable)
+	{
+		aErrors.push(TextUtils.i18n('%MODULENAME%/ERROR_DATA_ACCESS'));
+	}
+	else if (!Settings.SaltNotEmpty)
+	{
+		aErrors.push(TextUtils.i18n('%MODULENAME%/ERROR_SALT_EMPTY'));
+	}
+	this.startError(aErrors.join('<br /><br />'));
 };
 
 /**
