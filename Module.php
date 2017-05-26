@@ -17,42 +17,42 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 {
 	public function TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword = null)
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword);
+		return \Aurora\Modules\Core\Module::Decorator()->TestDbConnection($DbLogin, $DbName, $DbHost, $DbPassword);
 	}
 	
 	public function CreateTables()
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->CreateTables();
+		return \Aurora\Modules\Core\Module::Decorator()->CreateTables();
 	}
 	
 	public function GetEntityList($Type)
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->GetEntityList($Type);
+		return \Aurora\Modules\Core\Module::Decorator()->GetEntityList($Type);
 	}
 	
 	public function GetEntity($Type, $Id)
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->GetEntity($Type, $Id);
+		return \Aurora\Modules\Core\Module::Decorator()->GetEntity($Type, $Id);
 	}
 	
 	public function CreateTenant($ChannelId = 0, $Name = '', $Description = '')
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->CreateTenant($ChannelId, $Name, $Description);
+		return \Aurora\Modules\Core\Module::Decorator()->CreateTenant($ChannelId, $Name, $Description);
 	}
 	
 	public function CreateUser($TenantId = 0, $PublicId = '', $Role = \Aurora\System\Enums\UserRole::NormalUser, $WriteSeparateLog = false)
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->CreateUser($TenantId, $PublicId, $Role, $WriteSeparateLog);
+		return \Aurora\Modules\Core\Module::Decorator()->CreateUser($TenantId, $PublicId, $Role, $WriteSeparateLog);
 	}
 	
 	public function UpdateEntity($Type, $Data)
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->UpdateEntity($Type, $Data);
+		return \Aurora\Modules\Core\Module::Decorator()->UpdateEntity($Type, $Data);
 	}
 	
 	public function DeleteEntity($Type, $Id)
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->DeleteEntity($Type, $Id);
+		return \Aurora\Modules\Core\Module::Decorator()->DeleteEntity($Type, $Id);
 	}
 	
 	public function UpdateSettings($LicenseKey = null, $DbLogin = null,
@@ -61,7 +61,7 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 			$Language = null, $TimeFormat = null, $EnableLogging = null,
 			$EnableEventLogging = null, $LoggingLevel = null)
 	{
-		return \Aurora\System\Api::GetModuleDecorator('Core')->UpdateSettings($LicenseKey, $DbLogin,
+		return \Aurora\Modules\Core\Module::Decorator()->UpdateSettings($LicenseKey, $DbLogin,
 			$DbPassword, $DbName, $DbHost,
 			$AdminLogin, $Password, $NewPassword,
 			$Language, $TimeFormat, $EnableLogging,
