@@ -132,7 +132,7 @@ CSecurityAdminSettingsView.prototype.validateBeforeSave = function ()
 	}
 	if (this.pass() !== '' && this.newPass() !== this.confirmPass())
 	{
-		Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_PASSWORDS_DO_NOT_MATCH'));
+		Screens.showError(TextUtils.i18n('COREWEBCLIENT/ERROR_PASSWORDS_DO_NOT_MATCH'));
 		this.newPassFocused(true);
 		return false;
 	}
