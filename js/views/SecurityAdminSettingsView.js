@@ -19,11 +19,14 @@ function CSecurityAdminSettingsView()
 {
 	CAbstractSettingsFormView.call(this, Settings.ServerModuleName);
 	
+	this.aLanguages = Settings.LanguageList;
+	
 	/* Editable fields */
 	this.login = ko.observable(Settings.AdminLogin);
 	this.pass = ko.observable('');
 	this.newPass = ko.observable('');
 	this.confirmPass = ko.observable('');
+	this.selectedLanguage = ko.observable(Settings.AdminLanguage);
 	/*-- Editable fields */
 	
 	this.passFocused = ko.observable(false);
@@ -72,7 +75,8 @@ CSecurityAdminSettingsView.prototype.getCurrentValues = function()
 		this.login(),
 		this.pass(),
 		this.newPass(),
-		this.confirmPass()
+		this.confirmPass(),
+		this.selectedLanguage()
 	];
 };
 
@@ -82,22 +86,27 @@ CSecurityAdminSettingsView.prototype.revertGlobalValues = function()
 	this.pass('');
 	this.newPass('');
 	this.confirmPass('');
+	this.selectedLanguage(Settings.AdminLanguage);
 };
 
 CSecurityAdminSettingsView.prototype.getParametersForSave = function ()
 {
-	if (Settings.AdminHasPassword && this.pass() === '')
+	var oParameters = {
+		'AdminLogin': this.login()
+	};
+	
+	if (this.pass() !== '')
 	{
-		return {
-			'AdminLogin': this.login()
-		};
+		oParameters['Password'] = this.pass();
+		oParameters['NewPassword'] = this.newPass();
 	}
 	
-	return {
-		'AdminLogin': this.login(),
-		'Password': this.pass(),
-		'NewPassword': this.newPass()
-	};
+	if (this.selectedLanguage() !== Settings.AdminLanguage)
+	{
+		oParameters['AdminLanguage'] = this.selectedLanguage();
+	}
+	
+	return oParameters;
 };
 
 /**
@@ -107,6 +116,10 @@ CSecurityAdminSettingsView.prototype.getParametersForSave = function ()
  */
 CSecurityAdminSettingsView.prototype.applySavedValues = function (oParameters)
 {
+	if (this.selectedLanguage() !== Settings.AdminLanguage)
+	{
+		window.location.reload();
+	}
 	Settings.updateSecurity(oParameters.AdminLogin, oParameters.NewPassword !== '');
 	this.setStartError();
 };

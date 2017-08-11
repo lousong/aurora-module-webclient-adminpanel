@@ -57,14 +57,14 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 	
 	public function UpdateSettings($LicenseKey = null, $DbLogin = null,
 			$DbPassword = null, $DbName = null, $DbHost = null,
-			$AdminLogin = null, $Password = null, $NewPassword = null,
-			$Language = null, $TimeFormat = null, $EnableLogging = null,
+			$AdminLogin = null, $Password = null, $NewPassword = null, $AdminLanguage = null,
+			$Language = null, $AutodetectLanguage = null, $TimeFormat = null, $EnableLogging = null,
 			$EnableEventLogging = null, $LoggingLevel = null)
 	{
 		return \Aurora\Modules\Core\Module::Decorator()->UpdateSettings($LicenseKey, $DbLogin,
 			$DbPassword, $DbName, $DbHost,
-			$AdminLogin, $Password, $NewPassword,
-			$Language, $TimeFormat, $EnableLogging,
+			$AdminLogin, $Password, $NewPassword, $AdminLanguage,
+			$Language, $AutodetectLanguage, $TimeFormat, $EnableLogging,
 			$EnableEventLogging, $LoggingLevel);
 	}
 }
