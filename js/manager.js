@@ -36,19 +36,6 @@ module.exports = function (oAppData) {
 					TabName: Settings.HashModuleName + '-db',
 					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_DB_SETTINGS_TAB')
 				});
-//				aAdminPanelTabsParams.push({
-//					GetTabView: function(resolve) {
-//						require.ensure(
-//							['modules/%ModuleName%/js/views/LicensingAdminSettingsView.js'],
-//							function() {
-//								resolve(require('modules/%ModuleName%/js/views/LicensingAdminSettingsView.js'));
-//							},
-//							"admin-bundle"
-//						);
-//					},
-//					TabName: Settings.HashModuleName + '-licensing',
-//					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_LICENSING_SETTINGS_TAB')
-//				});
 				aAdminPanelTabsParams.push({
 					GetTabView: function(resolve) {
 						require.ensure(

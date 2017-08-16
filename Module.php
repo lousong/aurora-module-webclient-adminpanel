@@ -55,16 +55,18 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 		return \Aurora\Modules\Core\Module::Decorator()->DeleteEntity($Type, $Id);
 	}
 	
-	public function UpdateSettings($LicenseKey = null, $DbLogin = null,
-			$DbPassword = null, $DbName = null, $DbHost = null,
+	public function UpdateSettings(
+			$DbLogin = null, $DbPassword = null, $DbName = null, $DbHost = null,
 			$AdminLogin = null, $Password = null, $NewPassword = null, $AdminLanguage = null,
 			$Language = null, $AutodetectLanguage = null, $TimeFormat = null, $EnableLogging = null,
-			$EnableEventLogging = null, $LoggingLevel = null)
+			$EnableEventLogging = null, $LoggingLevel = null
+	)
 	{
-		return \Aurora\Modules\Core\Module::Decorator()->UpdateSettings($LicenseKey, $DbLogin,
-			$DbPassword, $DbName, $DbHost,
+		return \Aurora\Modules\Core\Module::Decorator()->UpdateSettings(
+			$DbLogin, $DbPassword, $DbName, $DbHost,
 			$AdminLogin, $Password, $NewPassword, $AdminLanguage,
 			$Language, $AutodetectLanguage, $TimeFormat, $EnableLogging,
-			$EnableEventLogging, $LoggingLevel);
+			$EnableEventLogging, $LoggingLevel
+		);
 	}
 }
