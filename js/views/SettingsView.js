@@ -297,7 +297,7 @@ CSettingsView.prototype.showNewTabView = function (sNewTabName, aTabParams)
 		return oTab.name === sNewTabName;
 	});
 	
-	// If the tab wasn't found finds the first avaliable visible tab
+	// If the tab wasn't found finds the first available visible tab
 	if (!oNewTab || !(oNewTab.view && oNewTab.view.visible()))
 	{
 		oNewTab = _.find(this.tabs(), function (oTab) {
