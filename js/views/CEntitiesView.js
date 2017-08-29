@@ -50,6 +50,7 @@ function CEntitiesView(sEntityType)
 }
 
 CEntitiesView.prototype.ViewTemplate = '%ModuleName%_EntitiesView';
+CEntitiesView.prototype.CreateFormViewTemplate = '%ModuleName%_EntityCreateFormView';
 
 /**
  * Returns entity edit view for cpecified entity type.

@@ -15,13 +15,11 @@
 		</div>
 	</div>
 	
-	<div class="panels">
-		<!-- ko foreach: aScreens -->
-			<!-- ko if: sType === $parent.currentEntityType() && oView -->
-				<!-- ko template: {name: oView.ViewTemplate, data: oView} --><!-- /ko -->
-			<!-- /ko -->
-		<!-- /ko -->
-		
+	<div class="panels" data-bind="splitterFlex: {name: 'adminpanel', sizes: [20, 20, 60]}">
+		<div class="panel left_panel" data-bind="with: currentEntitiesView(), visible: currentEntityType() !== ''">
+			<!-- ko template: {name: ViewTemplate} --><!-- /ko -->
+		</div>
+
 		<div class="panel data modules" data-bind="visible: showModulesTabs">
 			<div class="panel_content">
 				<div class="middle_bar unselectable">
@@ -49,16 +47,22 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel data" data-bind="visible: showModulesTabs">
-			<div class="panel_content" data-bind="customScrollbar: {x: false}">
-				<div class="scroll-inner">
-					<!-- ko if: currentTab() && (!currentTab().view.visible || currentTab().view.visible()) -->
-					<div  data-bind="with: currentTab">
-						<div data-bind="attr: {'class': 'middle_bar ' + name}">
-							<!-- ko template: {name: view.ViewTemplate, data: view} --><!-- /ko -->
+		<div class="panel data">
+			<!-- ko with: currentEntitiesView() -->
+				<!-- ko template: {name: CreateFormViewTemplate} --><!-- /ko -->
+			<!-- /ko -->
+			
+			<div class="panel_content" data-bind="visible: showModulesTabs">
+				<div class="middle_bar"  data-bind="customScrollbar: {x: false}">
+					<div class="scroll-inner">
+						<!-- ko if: currentTab() && (!currentTab().view.visible || currentTab().view.visible()) -->
+						<div data-bind="with: currentTab">
+							<div data-bind="attr: {'class': 'middle_bar ' + name}">
+								<!-- ko template: {name: view.ViewTemplate, data: view} --><!-- /ko -->
+							</div>
 						</div>
+						<!-- /ko -->
 					</div>
-					<!-- /ko -->
 				</div>
 			</div>
 		</div>
