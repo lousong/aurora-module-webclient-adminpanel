@@ -91,11 +91,8 @@ CSecurityAdminSettingsView.prototype.getParametersForSave = function ()
 		'AdminLogin': this.login()
 	};
 	
-	if (this.pass() !== '')
-	{
-		oParameters['Password'] = this.pass();
-		oParameters['NewPassword'] = this.newPass();
-	}
+	oParameters['Password'] = this.pass();
+	oParameters['NewPassword'] = this.newPass();
 	
 	if (this.selectedLanguage() !== Settings.AdminLanguage)
 	{
