@@ -148,4 +148,16 @@ CSecurityAdminSettingsView.prototype.validateBeforeSave = function ()
 	return true;
 };
 
+CSecurityAdminSettingsView.prototype.onResponse = function (oResponse, oRequest)
+{
+	CAbstractSettingsFormView.prototype.onResponse.apply(this, arguments);
+	
+	if (oResponse.Result)
+	{
+		this.pass("");
+		this.newPass("");
+		this.confirmPass("");
+	}
+};
+
 module.exports = new CSecurityAdminSettingsView();
