@@ -5,6 +5,7 @@ var
 	ko = require('knockout'),
 	
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
+	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
 	
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 	Settings = require('%PathToCoreWebclientModule%/js/Settings.js'),
@@ -147,10 +148,21 @@ CSecurityAdminSettingsView.prototype.validateBeforeSave = function ()
 
 CSecurityAdminSettingsView.prototype.onResponse = function (oResponse, oRequest)
 {
-	CAbstractSettingsFormView.prototype.onResponse.apply(this, arguments);
-	
-	if (oResponse.Result)
+	this.isSaving(false);
+
+	if (!oResponse.Result)
 	{
+		Api.showErrorByCode(oResponse, TextUtils.i18n('COREWEBCLIENT/ERROR_SAVING_SETTINGS_FAILED'));
+	}
+	else
+	{
+		var oParameters = oRequest.Parameters;
+
+		this.updateSavedState();
+		this.applySavedValues(oParameters);
+		Screens.showReport(TextUtils.i18n('COREWEBCLIENT/REPORT_SETTINGS_UPDATE_SUCCESS'));
+
+		//clear fields after saving
 		this.pass("");
 		this.newPass("");
 		this.confirmPass("");
