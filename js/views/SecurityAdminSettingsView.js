@@ -89,11 +89,10 @@ CSecurityAdminSettingsView.prototype.revertGlobalValues = function()
 CSecurityAdminSettingsView.prototype.getParametersForSave = function ()
 {
 	var oParameters = {
-		'AdminLogin': this.login()
+		'AdminLogin': this.login(),
+		'Password': this.pass(),
+		'NewPassword': this.newPass()
 	};
-	
-	oParameters['Password'] = this.pass();
-	oParameters['NewPassword'] = this.newPass();
 	
 	if (this.selectedLanguage() !== Settings.AdminLanguage)
 	{
@@ -158,14 +157,14 @@ CSecurityAdminSettingsView.prototype.onResponse = function (oResponse, oRequest)
 	{
 		var oParameters = oRequest.Parameters;
 
+		//clear fields after saving
+		this.pass('');
+		this.newPass('');
+		this.confirmPass('');
+
 		this.updateSavedState();
 		this.applySavedValues(oParameters);
 		Screens.showReport(TextUtils.i18n('COREWEBCLIENT/REPORT_SETTINGS_UPDATE_SUCCESS'));
-
-		//clear fields after saving
-		this.pass("");
-		this.newPass("");
-		this.confirmPass("");
 	}
 };
 
