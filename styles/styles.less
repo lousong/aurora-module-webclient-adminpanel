@@ -11,33 +11,60 @@
 		flex-wrap: nowrap;
 	}
 	
-	.items_list .item {
-		cursor: pointer;
+	.toolbar {
+		background: #000;
+		border-color: #000;
+		opacity: 0.7;
 		
-		.user-select();
-		
-		.data .subject {
-			display: block;
+		.item .icon {
+			color: #fff !important;
 		}
+		
+		.item.disabled .icon {
+			color: #F7FFDC !important;
+		}
+	}
+	
+	.items_list {
+		.item {
+			cursor: pointer;
 
-		.icon {
-			display: inline-block;
-			display: none;
-			height: 19px;
-			margin-right: 4px;
-			vertical-align: middle;
-			width: 18px;
+			.user-select();
+
+			.data .subject {
+				display: block;
+			}
+
+			.icon {
+				display: inline-block;
+				display: none;
+				height: 19px;
+				margin-right: 4px;
+				vertical-align: middle;
+				width: 18px;
+			}
+
+			&.selected {
+				cursor: default;
+			}
+
+			&.heading {
+				cursor: default;
+				background: #fcfcfc;
+				color: #ccc;
+				text-transform: uppercase;
+			}
 		}
 		
-		&.selected {
-			cursor: default;
-		}
-		
-		&.heading {
-			cursor: default;
-			background: #fcfcfc;
-			color: #ccc;
-			text-transform: uppercase;
+		.custom_checkbox {
+			position: absolute;
+			top: 8px;
+			z-index: 100;
+			left: 12px;
+			
+			.icon {
+				display: inline-block;
+			}
 		}
 	}
 }

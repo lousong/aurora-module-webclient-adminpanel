@@ -50,6 +50,16 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 		return \Aurora\Modules\Core\Module::Decorator()->UpdateEntity($Type, $Data);
 	}
 	
+	public function DeleteEntities($Type, $IdList)
+	{
+		$bResult = true;
+		foreach ($IdList as $sId)
+		{
+			$bResult = $bResult && $this->DeleteEntity($Type, $sId);
+		}
+		return $bResult;
+	}
+	
 	public function DeleteEntity($Type, $Id)
 	{
 		return \Aurora\Modules\Core\Module::Decorator()->DeleteEntity($Type, $Id);

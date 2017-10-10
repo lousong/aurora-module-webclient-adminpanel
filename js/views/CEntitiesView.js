@@ -6,6 +6,7 @@ var
 	
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
+	Utils = require('%PathToCoreWebclientModule%/js/utils/Common.js'),
 	
 	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
@@ -47,6 +48,17 @@ function CEntitiesView(sEntityType)
 			this.fChangeEntityHandler(this.sType, this.entities()[0].Id);
 		}
 	}, this).extend({ throttle: 1 });
+	
+	this.checkedEntities = ko.computed(function () {
+		return _.filter(this.entities(), function (oEntity) {
+			return oEntity.checked();
+		}, this);
+	}, this);
+	this.hasCheckedEntities = ko.computed(function () {
+		return this.checkedEntities().length > 0;
+	}, this);
+	this.deleteCommand = Utils.createCommand(this, this.deleteCheckedEntities, this.hasCheckedEntities);
+	this.deactivateCommand = Utils.createCommand(this, function () {}, this.hasCheckedEntities);
 }
 
 CEntitiesView.prototype.ViewTemplate = '%ModuleName%_EntitiesView';
@@ -80,14 +92,24 @@ CEntitiesView.prototype.onShow = function ()
 CEntitiesView.prototype.requestEntities = function ()
 {
 	Ajax.send('GetEntityList', {Type: this.sType}, function (oResponse) {
-		this.entities(oResponse.Result);
-		if (this.entities().length === 0)
+		if (_.isArray(oResponse.Result))
 		{
-			this.fChangeEntityHandler(this.sType, undefined, 'create');
-		}
-		else if (this.justCreatedId() !== 0)
-		{
-			this.fChangeEntityHandler(this.sType, this.justCreatedId());
+			_.each(oResponse.Result, function (oEntity) {
+				oEntity.checked = ko.observable(false);
+				oEntity.trottleChecked = function (oItem, oEvent) {
+					oEvent.stopPropagation();
+					this.checked(!this.checked());
+				};
+			});
+			this.entities(oResponse.Result);
+			if (this.entities().length === 0)
+			{
+				this.fChangeEntityHandler(this.sType, undefined, 'create');
+			}
+			else if (this.justCreatedId() !== 0)
+			{
+				this.fChangeEntityHandler(this.sType, this.justCreatedId());
+			}
 		}
 	}, this);
 };
@@ -162,30 +184,52 @@ CEntitiesView.prototype.createEntity = function ()
  */
 CEntitiesView.prototype.deleteCurrentEntity = function ()
 {
-	Popups.showPopup(ConfirmPopup, [TextUtils.i18n('COREWEBCLIENT/CONFIRM_ARE_YOU_SURE'), _.bind(this.confirmedDeleteCurrentEntity, this)]);
+	this.deleteEntities([this.current()]);
+};
+
+CEntitiesView.prototype.deleteCheckedEntities = function ()
+{
+	var aIdList = _.map(this.checkedEntities(), function (oEntity) {
+		return oEntity.Id;
+	});
+	this.deleteEntities(aIdList);
+};
+
+CEntitiesView.prototype.deleteEntities = function (aIdList)
+{
+	Popups.showPopup(ConfirmPopup, [TextUtils.i18n('COREWEBCLIENT/CONFIRM_ARE_YOU_SURE'), _.bind(this.confirmedDeleteEntities, this, aIdList)]);
 };
 
 /**
  * Sends request to the server to delete entity if admin confirmed this action.
  * 
+ * @param {array} aIdList
  * @param {boolean} bDelete Indicates if admin confirmed deletion.
  */
-CEntitiesView.prototype.confirmedDeleteCurrentEntity = function (bDelete)
+CEntitiesView.prototype.confirmedDeleteEntities = function (aIdList, bDelete)
 {
 	if (bDelete)
 	{
-		Ajax.send('DeleteEntity', {Type: this.sType, Id: this.current()}, function (oResponse) {
+		Ajax.send('DeleteEntities', {Type: this.sType, IdList: aIdList}, function (oResponse) {
 			if (oResponse.Result)
 			{
-				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_DELETE_ENTITY_' + this.sType.toUpperCase()));
+				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_DELETE_ENTITIES_' + this.sType.toUpperCase() + '_PLURAL', {}, null, aIdList.length));
 			}
 			else
 			{
-				Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_DELETE_ENTITY_' + this.sType.toUpperCase()));
+				Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_DELETE_ENTITIES_' + this.sType.toUpperCase() + '_PLURAL', {}, null, aIdList.length));
 			}
 			this.requestEntities();
 		}, this);
 	}
+};
+
+CEntitiesView.prototype.groupCheck = function ()
+{
+	var bCheckAll = !this.hasCheckedEntities();
+	_.each(this.entities(), function (oEntity) {
+		oEntity.checked(bCheckAll);
+	});
 };
 
 module.exports = CEntitiesView;
