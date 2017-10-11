@@ -1,6 +1,7 @@
 'use strict';
 
 var
+	_ = require('underscore'),
 	$ = require('jquery'),
 	ko = require('knockout'),
 	
@@ -83,6 +84,20 @@ CEditUserView.prototype.getParametersForSave = function ()
 		Role: this.role(),
 		WriteSeparateLog: this.writeSeparateLog()
 	};
+};
+
+CEditUserView.prototype.saveEntity = function (aParents, oRoot)
+{
+	_.each(aParents, function (oParent) {
+		if (oParent.constructor.name === 'CEntitiesView' && _.isFunction(oParent.createEntity))
+		{
+			oParent.createEntity();
+		}
+		if (oParent.constructor.name === 'CCommonSettingsPaneView' && _.isFunction(oParent.save))
+		{
+			oParent.save(oRoot);
+		}
+	});
 };
 
 module.exports = new CEditUserView();
