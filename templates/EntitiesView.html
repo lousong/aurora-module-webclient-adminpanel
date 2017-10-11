@@ -1,73 +1,58 @@
-<!--<div class="panel left_panel">-->
-	<div class="panel_content">
-		<div class="buttons big_single_button">
-			<span href="javascript: void(0)" class="button" data-bind="click: function () { $root.createEntity(); }">
-				<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE_ENTITY_' + sType.toUpperCase()}"></span>
+<div class="panel_content">
+	<div class="buttons big_single_button">
+		<span href="javascript: void(0)" class="button" data-bind="click: function () { $root.createEntity(); }">
+			<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE_ENTITY_' + sType.toUpperCase()}"></span>
+		</span>
+	</div>
+	<div class="toolbar">
+		<span class="content">
+			<span class="custom_checkbox" data-bind="click: groupCheck, css: {'checked': hasCheckedEntities}">
+				<span class="icon"></span>
 			</span>
-		</div>
-		<div class="toolbar">
-			<span class="content">
-				<span class="custom_checkbox" data-bind="click: groupCheck, css: {'checked': hasCheckedEntities}">
-					<span class="icon"></span>
-				</span>
-				<span class="item delete" data-bind="command: deleteCommand, customTooltip: 'COREWEBCLIENT/ACTION_DELETE'">
-					<span class="icon"></span>
-					<span class="text" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_DELETE'}"></span>
-				</span>
-				<!--<span class="item save_and_close" data-bind="command: deactivateCommand, customTooltip: '%MODULENAME%/ACTION_DEACTIVATE'">
-					<span class="icon"></span>
-					<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_DEACTIVATE'}"></span>
-				</span>-->
+			<span class="item delete" data-bind="command: deleteCommand, customTooltip: 'COREWEBCLIENT/ACTION_DELETE'">
+				<span class="icon"></span>
+				<span class="text" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_DELETE'}"></span>
 			</span>
-		</div>
-		<div class="middle_bar">
-			<div class="panel_center" data-bind="customScrollbar: {x: false}">
-				<div class="scroll-inner">
-					<div class="items_list" data-bind="foreach: entities">
-						<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sType, Id); }, css: {'selected': $parent.current() === Id}">
-							<span class="custom_checkbox" data-bind="click: trottleChecked, css: {'checked': checked()}">
+			<!--<span class="item save_and_close" data-bind="command: deactivateCommand, customTooltip: '%MODULENAME%/ACTION_DEACTIVATE'">
+				<span class="icon"></span>
+				<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_DEACTIVATE'}"></span>
+			</span>-->
+			<span class="search_block">
+				<span class="input" data-bind="css: {'focus': isSearchFocused}">
+					<span class="icon search" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SEARCH'}"></span>
+					<input class="field" spellcheck="false" type="text" data-bind="hasfocus: isSearchFocused, value: newSearchValue, onEnter: search, valueUpdate: 'afterkeydown'" />
+				</span>
+			</span>
+		</span>
+	</div>
+	<div class="middle_bar">
+		<div class="panel_center" data-bind="customScrollbar: {x: false}">
+			<div class="scroll-inner">
+				<span class="list_notification" data-bind="visible: !searchLoading() && searchValue() !== '' && entities().length === 0">
+					<span class="link" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_CLEAR_SEARCH'}, click: clearSearch"></span>
+					<span class="description" data-bind="i18n: {'key': '%MODULENAME%/INFO_NO_ENTITIES_FOUND_' + sType.toUpperCase()}"></span>
+				</span>
+				<span class="list_notification" data-bind="visible: searchValue() !== '' && (!searchLoading() && entities().length > 0 || searchLoading())">
+					<span class="link" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_CLEAR_SEARCH'}, click: clearSearch"></span>
+					<span class="description" data-bind="text: searchText"></span>
+				</span>
+				<span class="list_notification" data-bind="visible: searchLoading()">
+					<span class="description" data-bind="i18n: {'key': 'COREWEBCLIENT/INFO_LOADING'}"></span>
+				</span>
+				<div class="items_list" data-bind="foreach: entities, visible: !searchLoading()">
+					<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sType, Id); }, css: {'selected': $parent.current() === Id}">
+						<span class="custom_checkbox" data-bind="click: trottleChecked, css: {'checked': checked()}">
+							<span class="icon"></span>
+						</span>
+						<span class="title">
+							<span class="name">
 								<span class="icon"></span>
+								<span class="text" data-bind="text: Name || PublicId"></span>
 							</span>
-							<span class="title">
-								<span class="name">
-									<span class="icon"></span>
-									<span class="text" data-bind="text: Name || PublicId"></span>
-								</span>
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-<!--</div>-->
-
-<!--<div class="panel data" data-bind="visible: showCreateForm">
-	<div class="panel_content">
-		<div class="middle_bar">
-			<div class="panel_top">
-				<h2 class="settings_heading" data-bind="text: oEntityCreateView.sHeading"></h2>
-			</div>
-			<div class="panel_center">
-				<div class="fields">
-					
-					<div class="fieldset" data-bind="with: oEntityCreateView">
-						 ko template: {name: ViewTemplate, data: $data}  /ko 
-					</div>
-					
-					<div class="buttons">
-						<span class="button" data-bind="click: createEntity, visible: !isCreating()">
-							<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE'}"></span>
-						</span>
-						<span class="button" data-bind="visible: isCreating()">
-							<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE_IN_PROGRESS'}"></span>
-						</span>
-						<span class="button secondary_button" data-bind="click: function () { $root.cancelCreatingEntity() }, visible: !isCreating()">
-							<span data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_CANCEL'}"></span>
 						</span>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>-->
+</div>

@@ -59,6 +59,16 @@ function CEntitiesView(sEntityType)
 	}, this);
 	this.deleteCommand = Utils.createCommand(this, this.deleteCheckedEntities, this.hasCheckedEntities);
 	this.deactivateCommand = Utils.createCommand(this, function () {}, this.hasCheckedEntities);
+	
+	this.searchValue = ko.observable('');
+	this.newSearchValue = ko.observable('');
+	this.isSearchFocused = ko.observable(false);
+	this.searchLoading = ko.observable(false);
+	this.searchText = ko.computed(function () {
+		return TextUtils.i18n('%MODULENAME%/INFO_SEARCH_RESULT', {
+			'SEARCH': this.searchValue()
+		});
+	}, this);
 }
 
 CEntitiesView.prototype.ViewTemplate = '%ModuleName%_EntitiesView';
@@ -87,11 +97,32 @@ CEntitiesView.prototype.onShow = function ()
 };
 
 /**
+ * Requests entity list for search string.
+ */
+CEntitiesView.prototype.search = function ()
+{
+	this.searchLoading(true);
+	this.requestEntities();
+};
+
+/**
+ * Requests entity list without search string.
+ */
+CEntitiesView.prototype.clearSearch = function ()
+{
+	this.newSearchValue('');
+	this.searchLoading(true);
+	this.requestEntities();
+};
+
+/**
  * Requests entity list.
  */
 CEntitiesView.prototype.requestEntities = function ()
 {
-	Ajax.send('GetEntityList', {Type: this.sType}, function (oResponse) {
+	this.searchValue(this.newSearchValue());
+	Ajax.send('GetEntityList', {Type: this.sType, Search: this.searchValue()}, function (oResponse) {
+		this.searchLoading(false);
 		if (_.isArray(oResponse.Result))
 		{
 			_.each(oResponse.Result, function (oEntity) {
