@@ -11,10 +11,13 @@ var
 	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 	
+	CPageSwitcherView = require('%PathToCoreWebclientModule%/js/views/CPageSwitcherView.js'),
+	
 	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
 	ConfirmPopup = require('%PathToCoreWebclientModule%/js/popups/ConfirmPopup.js'),
 	
-	Ajax = require('modules/%ModuleName%/js/Ajax.js')
+	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
+	Settings = require('modules/%ModuleName%/js/Settings.js')
 ;
 
 /**
@@ -29,6 +32,7 @@ function CEntitiesView(sEntityType)
 	this.sType = sEntityType;
 	this.oEntityCreateView = this.getEntityCreateView();
 	this.entities = ko.observableArray([]);
+	this.totalEntitiesCount = ko.observable(0);
 	this.current = ko.observable(0);
 	this.showCreateForm = ko.observable(false);
 	this.isCreating = ko.observable(false);
@@ -63,11 +67,20 @@ function CEntitiesView(sEntityType)
 	this.searchValue = ko.observable('');
 	this.newSearchValue = ko.observable('');
 	this.isSearchFocused = ko.observable(false);
-	this.searchLoading = ko.observable(false);
+	this.loading = ko.observable(false);
 	this.searchText = ko.computed(function () {
 		return TextUtils.i18n('%MODULENAME%/INFO_SEARCH_RESULT', {
 			'SEARCH': this.searchValue()
 		});
+	}, this);
+	
+	this.oPageSwitcher = new CPageSwitcherView(0, Settings.EntitiesPerPage);
+	this.oPageSwitcher.currentPage.subscribe(function () {
+		this.loading(true);
+		this.requestEntities();
+	}, this);
+	this.totalEntitiesCount.subscribe(function () {
+		this.oPageSwitcher.setCount(this.totalEntitiesCount());
 	}, this);
 }
 
@@ -101,7 +114,8 @@ CEntitiesView.prototype.onShow = function ()
  */
 CEntitiesView.prototype.search = function ()
 {
-	this.searchLoading(true);
+	this.loading(true);
+	this.oPageSwitcher.setPage(1, Settings.EntitiesPerPage);
 	this.requestEntities();
 };
 
@@ -111,7 +125,7 @@ CEntitiesView.prototype.search = function ()
 CEntitiesView.prototype.clearSearch = function ()
 {
 	this.newSearchValue('');
-	this.searchLoading(true);
+	this.loading(true);
 	this.requestEntities();
 };
 
@@ -120,19 +134,27 @@ CEntitiesView.prototype.clearSearch = function ()
  */
 CEntitiesView.prototype.requestEntities = function ()
 {
+	var oParameters = {
+		Type: this.sType,
+		Offset: (this.oPageSwitcher.currentPage() - 1) * Settings.EntitiesPerPage,
+		Limit: Settings.EntitiesPerPage,
+		Search: this.newSearchValue()
+	};
+	
 	this.searchValue(this.newSearchValue());
-	Ajax.send('GetEntityList', {Type: this.sType, Search: this.searchValue()}, function (oResponse) {
-		this.searchLoading(false);
-		if (_.isArray(oResponse.Result))
+	Ajax.send('GetEntityList', oParameters, function (oResponse) {
+		this.loading(false);
+		if (oResponse.Result && _.isArray(oResponse.Result.Items))
 		{
-			_.each(oResponse.Result, function (oEntity) {
+			_.each(oResponse.Result.Items, function (oEntity) {
 				oEntity.checked = ko.observable(false);
 				oEntity.trottleChecked = function (oItem, oEvent) {
 					oEvent.stopPropagation();
 					this.checked(!this.checked());
 				};
 			});
-			this.entities(oResponse.Result);
+			this.entities(oResponse.Result.Items);
+			this.totalEntitiesCount(Types.pInt(oResponse.Result.Count));
 			if (this.entities().length === 0)
 			{
 				this.fChangeEntityHandler(this.sType, undefined, 'create');

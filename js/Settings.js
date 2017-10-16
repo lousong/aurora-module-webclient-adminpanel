@@ -19,11 +19,18 @@ module.exports = {
 		}
 	],
 	
+	EntitiesPerPage: 20,
 	TabsOrder: ['licensing', 'admin-security', 'admin-db', 'logs-viewer', 'system', 'common', 'modules', 'mail', 'mail-domains', 'mail-accounts', 'mail-servers', 'contacts', 'calendar', 'files', 'mobilesync', 'outlooksync', 'helpdesk', 'openpgp'],
 	
 	init: function (oAppDataSection) {
 		if (oAppDataSection)
 		{
+			var iEntitiesPerPage = Types.pInt(oAppDataSection.EntitiesPerPage);
+			if (iEntitiesPerPage > 0)
+			{
+				this.EntitiesPerPage = iEntitiesPerPage;
+			}
+			
 			if (Types.isNonEmptyArray(oAppDataSection.TabsOrder))
 			{
 				this.TabsOrder = oAppDataSection.TabsOrder;

@@ -25,9 +25,9 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 		return \Aurora\Modules\Core\Module::Decorator()->CreateTables();
 	}
 	
-	public function GetEntityList($Type, $Search)
+	public function GetEntityList($Type, $Offset = 0, $Limit = 0, $Search = '')
 	{
-		return \Aurora\Modules\Core\Module::Decorator()->GetEntityList($Type, $Search);
+		return \Aurora\Modules\Core\Module::Decorator()->GetEntityList($Type, $Offset, $Limit, $Search);
 	}
 	
 	public function GetEntity($Type, $Id)
