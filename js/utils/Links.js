@@ -7,8 +7,31 @@ var
 	
 	Settings = require('modules/%ModuleName%/js/Settings.js'),
 	
+	sSrchPref = 's.',
+	sPagePref = 'p.',
+	
 	Links = {}
 ;
+
+/**
+ * Returns true if parameter contains path value.
+ * @param {string} sTemp
+ * @return {boolean}
+ */
+function IsPageParam(sTemp)
+{
+	return (sPagePref === sTemp.substr(0, 1) && (/^[1-9][\d]*$/).test(sTemp.substr(sPagePref.length)));
+};
+
+/**
+ * Returns true if parameter contains search value.
+ * @param {string} sTemp
+ * @return {boolean}
+ */
+function IsSearchParam(sTemp)
+{
+	return (sSrchPref === sTemp.substr(0, sSrchPref.length));
+};
 
 /**
  * @param {Array=} aEntities
@@ -16,7 +39,7 @@ var
  * @param {string=} sLast = ''
  * @return {Array}
  */
-Links.get = function (sCurrEntityType, aEntities, sLast)
+Links.get = function (sCurrEntityType, aEntities, sLast, iPage, sSearch)
 {
 	var aResult = [Settings.HashModuleName];
 	
@@ -32,6 +55,16 @@ Links.get = function (sCurrEntityType, aEntities, sLast)
 			aResult.push(oEntityData.ScreenHash);
 		}
 	});
+	
+	if (Types.isPositiveNumber(iPage) && iPage > 1)
+	{
+		aResult.push(sPagePref + iPage);
+	}
+	
+	if (Types.isNonEmptyString(sSearch))
+	{
+		aResult.push(sSrchPref + sSearch);
+	}
 	
 	if (Types.isNonEmptyString(sLast))
 	{
@@ -51,7 +84,10 @@ Links.parse = function (aParams)
 	var
 		iIndex = 0,
 		oEntities = {},
-		sCurrEntityType = ''
+		sCurrEntityType = '',
+		iPage = 1,
+		sSearch = '',
+		sTemp = ''
 	;
 	
 	_.each(Settings.EntitiesData, function (oEntityData) {
@@ -66,12 +102,36 @@ Links.parse = function (aParams)
 			sCurrEntityType = oEntityData.Type;
 			iIndex++;
 		}
+		if (aParams.length > iIndex)
+		{
+			sTemp = Types.pString(aParams[iIndex]);
+			if (IsPageParam(sTemp))
+			{
+				iPage = Types.pInt(sTemp.substr(sPagePref.length));
+				if (iPage <= 0)
+				{
+					iPage = 1;
+				}
+				iIndex++;
+			}
+		}
+		if (aParams.length > iIndex)
+		{
+			sTemp = Types.pString(aParams[iIndex]);
+			if (IsSearchParam(sTemp))
+			{
+				sSearch = sTemp.substr(sSrchPref.length);
+				iIndex++;
+			}
+		}
 	});
 	
 	return {
 		Entities: oEntities,
 		CurrentType: sCurrEntityType,
-		Last: Types.isNonEmptyString(aParams[iIndex]) ? aParams[iIndex] : ''
+		Last: Types.isNonEmptyString(aParams[iIndex]) ? aParams[iIndex] : '',
+		Page: iPage,
+		Search: sSearch
 	};
 };
 
