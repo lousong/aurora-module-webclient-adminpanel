@@ -37,6 +37,8 @@ function IsSearchParam(sTemp)
  * @param {Array=} aEntities
  * @param {string=} sCurrEntityType = ''
  * @param {string=} sLast = ''
+ * @param {number=} iPage = 1
+ * @param {string=} sSearch = ''
  * @return {Array}
  */
 Links.get = function (sCurrEntityType, aEntities, sLast, iPage, sSearch)
@@ -46,7 +48,7 @@ Links.get = function (sCurrEntityType, aEntities, sLast, iPage, sSearch)
 	aEntities = aEntities || [];
 	
 	_.each(Settings.EntitiesData, function (oEntityData) {
-		if (Types.isPositiveNumber(aEntities[oEntityData.Type]))
+		if (aEntities[oEntityData.Type])
 		{
 			aResult.push(oEntityData.ScreenHash.substr(0,1) + aEntities[oEntityData.Type]);
 		}
