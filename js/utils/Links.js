@@ -48,7 +48,7 @@ Links.get = function (sCurrEntityType, aEntities, sLast, iPage, sSearch)
 	aEntities = aEntities || [];
 	
 	_.each(Settings.EntitiesData, function (oEntityData) {
-		if (aEntities[oEntityData.Type])
+		if (Types.isPositiveNumber(aEntities[oEntityData.Type]))
 		{
 			aResult.push(oEntityData.ScreenHash.substr(0,1) + aEntities[oEntityData.Type]);
 		}

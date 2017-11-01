@@ -147,6 +147,7 @@ CEntitiesView.prototype.requestEntities = function ()
 		if (oResponse.Result && _.isArray(oResponse.Result.Items))
 		{
 			_.each(oResponse.Result.Items, function (oEntity) {
+				oEntity.Id = Types.pInt(oEntity.Id);
 				oEntity.checked = ko.observable(false);
 				oEntity.trottleChecked = function (oItem, oEvent) {
 					oEvent.stopPropagation();
