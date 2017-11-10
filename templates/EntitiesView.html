@@ -1,9 +1,4 @@
 <div class="panel_content">
-	<div class="buttons big_single_button">
-		<span href="javascript: void(0)" class="button" data-bind="click: function () { $root.createEntity(); }">
-			<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE_ENTITY_' + sType.toUpperCase()}"></span>
-		</span>
-	</div>
 	<div class="toolbar">
 		<span class="content">
 			<span class="custom_checkbox" data-bind="click: groupCheck, css: {'checked': hasCheckedEntities}">
@@ -12,6 +7,10 @@
 			<span class="item delete" data-bind="command: deleteCommand, customTooltip: 'COREWEBCLIENT/ACTION_DELETE'">
 				<span class="icon"></span>
 				<span class="text" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_DELETE'}"></span>
+			</span>
+			<span class="item create_user" data-bind="click: function () { $root.createEntity(); }, customTooltip: '%MODULENAME%/ACTION_CREATE_ENTITY_' + sType.toUpperCase()">
+				<span class="icon"></span>
+				<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE_ENTITY_' + sType.toUpperCase()}"></span>
 			</span>
 			<!--<span class="item save_and_close" data-bind="command: deactivateCommand, customTooltip: '%MODULENAME%/ACTION_DEACTIVATE'">
 				<span class="icon"></span>
