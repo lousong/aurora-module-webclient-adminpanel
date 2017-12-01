@@ -1,6 +1,10 @@
 'use strict';
 
-var Types = require('%PathToCoreWebclientModule%/js/utils/Types.js');
+var
+	_ = require('underscore'),
+	
+	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js')
+;
 
 module.exports = {
 	ServerModuleName: 'AdminPanelWebclient',
@@ -22,19 +26,19 @@ module.exports = {
 	EntitiesPerPage: 20,
 	TabsOrder: ['licensing', 'admin-security', 'admin-db', 'logs-viewer', 'system', 'common', 'modules', 'mail', 'mail-domains', 'mail-accounts', 'mail-servers', 'contacts', 'calendar', 'files', 'mobilesync', 'outlooksync', 'helpdesk', 'openpgp'],
 	
-	init: function (oAppDataSection) {
-		if (oAppDataSection)
+	/**
+	 * Initializes settings from AppData object sections.
+	 * 
+	 * @param {Object} oAppData Object contained modules settings.
+	 */
+	init: function (oAppData)
+	{
+		var oAppDataSection = oAppData['Core'];
+		
+		if (!_.isEmpty(oAppDataSection))
 		{
-			var iEntitiesPerPage = Types.pInt(oAppDataSection.EntitiesPerPage);
-			if (iEntitiesPerPage > 0)
-			{
-				this.EntitiesPerPage = iEntitiesPerPage;
-			}
-			
-			if (Types.isNonEmptyArray(oAppDataSection.TabsOrder))
-			{
-				this.TabsOrder = oAppDataSection.TabsOrder;
-			}
+			this.EntitiesPerPage = Types.pPositiveInt(oAppDataSection.EntitiesPerPage, this.EntitiesPerPage);
+			this.TabsOrder = Types.pArray(oAppDataSection.TabsOrder, this.TabsOrder);
 		}
 	}
 };
