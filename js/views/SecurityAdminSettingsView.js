@@ -113,7 +113,7 @@ CSecurityAdminSettingsView.prototype.applySavedValues = function (oParameters)
 	{
 		window.location.reload();
 	}
-	Settings.updateSecurity(oParameters.AdminLogin, oParameters.NewPassword !== '');
+	Settings.updateSecurity(oParameters.AdminLogin, Settings.AdminHasPassword || oParameters.NewPassword !== '');
 	this.setStartError();
 };
 
