@@ -16,7 +16,7 @@
 	</div>
 	
 	<div class="panels" data-bind="splitterFlex: {name: 'adminpanel', sizes: [20, 20, 60]}">
-		<div class="panel left_panel" data-bind="with: currentEntitiesView(), visible: currentEntityType() !== ''">
+		<div class="panel users_list_panel" data-bind="with: currentEntitiesView(), visible: currentEntityType() !== ''">
 			<!-- ko template: {name: ViewTemplate} --><!-- /ko -->
 		</div>
 
@@ -36,7 +36,7 @@
 												<span class="icon"></span>
 											</span>
 											<span class="data">
-												<span class="subject" data-bind="text: title"></span>
+												<span class="title" data-bind="text: title"></span>
 											</span>
 										</div>
 									</div>

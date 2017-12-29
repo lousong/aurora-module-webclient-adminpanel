@@ -1,9 +1,7 @@
 <div class="panel_content">
 	<div class="toolbar">
 		<span class="content">
-			<span class="custom_checkbox" data-bind="click: groupCheck, css: {'checked': hasCheckedEntities}">
-				<span class="icon"></span>
-			</span>
+			
 			<span class="item delete" data-bind="command: deleteCommand, customTooltip: 'COREWEBCLIENT/ACTION_DELETE'">
 				<span class="icon"></span>
 				<span class="text" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_DELETE'}"></span>
@@ -16,15 +14,21 @@
 				<span class="icon"></span>
 				<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_DEACTIVATE'}"></span>
 			</span>-->
+			
+		</span>
+	</div>
+	<div class="middle_bar">
+		<div class="panel_top">
+			<span class="custom_checkbox" data-bind="click: groupCheck, css: {'checked': hasCheckedEntities}">
+				<span class="icon"></span>
+			</span>
 			<span class="search_block">
 				<span class="input" data-bind="css: {'focus': isSearchFocused}">
 					<span class="icon search" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SEARCH'}"></span>
 					<input class="field" spellcheck="false" type="text" data-bind="hasfocus: isSearchFocused, value: newSearchValue, onEnter: search, valueUpdate: 'afterkeydown'" />
 				</span>
 			</span>
-		</span>
-	</div>
-	<div class="middle_bar">
+		</div>
 		<div class="panel_center" data-bind="customScrollbar: {x: false}">
 			<div class="scroll-inner">
 				<span class="list_notification" data-bind="visible: !loading() && searchValue() !== '' && entities().length === 0">
@@ -40,15 +44,16 @@
 				</span>
 				<div class="items_list" data-bind="foreach: entities, visible: !loading()">
 					<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sType, Id); }, css: {'selected': $parent.current() === Id}">
-						<span class="custom_checkbox" data-bind="click: trottleChecked, css: {'checked': checked()}">
-							<span class="icon"></span>
-						</span>
-						<span class="title">
-							<span class="name">
-								<span class="icon"></span>
-								<span class="text" data-bind="text: Name || PublicId"></span>
+						<div class="item_content">
+							<span class="controls">
+								<span class="custom_checkbox" data-bind="click: trottleChecked, css: {'checked': checked()}">
+									<span class="icon"></span>
+								</span>
 							</span>
-						</span>
+							<span class="data">
+								<span class="title" data-bind="text: Name || PublicId"></span>
+							</span>
+						</div>
 					</div>
 				</div>
 			</div>

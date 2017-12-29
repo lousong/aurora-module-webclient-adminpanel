@@ -13,18 +13,9 @@
 	
 	.toolbar {
 		.item {
-			margin: 0;
-			padding: 0 0 0 5px;
-			
 			&.create_user .icon:before {
 				content: "\e619";
 			}
-		}
-		.search_block {
-			float: right;
-			margin-top: 3px;
-			padding-right: 0;
-			width: 140px;
 		}
 	}
 	
@@ -32,41 +23,30 @@
 		.item {
 			cursor: pointer;
 
-			.user-select();
-
-			.data .subject {
-				display: block;
-			}
-
-			.icon {
-				display: inline-block;
-				display: none;
-				height: 19px;
-				margin-right: 4px;
-				vertical-align: middle;
-				width: 18px;
-			}
-
-			&.selected {
-				cursor: default;
-			}
-
-			&.heading {
-				cursor: default;
-				background: #fcfcfc;
-				color: #ccc;
-				text-transform: uppercase;
+//			&.heading {
+//				cursor: default;
+//				background: #fcfcfc;
+//				color: #ccc;
+//				text-transform: uppercase;
+//			}
+			
+//			.data .subject {
+//				display: block;
+//			}
+			
+			.title {
+				margin-bottom: 0px;
+				.fadeout();
 			}
 		}
-		
-		.custom_checkbox {
-			position: absolute;
-			top: 8px;
-			z-index: 100;
-			left: 12px;
+	}
+	
+	.users_list_panel {
+		.panel_top {
+			background: #f1f1f1;
 			
-			.icon {
-				display: inline-block;
+			.search_block {
+				padding-right: 4px;
 			}
 		}
 	}
