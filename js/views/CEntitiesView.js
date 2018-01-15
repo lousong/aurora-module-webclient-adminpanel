@@ -63,6 +63,9 @@ function CEntitiesView(sEntityType)
 	}, this);
 	this.deleteCommand = Utils.createCommand(this, this.deleteCheckedEntities, this.hasCheckedEntities);
 	this.deactivateCommand = Utils.createCommand(this, function () {}, this.hasCheckedEntities);
+	this.selectedCount = ko.computed(function () {
+		return this.checkedEntities().length;
+	}, this);
 	
 	this.searchValue = ko.observable('');
 	this.newSearchValue = ko.observable('');
