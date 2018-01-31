@@ -254,7 +254,10 @@ CEntitiesView.prototype.deleteCheckedEntities = function ()
 
 CEntitiesView.prototype.deleteEntities = function (aIdList)
 {
-	Popups.showPopup(ConfirmPopup, [TextUtils.i18n('COREWEBCLIENT/CONFIRM_ARE_YOU_SURE'), _.bind(this.confirmedDeleteEntities, this, aIdList)]);
+	Popups.showPopup(ConfirmPopup, [
+		TextUtils.i18n('%MODULENAME%/CONFIRM_DELETE_' + this.sType.toUpperCase() + '_PLURAL', {}, null, aIdList.length), 
+		_.bind(this.confirmedDeleteEntities, this, aIdList), '', TextUtils.i18n('COREWEBCLIENT/ACTION_DELETE')
+	]);
 };
 
 /**
