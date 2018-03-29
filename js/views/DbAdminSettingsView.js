@@ -2,6 +2,7 @@
 
 var
 	_ = require('underscore'),
+	$ = require('jquery'),
 	ko = require('knockout'),
 	
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
@@ -78,16 +79,16 @@ CDbAdminSettingsView.prototype.getParametersForSave = function ()
 	if (this.dbPassword() === this.sFakePass)
 	{
 		return {
-			'DbLogin': this.dbLogin(),
-			'DbName': this.dbName(),
-			'DbHost': this.dbHost()
+			'DbLogin': $.trim(this.dbLogin()),
+			'DbName': $.trim(this.dbName()),
+			'DbHost': $.trim(this.dbHost())
 		};
 	}
 	return {
-		'DbLogin': this.dbLogin(),
-		'DbPassword': this.dbPassword(),
-		'DbName': this.dbName(),
-		'DbHost': this.dbHost()
+		'DbLogin': $.trim(this.dbLogin()),
+		'DbPassword': $.trim(this.dbPassword()),
+		'DbName': $.trim(this.dbName()),
+		'DbHost': $.trim(this.dbHost())
 	};
 };
 

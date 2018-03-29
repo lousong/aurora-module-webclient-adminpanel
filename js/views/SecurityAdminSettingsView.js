@@ -2,6 +2,7 @@
 
 var
 	_ = require('underscore'),
+	$ = require('jquery'),
 	ko = require('knockout'),
 	
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
@@ -89,9 +90,9 @@ CSecurityAdminSettingsView.prototype.revertGlobalValues = function()
 CSecurityAdminSettingsView.prototype.getParametersForSave = function ()
 {
 	var oParameters = {
-		'AdminLogin': this.login(),
-		'Password': this.pass(),
-		'NewPassword': this.newPass()
+		'AdminLogin': $.trim(this.login()),
+		'Password': $.trim(this.pass()),
+		'NewPassword': $.trim(this.newPass())
 	};
 	
 	if (this.selectedLanguage() !== Settings.AdminLanguage)
@@ -124,19 +125,24 @@ CSecurityAdminSettingsView.prototype.setAccessLevel = function (sEntityType, iEn
 
 CSecurityAdminSettingsView.prototype.validateBeforeSave = function ()
 {
-	if (Settings.AdminHasPassword && this.pass() === '' && this.newPass() !== '')
+	var
+		sPass = $.trim(this.pass()),
+		sNewPass = $.trim(this.newPass()),
+		sConfirmPass = $.trim(this.confirmPass())
+	;
+	if (Settings.AdminHasPassword && sPass === '' && sNewPass !== '')
 	{
 		Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_CURRENT_PASSWORD_EMPTY'));
 		this.passFocused(true);
 		return false;
 	}
-	if (this.pass() !== '' && this.newPass() === '')
+	if (sPass !== '' && sNewPass === '')
 	{
 		Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_NEW_PASSWORD_EMPTY'));
 		this.newPassFocused(true);
 		return false;
 	}
-	if (this.pass() !== '' && this.newPass() !== this.confirmPass())
+	if (sPass !== '' && sNewPass !== sConfirmPass)
 	{
 		Screens.showError(TextUtils.i18n('COREWEBCLIENT/ERROR_PASSWORDS_DO_NOT_MATCH'));
 		this.newPassFocused(true);
