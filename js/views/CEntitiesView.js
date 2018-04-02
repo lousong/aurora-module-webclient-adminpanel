@@ -85,6 +85,8 @@ function CEntitiesView(sEntityType)
 	this.totalEntitiesCount.subscribe(function () {
 		this.oPageSwitcher.setCount(this.totalEntitiesCount());
 	}, this);
+	
+	this.aIdListDeleteProcess = [];
 }
 
 CEntitiesView.prototype.ViewTemplate = '%ModuleName%_EntitiesView';
@@ -167,6 +169,7 @@ CEntitiesView.prototype.requestEntities = function ()
 			{
 				this.fChangeEntityHandler(this.sType, this.justCreatedId());
 			}
+			this.aIdListDeleteProcess = [];
 		}
 	}, this);
 };
@@ -254,10 +257,22 @@ CEntitiesView.prototype.deleteCheckedEntities = function ()
 
 CEntitiesView.prototype.deleteEntities = function (aIdList)
 {
-	Popups.showPopup(ConfirmPopup, [
-		TextUtils.i18n('%MODULENAME%/CONFIRM_DELETE_' + this.sType.toUpperCase() + '_PLURAL', {}, null, aIdList.length), 
-		_.bind(this.confirmedDeleteEntities, this, aIdList), '', TextUtils.i18n('COREWEBCLIENT/ACTION_DELETE')
-	]);
+	if (Types.isNonEmptyArray(this.aIdListDeleteProcess))
+	{
+		aIdList = _.difference(aIdList, this.aIdListDeleteProcess);
+		this.aIdListDeleteProcess = _.union(aIdList, this.aIdListDeleteProcess);
+	}
+	else
+	{
+		this.aIdListDeleteProcess = aIdList;
+	}
+	if (aIdList.length > 0)
+	{
+		Popups.showPopup(ConfirmPopup, [
+			TextUtils.i18n('%MODULENAME%/CONFIRM_DELETE_' + this.sType.toUpperCase() + '_PLURAL', {}, null, aIdList.length), 
+			_.bind(this.confirmedDeleteEntities, this, aIdList), '', TextUtils.i18n('COREWEBCLIENT/ACTION_DELETE')
+		]);
+	}
 };
 
 /**
@@ -281,6 +296,10 @@ CEntitiesView.prototype.confirmedDeleteEntities = function (aIdList, bDelete)
 			}
 			this.requestEntities();
 		}, this);
+	}
+	else
+	{
+		this.aIdListDeleteProcess = [];
 	}
 };
 
