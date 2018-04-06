@@ -48,7 +48,6 @@ module.exports = function (oAppData) {
 					TabName: Settings.HashModuleName + '-security',
 					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_SECURITY_SETTINGS_TAB')
 				});
-				
 				aAdminPanelTabsParams.push({
 					GetTabView: function(resolve) {
 						require.ensure(
@@ -61,6 +60,19 @@ module.exports = function (oAppData) {
 					},
 					TabName: 'common',
 					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_COMMON_SETTINGS_TAB')
+				});
+				aAdminPanelTabsParams.push({
+					GetTabView: function(resolve) {
+						require.ensure(
+							['modules/%ModuleName%/js/views/AboutAdminSettingsView.js'],
+							function() {
+								resolve(require('modules/%ModuleName%/js/views/AboutAdminSettingsView.js'));
+							},
+							"admin-bundle"
+						);
+					},
+					TabName: 'about',
+					TabTitle: TextUtils.i18n('%MODULENAME%/LABEL_ABOUT_SETTINGS_TAB')
 				});
 			},
 			getScreens: function () {
