@@ -26,4 +26,9 @@ _.extendOwn(CAboutAdminSettingsView.prototype, CAbstractSettingsFormView.prototy
 
 CAboutAdminSettingsView.prototype.ViewTemplate = '%ModuleName%_AboutAdminSettingsView';
 
+CAboutAdminSettingsView.prototype.setAccessLevel = function (sEntityType, iEntityId)
+{
+	this.visible(sEntityType === '');
+};
+
 module.exports = new CAboutAdminSettingsView();
