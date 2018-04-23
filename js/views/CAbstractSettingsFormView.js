@@ -29,9 +29,16 @@ function CAbstractSettingsFormView(sServerModule)
 	this.sSavedState = '';
 	
 	this.bShown = false;
+	
+	this.aSettingsSections = [];
 }
 
 CAbstractSettingsFormView.prototype.ViewTemplate = ''; // should be overriden
+
+CAbstractSettingsFormView.prototype.addSettingsSection = function (oSection)
+{
+	this.aSettingsSections.push(oSection);
+};
 
 CAbstractSettingsFormView.prototype.onRoute = function (aParams)
 {
@@ -41,6 +48,12 @@ CAbstractSettingsFormView.prototype.onRoute = function (aParams)
 	{
 		this.onRouteChild(aParams);
 	}
+	_.each(this.aSettingsSections, function (oSection) {
+		if (_.isFunction(oSection.onShow))
+		{
+			oSection.onShow(aParams);
+		}
+	});
 };
 
 /**
@@ -49,7 +62,14 @@ CAbstractSettingsFormView.prototype.onRoute = function (aParams)
  */
 CAbstractSettingsFormView.prototype.hide = function (fAfterHideHandler, fRevertRouting)
 {
-	if (this.getCurrentState() !== this.sSavedState) // if values have been changed
+	var bStateChanged = this.getCurrentState() !== this.sSavedState;
+	_.each(this.aSettingsSections, function (oSection) {
+		if (_.isFunction(oSection.getCurrentState))
+		{
+			bStateChanged = bStateChanged || oSection.getCurrentState() !== oSection.sSavedState;
+		}
+	});
+	if (bStateChanged) // if values have been changed
 	{
 		Popups.showPopup(ConfirmPopup, [TextUtils.i18n('COREWEBCLIENT/CONFIRM_DISCARD_CHANGES'), _.bind(function (bDiscard) {
 			if (bDiscard)
@@ -110,6 +130,13 @@ CAbstractSettingsFormView.prototype.revertGlobalValues = function ()
 
 CAbstractSettingsFormView.prototype.revert = function ()
 {
+	_.each(this.aSettingsSections, function (oSection) {
+		if (_.isFunction(oSection.revert))
+		{
+			oSection.revert();
+		}
+	});
+	
 	this.revertGlobalValues();
 	
 	this.updateSavedState();

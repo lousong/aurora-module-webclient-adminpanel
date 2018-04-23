@@ -130,6 +130,18 @@ CSettingsView.prototype.sortRegisterTabs = function ()
 	}));
 };
 
+CSettingsView.prototype.registerTabSection = function (fGetSectionView, sTabName) {
+	var
+		oTab = _.findWhere(this.tabs(), {'name': sTabName}),
+		oSection = fGetSectionView()
+	;
+
+	if (oTab)
+	{
+		oTab.view.addSettingsSection(oSection);
+	}
+};
+
 /**
  * Sets hash without creating entity.
  */

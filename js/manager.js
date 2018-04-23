@@ -15,7 +15,8 @@ module.exports = function (oAppData) {
 			
 			Settings = require('modules/%ModuleName%/js/Settings.js'),
 			
-			aAdminPanelTabsParams = []
+			aAdminPanelTabsParams = [],
+			aAdminPanelTabsSectionsParams = []
 		;
 
 		Settings.init(oAppData);
@@ -100,9 +101,15 @@ module.exports = function (oAppData) {
 								Promise.all(aPromises).then(function () { 
 									oSettingsView.sortRegisterTabs();
 									resolve(oSettingsView);
+									_.each(aAdminPanelTabsSectionsParams, function (oSectionParams) {
+										oSettingsView.registerTabSection(oSectionParams.GetTabView, oSectionParams.TabName, oSectionParams.TabTitle);
+									});
 								}, function () {
 									oSettingsView.sortRegisterTabs();
 									resolve(oSettingsView);
+									_.each(aAdminPanelTabsSectionsParams, function (oSectionParams) {
+										oSettingsView.registerTabSection(oSectionParams.GetTabView, oSectionParams.TabName, oSectionParams.TabTitle);
+									});
 								});
 							},
 							"admin-bundle"
@@ -119,6 +126,12 @@ module.exports = function (oAppData) {
 					GetTabView: fGetTabView,
 					TabName: sTabName,
 					TabTitle: sTabTitle
+				});
+			},
+			registerAdminPanelTabSection: function (fGetTabView, sTabName) {
+				aAdminPanelTabsSectionsParams.push({
+					GetTabView: fGetTabView,
+					TabName: sTabName
 				});
 			},
 			setAddHash: function (aAddHash) {
