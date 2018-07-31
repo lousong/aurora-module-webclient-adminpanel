@@ -5,12 +5,12 @@ var
 	ko = require('knockout'),
 	
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
-	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	
+	Ajax = require('%PathToCoreWebclientModule%/js/Ajax.js'),
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 	
-	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
+	EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js'),
 	CAbstractSettingsFormView = require('modules/%ModuleName%/js/views/CAbstractSettingsFormView.js')
 ;
 
@@ -26,17 +26,23 @@ function CCommonSettingsPaneView()
 	
 	this.entityCreateView = ko.computed(function ()
 	{
-		switch (this.type())
-		{
-			case 'Tenant':
-				return require('modules/%ModuleName%/js/views/EditTenantView.js');
-			case 'User':
-				return require('modules/%ModuleName%/js/views/EditUserView.js');
-		}
+		return EntitiesTabs.getEditView(this.type());
 	}, this);
 	
 	this.entityCreateView.subscribe(function () {
+		if (this.entityCreateView() && _.isFunction(this.entityCreateView().setRequestEntityDataFunction))
+		{
+			this.entityCreateView().setRequestEntityDataFunction(this.requestEntityData.bind(this));
+		}
 		this.updateSavedState();
+	}, this);
+	
+	this.entityData = ko.computed(function () {
+		return EntitiesTabs.getEntityData(this.type());
+	}, this);
+	
+	this.allowSave = ko.computed(function () {
+		return !!this.entityData().UpdateRequest;
 	}, this);
 	
 	this.updateSavedState();
@@ -70,16 +76,16 @@ CCommonSettingsPaneView.prototype.revertGlobalValues = function ()
 
 CCommonSettingsPaneView.prototype.save = function (oParent)
 {
-	if (this.entityCreateView() && (!_.isFunction(this.entityCreateView().isValidSaveData) || this.entityCreateView().isValidSaveData()))
+	if (this.entityData().UpdateRequest && this.entityCreateView() && (!_.isFunction(this.entityCreateView().isValidSaveData) || this.entityCreateView().isValidSaveData()))
 	{
-		Ajax.send('UpdateEntity', {Type: this.type(), Data: this.entityCreateView() ? this.entityCreateView().getParametersForSave() : {}}, function (oResponse) {
+		Ajax.send(this.entityData().ServerModuleName, this.entityData().UpdateRequest, {Type: this.type(), Data: this.entityCreateView() ? this.entityCreateView().getParametersForSave() : {}}, function (oResponse) {
 			if (oResponse.Result)
 			{
-				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_UPDATE_ENTITY_' + this.type().toUpperCase()));
+				Screens.showReport(this.entityData().ReportSuccessUpdate);
 			}
 			else
 			{
-				Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_UPDATE_ENTITY_' + this.type().toUpperCase()));
+				Screens.showError(this.entityData().ErrorUpdate);
 			}
 
 			if (oParent && _.isFunction(oParent.currentEntitiesView) && _.isFunction(oParent.currentEntitiesView().requestEntities))
@@ -92,6 +98,20 @@ CCommonSettingsPaneView.prototype.save = function (oParent)
 	}
 };
 
+CCommonSettingsPaneView.prototype.requestEntityData = function ()
+{
+	Ajax.send(this.entityData().ServerModuleName, this.entityData().GetRequest, {Type: this.type(), Id: this.id()}, function (oResponse, oRequest) {
+		if (this.id() === oRequest.Parameters.Id)
+		{
+			if (this.entityCreateView())
+			{
+				this.entityCreateView().parse(this.id(), oResponse.Result);
+			}
+			this.updateSavedState();
+		}
+	}, this);
+};
+
 CCommonSettingsPaneView.prototype.setAccessLevel = function (sEntityType, iEntityId)
 {
 	this.visible(sEntityType !== '');
@@ -99,16 +119,7 @@ CCommonSettingsPaneView.prototype.setAccessLevel = function (sEntityType, iEntit
 	this.id(Types.pInt(iEntityId));
 	if (Types.isPositiveNumber(this.id()))
 	{
-		Ajax.send('GetEntity', {Type: this.type(), Id: this.id()}, function (oResponse, oRequest) {
-			if (this.id() === oRequest.Parameters.Id)
-			{
-				if (this.entityCreateView())
-				{
-					this.entityCreateView().parse(this.id(), oResponse.Result);
-				}
-				this.updateSavedState();
-			}
-		}, this);
+		this.requestEntityData();
 	}
 	else
 	{

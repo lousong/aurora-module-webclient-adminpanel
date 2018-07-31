@@ -137,6 +137,12 @@ module.exports = function (oAppData) {
 			setAddHash: function (aAddHash) {
 				var SettingsView = require('modules/%ModuleName%/js/views/SettingsView.js');
 				SettingsView.setAddHash(aAddHash);
+			},
+			registerAdminPanelEntityType: function (oEntityData) {
+				// Shouldn't be required before every module will be initialized.
+				// (Requires view. All views should be required after initialization of all modules.)
+				var EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js');
+				EntitiesTabs.registerEntityType(oEntityData);
 			}
 		};
 	}

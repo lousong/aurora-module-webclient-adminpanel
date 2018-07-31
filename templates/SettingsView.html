@@ -20,7 +20,7 @@
 			<!-- ko template: {name: ViewTemplate} --><!-- /ko -->
 		</div>
 
-		<div class="panel data modules" data-bind="visible: showModulesTabs">
+		<div class="panel data modules" data-bind="visible: showModulesTabs() && visibleTabsCount() > 1">
 			<div class="panel_content">
 				<div class="middle_bar unselectable">
 					<div class="panel_center" data-bind="customScrollbar: {x: false}">

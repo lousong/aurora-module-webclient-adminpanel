@@ -15,6 +15,7 @@ var
 	
 	Links = require('modules/%ModuleName%/js/utils/Links.js'),
 	
+	EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js'),
 	Settings = require('modules/%ModuleName%/js/Settings.js'),
 	CEntitiesView = require('modules/%ModuleName%/js/views/CEntitiesView.js')
 ;
@@ -36,7 +37,7 @@ function CSettingsView()
 			oView: null
 		}
 	];
-	_.each(Settings.EntitiesData, _.bind(function (oEntityData) {
+	_.each(EntitiesTabs.getData(), _.bind(function (oEntityData) {
 		var
 			oView = new CEntitiesView(oEntityData.Type),
 			fChangeEntity = _.bind(function (sType, iEntityId, sTabName) {
@@ -77,11 +78,24 @@ function CSettingsView()
 			this.currentEntitiesView().onShow();
 		}
 	}, this);
+	this.tabs = ko.observableArray([]);
+	
+	this.visibleTabsCount = ko.computed(function () {
+		var iCount = 0;
+		
+		_.each(this.tabs(), function (oTab) {
+			if (oTab.view && (typeof(oTab.view.visible) === 'undefined' ||  oTab.view.visible()))
+			{
+				iCount++;
+			}
+		});
+		
+		return iCount;
+	}, this);
+	
 	this.showModulesTabs = ko.computed(function () {
 		return this.currentEntityType() === '' || this.currentEntitiesView().hasSelectedEntity();
 	}, this);
-	
-	this.tabs = ko.observableArray([]);
 	
 	this.currentTab = ko.observable(null);
 	

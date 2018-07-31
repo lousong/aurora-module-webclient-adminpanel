@@ -5,6 +5,7 @@ var
 	
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
 	
+	EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js'),
 	Settings = require('modules/%ModuleName%/js/Settings.js'),
 	
 	sSrchPref = 's.',
@@ -47,7 +48,7 @@ Links.get = function (sCurrEntityType, aEntities, sLast, iPage, sSearch)
 	
 	aEntities = aEntities || [];
 	
-	_.each(Settings.EntitiesData, function (oEntityData) {
+	_.each(EntitiesTabs.getData(), function (oEntityData) {
 		if (Types.isPositiveNumber(aEntities[oEntityData.Type]))
 		{
 			aResult.push(oEntityData.ScreenHash.substr(0,1) + aEntities[oEntityData.Type]);
@@ -92,7 +93,7 @@ Links.parse = function (aParams)
 		sTemp = ''
 	;
 	
-	_.each(Settings.EntitiesData, function (oEntityData) {
+	_.each(EntitiesTabs.getData(), function (oEntityData) {
 		if (aParams[iIndex] && oEntityData.ScreenHash === aParams[iIndex])
 		{
 			sCurrEntityType = oEntityData.Type;

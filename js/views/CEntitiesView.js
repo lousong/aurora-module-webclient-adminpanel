@@ -8,16 +8,18 @@ var
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
 	Utils = require('%PathToCoreWebclientModule%/js/utils/Common.js'),
 	
+	Ajax = require('%PathToCoreWebclientModule%/js/Ajax.js'),
 	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
+	UserSettings = require('%PathToCoreWebclientModule%/js/Settings.js'),
 	
 	CPageSwitcherView = require('%PathToCoreWebclientModule%/js/views/CPageSwitcherView.js'),
 	
 	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
 	ConfirmPopup = require('%PathToCoreWebclientModule%/js/popups/ConfirmPopup.js'),
 	
-	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
-	Settings = require('modules/%ModuleName%/js/Settings.js')
+	Settings = require('modules/%ModuleName%/js/Settings.js'),
+	EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js')
 ;
 
 /**
@@ -30,7 +32,11 @@ var
 function CEntitiesView(sEntityType)
 {
 	this.sType = sEntityType;
-	this.oEntityCreateView = this.getEntityCreateView();
+	this.oEntityCreateView = EntitiesTabs.getEditView(this.sType);
+	this.oEntityData = EntitiesTabs.getEntityData(this.sType);
+	this.sActionCreateText = this.oEntityData.ActionCreateText;
+	this.sNoEntitiesFoundText = this.oEntityData.NoEntitiesFoundText;
+	
 	this.entities = ko.observableArray([]);
 	this.totalEntitiesCount = ko.observable(0);
 	this.current = ko.observable(0);
@@ -93,20 +99,6 @@ CEntitiesView.prototype.ViewTemplate = '%ModuleName%_EntitiesView';
 CEntitiesView.prototype.CreateFormViewTemplate = '%ModuleName%_EntityCreateFormView';
 
 /**
- * Returns entity edit view for cpecified entity type.
- */
-CEntitiesView.prototype.getEntityCreateView = function ()
-{
-	switch (this.sType)
-	{
-		case 'Tenant':
-			return require('modules/%ModuleName%/js/views/EditTenantView.js');
-		case 'User':
-			return require('modules/%ModuleName%/js/views/EditUserView.js');
-	}
-};
-
-/**
  * Requests entity list after showing.
  */
 CEntitiesView.prototype.onShow = function ()
@@ -143,11 +135,12 @@ CEntitiesView.prototype.requestEntities = function ()
 		Type: this.sType,
 		Offset: (this.oPageSwitcher.currentPage() - 1) * Settings.EntitiesPerPage,
 		Limit: Settings.EntitiesPerPage,
-		Search: this.newSearchValue()
+		Search: this.newSearchValue(),
+		TenantId: UserSettings.SingleTenantId
 	};
 	
 	this.searchValue(this.newSearchValue());
-	Ajax.send('GetEntityList', oParameters, function (oResponse) {
+	Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.GetListRequest, oParameters, function (oResponse) {
 		this.loading(false);
 		if (oResponse.Result && _.isArray(oResponse.Result.Items))
 		{
@@ -220,16 +213,16 @@ CEntitiesView.prototype.createEntity = function ()
 	if (this.oEntityCreateView && (!_.isFunction(this.oEntityCreateView.isValidSaveData) || this.oEntityCreateView.isValidSaveData()))
 	{
 		this.isCreating(true);
-		Ajax.send(this.sType === 'Tenant' ? 'CreateTenant' : 'CreateUser', this.oEntityCreateView.getParametersForSave(), function (oResponse) {
+		Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.CreateRequest, this.oEntityCreateView.getParametersForSave(), function (oResponse) {
 			if (oResponse.Result)
 			{
-				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_ENTITY_' + this.sType.toUpperCase()));
+				Screens.showReport(this.oEntityData.ReportSuccessCreateText);
 				this.justCreatedId(Types.pInt(oResponse.Result));
 				this.cancelCreatingEntity();
 			}
 			else
 			{
-				Api.showErrorByCode(oResponse, TextUtils.i18n('%MODULENAME%/ERROR_CREATE_ENTITY_' + this.sType.toUpperCase()));
+				Api.showErrorByCode(oResponse, this.oEntityData.ErrorCreateText);
 			}
 			this.requestEntities();
 			this.isCreating(false);
@@ -269,7 +262,7 @@ CEntitiesView.prototype.deleteEntities = function (aIdList)
 	if (aIdList.length > 0)
 	{
 		Popups.showPopup(ConfirmPopup, [
-			TextUtils.i18n('%MODULENAME%/CONFIRM_DELETE_' + this.sType.toUpperCase() + '_PLURAL', {}, null, aIdList.length), 
+			TextUtils.i18n(this.oEntityData.ConfirmDeleteLangConst, {}, null, aIdList.length), 
 			_.bind(this.confirmedDeleteEntities, this, aIdList), '', TextUtils.i18n('COREWEBCLIENT/ACTION_DELETE')
 		]);
 	}
@@ -285,14 +278,14 @@ CEntitiesView.prototype.confirmedDeleteEntities = function (aIdList, bDelete)
 {
 	if (bDelete)
 	{
-		Ajax.send('DeleteEntities', {Type: this.sType, IdList: aIdList}, function (oResponse) {
+		Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.DeleteRequest, {Type: this.sType, IdList: aIdList}, function (oResponse) {
 			if (oResponse.Result)
 			{
-				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_DELETE_ENTITIES_' + this.sType.toUpperCase() + '_PLURAL', {}, null, aIdList.length));
+				Screens.showReport(TextUtils.i18n(this.oEntityData.ReportSuccessDeleteLangConst, {}, null, aIdList.length));
 			}
 			else
 			{
-				Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_DELETE_ENTITIES_' + this.sType.toUpperCase() + '_PLURAL', {}, null, aIdList.length));
+				Screens.showError(TextUtils.i18n(this.oEntityData.ErrorDeleteLangConst, {}, null, aIdList.length));
 			}
 			this.requestEntities();
 		}, this);
