@@ -42,7 +42,7 @@ function CCommonSettingsPaneView()
 	}, this);
 	
 	this.allowSave = ko.computed(function () {
-		return !!this.entityData().UpdateRequest;
+		return !!this.entityData() && !!this.entityData().UpdateRequest;
 	}, this);
 	
 	this.updateSavedState();
