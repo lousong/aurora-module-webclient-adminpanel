@@ -135,8 +135,7 @@ CEntitiesView.prototype.requestEntities = function ()
 		Type: this.sType,
 		Offset: (this.oPageSwitcher.currentPage() - 1) * Settings.EntitiesPerPage,
 		Limit: Settings.EntitiesPerPage,
-		Search: this.newSearchValue(),
-		TenantId: UserSettings.SingleTenantId
+		Search: this.newSearchValue()
 	};
 	
 	this.searchValue(this.newSearchValue());
