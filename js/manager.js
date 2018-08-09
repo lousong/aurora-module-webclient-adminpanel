@@ -139,10 +139,16 @@ module.exports = function (oAppData) {
 				SettingsView.setAddHash(aAddHash);
 			},
 			registerAdminPanelEntityType: function (oEntityData) {
-				// Shouldn't be required before every module will be initialized.
+				// EntitiesTabs shouldn't be required before every module will be initialized.
 				// (Requires view. All views should be required after initialization of all modules.)
 				var EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js');
 				EntitiesTabs.registerEntityType(oEntityData);
+			},
+			changeAdminPanelEntityData: function (oEntityData) {
+				// EntitiesTabs shouldn't be required before every module will be initialized.
+				// (Requires view. All views should be required after initialization of all modules.)
+				var EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js');
+				EntitiesTabs.changeEntityData(oEntityData);
 			}
 		};
 	}

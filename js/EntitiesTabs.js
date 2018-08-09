@@ -87,4 +87,15 @@ CEntitiesTabs.prototype.registerEntityType = function (oEntityData)
 	this.aData.push(oEntityData);
 };
 
+CEntitiesTabs.prototype.changeEntityData = function (oEntityData)
+{
+	var oData = this.getEntityData(oEntityData.Type);
+	if (oData)
+	{
+		_.each(oEntityData, function (mValue, sKey) {
+			oData[sKey] = mValue;
+		});
+	}
+};
+
 module.exports = new CEntitiesTabs();
