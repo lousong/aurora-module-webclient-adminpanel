@@ -42,7 +42,12 @@ CAbstractSettingsFormView.prototype.addSettingsSection = function (oSection)
 
 CAbstractSettingsFormView.prototype.onRoute = function (aParams)
 {
+	var bWasntShown = !this.bShown;
 	this.bShown = true;
+	if (bWasntShown && _.isFunction(this.onShow))
+	{
+		this.onShow();
+	}
 	this.revert();
 	if (_.isFunction(this.onRouteChild))
 	{
