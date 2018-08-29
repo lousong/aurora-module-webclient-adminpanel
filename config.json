@@ -2,5 +2,17 @@
     "Disabled": [
 		false,
 		"bool"
+	],
+    "EntitiesPerPage": [
+		20,
+		"int"
+	],
+    "TabsOrder": [
+		["licensing", "admin-security", "admin-db", "logs-viewer", "system", "common", "modules"],
+		"array"
+	],
+    "TopTabsOrder": [
+		[],
+		"array"
 	]
 }

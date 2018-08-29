@@ -11,7 +11,8 @@ module.exports = {
 	HashModuleName: 'admin',
 	
 	EntitiesPerPage: 20,
-	TabsOrder: ['licensing', 'admin-security', 'admin-db', 'logs-viewer', 'system', 'common', 'modules', 'mail', 'mail-domains', 'mail-accounts', 'mail-servers', 'contacts', 'calendar', 'files', 'mobilesync', 'outlooksync', 'helpdesk', 'openpgp','about'],
+	TabsOrder: ['licensing', 'admin-security', 'admin-db', 'logs-viewer', 'system', 'common', 'modules'],
+	EntitiesOrder: [],
 	
 	/**
 	 * Initializes settings from AppData object sections.
@@ -20,12 +21,13 @@ module.exports = {
 	 */
 	init: function (oAppData)
 	{
-		var oAppDataSection = oAppData['Core'];
+		var oAppDataSection = oAppData[this.ServerModuleName];
 		
 		if (!_.isEmpty(oAppDataSection))
 		{
 			this.EntitiesPerPage = Types.pPositiveInt(oAppDataSection.EntitiesPerPage, this.EntitiesPerPage);
 			this.TabsOrder = Types.pArray(oAppDataSection.TabsOrder, this.TabsOrder);
+			this.EntitiesOrder = Types.pArray(oAppDataSection.EntitiesOrder, this.EntitiesOrder);
 		}
 	}
 };

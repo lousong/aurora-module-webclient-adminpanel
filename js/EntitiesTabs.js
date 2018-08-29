@@ -62,6 +62,7 @@ function CEntitiesTabs()
 			ErrorDeleteLangConst: '%MODULENAME%/ERROR_DELETE_ENTITIES_USER_PLURAL'
 		}
 	];
+	this.sortEntities();
 }
 
 CEntitiesTabs.prototype.getData = function ()
@@ -85,6 +86,15 @@ CEntitiesTabs.prototype.getEditView = function (sType)
 CEntitiesTabs.prototype.registerEntityType = function (oEntityData)
 {
 	this.aData.push(oEntityData);
+	this.sortEntities();
+};
+
+CEntitiesTabs.prototype.sortEntities = function ()
+{
+	this.aData = _.sortBy(this.aData, function (oEntityData) {
+		var iIndex = _.indexOf(Settings.EntitiesOrder, oEntityData.Type);
+		return iIndex !== -1 ? iIndex : Settings.EntitiesOrder.length;
+	});
 };
 
 CEntitiesTabs.prototype.changeEntityData = function (oEntityData)

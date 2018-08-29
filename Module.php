@@ -201,6 +201,22 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 		return false;
 	}
 	
+	/**
+	 * Obtains list of module settings for authenticated user.
+	 * 
+	 * @return array
+	 */
+	public function GetSettings()
+	{
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
+		
+		return array(
+			'EntitiesPerPage' => $this->getConfig('EntitiesPerPage', 20),
+			'TabsOrder' => $this->getConfig('TabsOrder', ['licensing', 'admin-security', 'admin-db', 'logs-viewer', 'system', 'common', 'modules']),
+			'EntitiesOrder' => $this->getConfig('EntitiesOrder', []),
+		);
+	}
+	
 	public function UpdateSettings(
 			$DbLogin = null, $DbPassword = null, $DbName = null, $DbHost = null,
 			$AdminLogin = null, $Password = null, $NewPassword = null, $AdminLanguage = null,
