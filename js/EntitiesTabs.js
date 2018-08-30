@@ -62,7 +62,7 @@ function CEntitiesTabs()
 			ErrorDeleteLangConst: '%MODULENAME%/ERROR_DELETE_ENTITIES_USER_PLURAL'
 		}
 	];
-	this.sortEntities();
+	this.sortEntitiesData();
 }
 
 CEntitiesTabs.prototype.getData = function ()
@@ -86,10 +86,10 @@ CEntitiesTabs.prototype.getEditView = function (sType)
 CEntitiesTabs.prototype.registerEntityType = function (oEntityData)
 {
 	this.aData.push(oEntityData);
-	this.sortEntities();
+	this.sortEntitiesData();
 };
 
-CEntitiesTabs.prototype.sortEntities = function ()
+CEntitiesTabs.prototype.sortEntitiesData = function ()
 {
 	this.aData = _.sortBy(this.aData, function (oEntityData) {
 		var iIndex = _.indexOf(Settings.EntitiesOrder, oEntityData.Type);
