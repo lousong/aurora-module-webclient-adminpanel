@@ -16,6 +16,11 @@
 				<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_DEACTIVATE'}"></span>
 			</span>-->
 			
+			<!-- ko foreach: aFilters -->
+			<span class="item filter" data-bind="visible: list().length > 0">
+				<select data-bind="options: list, value: selectedValue, optionsText: 'text', optionsValue: 'value'"></select>
+			</span>
+			<!-- /ko -->
 		</span>
 	</div>
 	<div class="middle_bar">

@@ -11,7 +11,6 @@ var
 	Ajax = require('%PathToCoreWebclientModule%/js/Ajax.js'),
 	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
-	UserSettings = require('%PathToCoreWebclientModule%/js/Settings.js'),
 	
 	CPageSwitcherView = require('%PathToCoreWebclientModule%/js/views/CPageSwitcherView.js'),
 	
@@ -38,6 +37,9 @@ function CEntitiesView(sEntityType)
 	this.sNoEntitiesFoundText = this.oEntityData.NoEntitiesFoundText;
 	
 	this.entities = ko.observableArray([]);
+	this.aFilters = [];
+	this.initFilters();
+	
 	this.totalEntitiesCount = ko.observable(0);
 	this.current = ko.observable(0);
 	this.showCreateForm = ko.observable(false);
@@ -85,7 +87,6 @@ function CEntitiesView(sEntityType)
 	
 	this.oPageSwitcher = new CPageSwitcherView(0, Settings.EntitiesPerPage);
 	this.oPageSwitcher.currentPage.subscribe(function () {
-		this.loading(true);
 		this.requestEntities();
 	}, this);
 	this.totalEntitiesCount.subscribe(function () {
@@ -111,7 +112,6 @@ CEntitiesView.prototype.onShow = function ()
  */
 CEntitiesView.prototype.search = function ()
 {
-	this.loading(true);
 	this.oPageSwitcher.setPage(1, Settings.EntitiesPerPage);
 	this.requestEntities();
 };
@@ -122,8 +122,45 @@ CEntitiesView.prototype.search = function ()
 CEntitiesView.prototype.clearSearch = function ()
 {
 	this.newSearchValue('');
-	this.loading(true);
 	this.requestEntities();
+};
+
+CEntitiesView.prototype.initFilters = function ()
+{
+	_.each(this.oEntityData.Filters, function (oFilterData) {
+		var oFilterObservables = {
+			list: ko.computed(function () {
+				var aFilterList = [];
+				if (_.isFunction(oFilterData.mList))
+				{
+					aFilterList = oFilterData.mList();
+					if (!_.isArray(aFilterList))
+					{
+						aFilterList = [];
+					}
+				}
+				else if (_.isArray(oFilterData.mList))
+				{
+					aFilterList = oFilterData.mList;
+				}
+				if (aFilterList.length > 0 && oFilterData.sAllText)
+				{
+					aFilterList.unshift({
+						text: oFilterData.sAllText,
+						value: 0
+					});
+				}
+				return aFilterList;
+			}, this),
+			selectedValue: ko.observable(''),
+			sAllText: oFilterData.sAllText,
+			sFileld: oFilterData.sField
+		};
+		oFilterObservables.selectedValue.subscribe(function () {
+			this.requestEntities();
+		}, this);
+		this.aFilters.push(oFilterObservables);
+	}.bind(this));
 };
 
 /**
@@ -138,7 +175,15 @@ CEntitiesView.prototype.requestEntities = function ()
 		Search: this.newSearchValue()
 	};
 	
+	_.each(this.aFilters, function (oFilterObservables) {
+		if (oFilterObservables.selectedValue() !== '')
+		{
+			oParameters[oFilterObservables.sFileld] = oFilterObservables.selectedValue() === oFilterObservables.sAllText ? '' : oFilterObservables.selectedValue();
+		}
+	});
+	
 	this.searchValue(this.newSearchValue());
+	this.loading(true);
 	Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.GetListRequest, oParameters, function (oResponse) {
 		this.loading(false);
 		if (oResponse.Result && _.isArray(oResponse.Result.Items))
