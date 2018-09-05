@@ -152,11 +152,23 @@ CEntitiesView.prototype.initFilters = function ()
 				}
 				return aFilterList;
 			}, this),
-			selectedValue: ko.observable(''),
+			selectedValue: ko.observable(0),
+			requestValue: ko.observable(0),
 			sAllText: oFilterData.sAllText,
-			sFileld: oFilterData.sField
+			sFileld: oFilterData.sField,
+			sEntity: oFilterData.sEntity
 		};
 		oFilterObservables.selectedValue.subscribe(function () {
+			if (oFilterObservables.sEntity)
+			{
+				this.fChangeEntityHandler(oFilterObservables.sEntity, oFilterObservables.selectedValue());
+			}
+			else
+			{
+				oFilterObservables.requestValue(oFilterObservables.selectedValue());
+			}
+		}, this);
+		oFilterObservables.requestValue.subscribe(function () {
 			this.requestEntities();
 		}, this);
 		this.aFilters.push(oFilterObservables);
@@ -176,9 +188,9 @@ CEntitiesView.prototype.requestEntities = function ()
 	};
 	
 	_.each(this.aFilters, function (oFilterObservables) {
-		if (oFilterObservables.selectedValue() !== '')
+		if (oFilterObservables.requestValue() !== 0)
 		{
-			oParameters[oFilterObservables.sFileld] = oFilterObservables.selectedValue() === oFilterObservables.sAllText ? '' : oFilterObservables.selectedValue();
+			oParameters[oFilterObservables.sFileld] = oFilterObservables.requestValue();
 		}
 	});
 	
@@ -225,9 +237,22 @@ CEntitiesView.prototype.setChangeEntityHandler = function (fChangeEntityHandler)
  * Sets new current entity indentificator.
  * 
  * @param {number} iId New current entity indentificator.
+ * @param {object} oEntities
  */
-CEntitiesView.prototype.changeEntity = function (iId)
+CEntitiesView.prototype.changeEntity = function (iId, oEntities)
 {
+	_.each(this.aFilters, function (oFilterObservables) {
+		if (oEntities[oFilterObservables.sEntity])
+		{
+			oFilterObservables.selectedValue(oEntities[oFilterObservables.sEntity]);
+			oFilterObservables.requestValue(oEntities[oFilterObservables.sEntity]);
+		}
+		else if (oFilterObservables.requestValue() !== 0)
+		{
+			oFilterObservables.selectedValue(0);
+			oFilterObservables.requestValue(0);
+		}
+	}.bind(this));
 	this.current(Types.pInt(iId));
 	this.justCreatedId(0);
 };

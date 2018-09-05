@@ -134,6 +134,13 @@ module.exports = function (oAppData) {
 					TabName: sTabName
 				});
 			},
+			showEntities: function (sCurrentEntityType, oEntitiesId) {
+				var
+					Routing = require('%PathToCoreWebclientModule%/js/Routing.js'),
+					Links = require('modules/%ModuleName%/js/utils/Links.js')
+				;
+				Routing.setHash(Links.get(sCurrentEntityType, oEntitiesId, ''));
+			},
 			setAddHash: function (aAddHash) {
 				var SettingsView = require('modules/%ModuleName%/js/views/SettingsView.js');
 				SettingsView.setAddHash(aAddHash);

@@ -7,6 +7,7 @@ var
 	Promise = require("bluebird"),
 	
 	Text = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
+	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
 	
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
@@ -48,6 +49,22 @@ function CSettingsView()
 				else if (sType === this.currentEntityType())
 				{
 					this.changeEntity(sType, iEntityId, sTabName || '');
+				}
+				else
+				{
+					var
+						oEntitiesId = _.clone(this.currentEntitiesId()),
+						sCurrTabName = this.currentTab() ? this.currentTab().name : ''
+					;
+					if (Types.isPositiveNumber(iEntityId))
+					{
+						oEntitiesId[sType] = iEntityId;
+					}
+					else if (oEntitiesId[sType])
+					{
+						delete oEntitiesId[sType];
+					}
+					Routing.setHash(Links.get(this.currentEntityType(), oEntitiesId, sCurrTabName));
 				}
 			}, this)
 		;
@@ -161,7 +178,7 @@ CSettingsView.prototype.registerTabSection = function (fGetSectionView, sTabName
  */
 CSettingsView.prototype.cancelCreatingEntity = function ()
 {
-	Routing.setHash(Links.get(this.currentEntityType(), {}, ''));
+	Routing.setHash(Links.get(this.currentEntityType(), this.currentEntitiesId(), ''));
 };
 
 /**
@@ -169,7 +186,9 @@ CSettingsView.prototype.cancelCreatingEntity = function ()
  */
 CSettingsView.prototype.createEntity = function ()
 {
-	Routing.setHash(Links.get(this.currentEntityType(), {}, 'create'));
+	var oEntitiesId = _.clone(this.currentEntitiesId());
+	delete oEntitiesId[this.currentEntityType()];
+	Routing.setHash(Links.get(this.currentEntityType(), oEntitiesId, 'create'));
 };
 
 /**
@@ -242,6 +261,7 @@ CSettingsView.prototype.onRoute = function (aParams)
 		bSameType = this.currentEntityType() === oParams.CurrentType,
 		bSameId = this.currentEntitiesId()[oParams.CurrentType] === oParams.Entities[oParams.CurrentType],
 		bSameTab = this.currentTab() && this.currentTab().name === oParams.Last,
+		bSameEntities = JSON.stringify(this.currentEntitiesId()) === JSON.stringify(oParams.Entities),
 		oCurrentTab = this.currentTab(),
 		fAfterTabHide = _.bind(function () {
 			this.showNewScreenView(oParams);
@@ -255,7 +275,7 @@ CSettingsView.prototype.onRoute = function (aParams)
 		}, this)
 	;
 	
-	if (!bSameType || !bSameId || !bSameTab)
+	if (!bSameType || !bSameId || !bSameTab || !bSameEntities)
 	{
 		if (oCurrentTab && $.isFunction(oCurrentTab.view.hide))
 		{
@@ -268,7 +288,7 @@ CSettingsView.prototype.onRoute = function (aParams)
 	}
 	else if (oCurrentTab)
 	{
-		oCurrentTab.view.onRoute(aTabParams);
+		oCurrentTab.view.onRoute(aTabParams, this.currentEntitiesId());
 	}
 };
 
@@ -298,7 +318,7 @@ CSettingsView.prototype.showNewScreenView = function (oParams)
 		{
 			oCurrentEntityData.oView.cancelCreatingEntity();
 		}
-		oCurrentEntityData.oView.changeEntity(oParams.Entities[oParams.CurrentType]);
+		oCurrentEntityData.oView.changeEntity(oParams.Entities[oParams.CurrentType], oParams.Entities);
 	}
 };
 
@@ -336,7 +356,7 @@ CSettingsView.prototype.showNewTabView = function (sNewTabName, aTabParams)
 	{
 		if ($.isFunction(oNewTab.view.onRoute))
 		{
-			oNewTab.view.onRoute(aTabParams);
+			oNewTab.view.onRoute(aTabParams, this.currentEntitiesId());
 		}
 		this.currentTab(oNewTab);
 	}

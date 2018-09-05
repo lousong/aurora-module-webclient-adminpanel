@@ -26,14 +26,22 @@ function CCommonSettingsPaneView()
 	
 	this.entityCreateView = ko.computed(function ()
 	{
-		return EntitiesTabs.getEditView(this.type());
+		var oEntityCreateView = EntitiesTabs.getEditView(this.type());
+		if (oEntityCreateView)
+		{
+			if (!_.isFunction(oEntityCreateView.updateSavedState))
+			{
+				oEntityCreateView.updateSavedState = this.updateSavedState.bind(this);
+			}
+			if (_.isFunction(oEntityCreateView.setRequestEntityDataFunction))
+			{
+				oEntityCreateView.setRequestEntityDataFunction(this.requestEntityData.bind(this));
+			}
+		}
+		return oEntityCreateView;
 	}, this);
 	
 	this.entityCreateView.subscribe(function () {
-		if (this.entityCreateView() && _.isFunction(this.entityCreateView().setRequestEntityDataFunction))
-		{
-			this.entityCreateView().setRequestEntityDataFunction(this.requestEntityData.bind(this));
-		}
 		this.updateSavedState();
 	}, this);
 	
@@ -127,8 +135,12 @@ CCommonSettingsPaneView.prototype.setAccessLevel = function (sEntityType, iEntit
 	}
 };
 
-CCommonSettingsPaneView.prototype.onRoute = function ()
+CCommonSettingsPaneView.prototype.onRoute = function (aTabParams, aCurrentEntitiesId)
 {
+	if (_.isFunction(this.entityCreateView().onRoute))
+	{
+		this.entityCreateView().onRoute(aTabParams, aCurrentEntitiesId);
+	}
 	App.broadcastEvent('CCommonSettingsPaneView::onRoute::after', {'View': this.entityCreateView(), 'Id': this.id()});
 };
 
