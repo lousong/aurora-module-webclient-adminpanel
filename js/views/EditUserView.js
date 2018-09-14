@@ -100,4 +100,9 @@ CEditUserView.prototype.saveEntity = function (aParents, oRoot)
 	});
 };
 
+CEditUserView.prototype.showReport = function (sMessage)
+{
+	Screens.showReport(sMessage);
+};
+
 module.exports = new CEditUserView();
