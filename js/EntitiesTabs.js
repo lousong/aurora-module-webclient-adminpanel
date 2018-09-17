@@ -10,32 +10,40 @@ var
 
 function CEntitiesTabs()
 {
-	this.aData = [
-//		{
-//			Type: 'Tenant',
-//			ScreenHash: 'tenants',
-//			LinkTextKey: '%MODULENAME%/HEADING_TENANTS_SETTINGS_TABNAME',
-//			EditView: require('modules/%ModuleName%/js/views/EditTenantView.js'),
-//			
-//			ServerModuleName: Settings.ServerModuleName,
-//			GetListRequest: 'GetEntityList',
-//			GetRequest: 'GetEntity',
-//			CreateRequest: 'CreateTenant',
-//			UpdateRequest: 'UpdateEntity',
-//			DeleteRequest: 'DeleteEntities',
-//			
-//			NoEntitiesFoundText: TextUtils.i18n('%MODULENAME%/INFO_NO_ENTITIES_FOUND_TENANT'),
-//			ActionCreateText: TextUtils.i18n('%MODULENAME%/ACTION_CREATE_ENTITY_TENANT'),
-//			ReportSuccessCreateText: TextUtils.i18n('%MODULENAME%/REPORT_CREATE_ENTITY_TENANT'),
-//			ErrorCreateText: TextUtils.i18n('%MODULENAME%/ERROR_CREATE_ENTITY_TENANT'),
-//			CommonSettingsHeadingText: TextUtils.i18n('COREWEBCLIENT/HEADING_COMMON_SETTINGS'),
-//			ReportSuccessUpdate: TextUtils.i18n('%MODULENAME%/REPORT_UPDATE_ENTITY_TENANT'),
-//			ErrorUpdate: TextUtils.i18n('%MODULENAME%/ERROR_UPDATE_ENTITY_TENANT'),
-//			ActionDeleteText: TextUtils.i18n('%MODULENAME%/ACTION_DELETE_TENANT'),
-//			ConfirmDeleteLangConst: '%MODULENAME%/CONFIRM_DELETE_TENANT_PLURAL',
-//			ReportSuccessDeleteLangConst: '%MODULENAME%/REPORT_DELETE_ENTITIES_TENANT_PLURAL',
-//			ErrorDeleteLangConst: '%MODULENAME%/ERROR_DELETE_ENTITIES_TENANT_PLURAL'
-//		},
+	this.aData = [];
+
+	if (Settings.EnableMultiTenant)
+	{
+		this.aData.push(
+			{
+				Type: 'Tenant',
+				ScreenHash: 'tenants',
+				LinkTextKey: '%MODULENAME%/HEADING_TENANTS_SETTINGS_TABNAME',
+				EditView: require('modules/%ModuleName%/js/views/EditTenantView.js'),
+				
+				ServerModuleName: Settings.ServerModuleName,
+				GetListRequest: 'GetEntityList',
+				GetRequest: 'GetEntity',
+				CreateRequest: 'CreateTenant',
+				UpdateRequest: 'UpdateEntity',
+				DeleteRequest: 'DeleteEntities',
+				
+				NoEntitiesFoundText: TextUtils.i18n('%MODULENAME%/INFO_NO_ENTITIES_FOUND_TENANT'),
+				ActionCreateText: TextUtils.i18n('%MODULENAME%/ACTION_CREATE_ENTITY_TENANT'),
+				ReportSuccessCreateText: TextUtils.i18n('%MODULENAME%/REPORT_CREATE_ENTITY_TENANT'),
+				ErrorCreateText: TextUtils.i18n('%MODULENAME%/ERROR_CREATE_ENTITY_TENANT'),
+				CommonSettingsHeadingText: TextUtils.i18n('COREWEBCLIENT/HEADING_COMMON_SETTINGS'),
+				ReportSuccessUpdate: TextUtils.i18n('%MODULENAME%/REPORT_UPDATE_ENTITY_TENANT'),
+				ErrorUpdate: TextUtils.i18n('%MODULENAME%/ERROR_UPDATE_ENTITY_TENANT'),
+				ActionDeleteText: TextUtils.i18n('%MODULENAME%/ACTION_DELETE_TENANT'),
+				ConfirmDeleteLangConst: '%MODULENAME%/CONFIRM_DELETE_TENANT_PLURAL',
+				ReportSuccessDeleteLangConst: '%MODULENAME%/REPORT_DELETE_ENTITIES_TENANT_PLURAL',
+				ErrorDeleteLangConst: '%MODULENAME%/ERROR_DELETE_ENTITIES_TENANT_PLURAL'
+			}
+		);
+	}
+
+	this.aData.push(
 		{
 			Type: 'User',
 			ScreenHash: 'users',
@@ -61,7 +69,8 @@ function CEntitiesTabs()
 			ReportSuccessDeleteLangConst: '%MODULENAME%/REPORT_DELETE_ENTITIES_USER_PLURAL',
 			ErrorDeleteLangConst: '%MODULENAME%/ERROR_DELETE_ENTITIES_USER_PLURAL'
 		}
-	];
+	);
+
 	this.sortEntitiesData();
 }
 
