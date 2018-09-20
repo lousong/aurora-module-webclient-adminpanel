@@ -117,9 +117,16 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 		switch ($Type)
 		{
 			case 'Tenant':
-				return \Aurora\Modules\Core\Module::Decorator()->UpdateTenant($Data['Id'], $Data['PublicId'], $Data['Description']);
+				$iId = isset($Data['Id']) ? $Data['Id'] : null;
+				$sName = isset($Data['Name']) ? $Data['Name'] : null;
+				$sDescription = isset($Data['Description']) ? $Data['Description'] : null;
+				return \Aurora\Modules\Core\Module::Decorator()->UpdateTenant($iId, $sName, $sDescription);
 			case 'User':
-				return \Aurora\Modules\Core\Module::Decorator()->UpdateUser($Data['Id'], $Data['PublicId'], 0, $Data['Role'], $Data['WriteSeparateLog']);
+				$iId = isset($Data['Id']) ? $Data['Id'] : null;
+				$sPublicId = isset($Data['PublicId']) ? $Data['PublicId'] : null;
+				$iRole = isset($Data['Role']) ? $Data['Role'] : null;
+				$bWriteSeparateLog = isset($Data['WriteSeparateLog']) ? $Data['WriteSeparateLog'] : null;
+				return \Aurora\Modules\Core\Module::Decorator()->UpdateUser($iId, $sPublicId, 0, $iRole, $bWriteSeparateLog);
 		}
 		return false;
 	}
