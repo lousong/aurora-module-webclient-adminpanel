@@ -198,9 +198,14 @@ CEntitiesView.prototype.requestEntities = function ()
 	this.loading(true);
 	Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.GetListRequest, oParameters, function (oResponse) {
 		this.loading(false);
-		if (oResponse.Result && _.isArray(oResponse.Result.Items))
+		if (oResponse.Result)
 		{
-			_.each(oResponse.Result.Items, function (oEntity) {
+			var
+				aEntities = _.isArray(oResponse.Result.Items) ? oResponse.Result.Items : [],
+				iCount = Types.pInt(oResponse.Result.Count)
+			;
+			
+			_.each(aEntities, function (oEntity) {
 				oEntity.Id = Types.pInt(oEntity.Id);
 				oEntity.checked = ko.observable(false);
 				oEntity.trottleChecked = function (oItem, oEvent) {
@@ -208,8 +213,8 @@ CEntitiesView.prototype.requestEntities = function ()
 					this.checked(!this.checked());
 				};
 			});
-			this.entities(oResponse.Result.Items);
-			this.totalEntitiesCount(Types.pInt(oResponse.Result.Count));
+			this.entities(aEntities);
+			this.totalEntitiesCount(iCount);
 			if (this.entities().length === 0)
 			{
 				this.fChangeEntityHandler(this.sType, undefined, 'create');
@@ -219,6 +224,10 @@ CEntitiesView.prototype.requestEntities = function ()
 				this.fChangeEntityHandler(this.sType, this.justCreatedId());
 			}
 			this.aIdListDeleteProcess = [];
+		}
+		else
+		{
+			Api.showErrorByCode(oResponse);
 		}
 	}, this);
 };
