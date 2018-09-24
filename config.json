@@ -11,7 +11,7 @@
 		["licensing", "admin-security", "admin-db", "logs-viewer", "system", "common", "modules"],
 		"array"
 	],
-    "TopTabsOrder": [
+    "EntitiesOrder": [
 		[],
 		"array"
 	]
