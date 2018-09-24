@@ -13,6 +13,7 @@ module.exports = function (oAppData) {
 			
 			TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 			
+			Cache = require('modules/%ModuleName%/js/Cache.js'),
 			Settings = require('modules/%ModuleName%/js/Settings.js'),
 			
 			aAdminPanelTabsParams = [],
@@ -20,6 +21,7 @@ module.exports = function (oAppData) {
 		;
 
 		Settings.init(oAppData);
+		Cache.init(oAppData);
 		
 		return {
 			start: function () {

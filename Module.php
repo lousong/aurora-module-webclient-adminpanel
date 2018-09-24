@@ -221,6 +221,7 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 			'EntitiesPerPage' => $this->getConfig('EntitiesPerPage', 20),
 			'TabsOrder' => $this->getConfig('TabsOrder', ['licensing', 'admin-security', 'admin-db', 'logs-viewer', 'system', 'common', 'modules']),
 			'EntitiesOrder' => $this->getConfig('EntitiesOrder', []),
+			'Tenants' => \Aurora\Modules\Core\Module::Decorator()->GetEntityList('Tenant', 0, 0, '', []),
 		);
 	}
 	

@@ -16,6 +16,7 @@ var
 	
 	Links = require('modules/%ModuleName%/js/utils/Links.js'),
 	
+	Cache = require('modules/%ModuleName%/js/Cache.js'),
 	EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js'),
 	Settings = require('modules/%ModuleName%/js/Settings.js'),
 	CEntitiesView = require('modules/%ModuleName%/js/views/CEntitiesView.js')
@@ -29,6 +30,9 @@ var
 function CSettingsView()
 {
 	CAbstractScreenView.call(this, '%ModuleName%');
+	
+	this.tenants = Cache.tenants;
+	this.selectedTenant = Cache.selectedTenant;
 	
 	this.aScreens = [
 		{
@@ -126,6 +130,14 @@ _.extendOwn(CSettingsView.prototype, CAbstractScreenView.prototype);
 CSettingsView.prototype.ViewTemplate = '%ModuleName%_SettingsView';
 CSettingsView.prototype.ViewConstructorName = 'CSettingsView';
 
+CSettingsView.prototype.selectTenant = function (iId)
+{
+	_.each(this.tenants(), function (oTenant) {
+		oTenant.selected(oTenant.Id === iId);
+	});
+	this.changeEntity(this.currentEntityType(), this.currentEntitiesId()[this.currentEntityType()]);
+};
+
 /**
  * Registers admin panel tab.
  * 
@@ -208,6 +220,10 @@ CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId, sTabNam
 		sCurrTabName = this.currentTab() ? this.currentTab().name : ''
 	;
 	oEntitiesId[sEntityName] = iEntityId;
+	if (sEntityName !== 'Tenant' && this.selectedTenant().Id)
+	{
+		oEntitiesId['Tenant'] = this.selectedTenant().Id;
+	}
 	Routing.setHash(Links.get(sEntityName, oEntitiesId, bHasTab ? sTabName : sCurrTabName));
 };
 
