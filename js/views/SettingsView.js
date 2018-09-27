@@ -12,6 +12,7 @@ var
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 	Routing = require('%PathToCoreWebclientModule%/js/Routing.js'),
+	UserSettings = require('%PathToCoreWebclientModule%/js/Settings.js'),
 	CAbstractScreenView = require('%PathToCoreWebclientModule%/js/views/CAbstractScreenView.js'),
 	
 	Links = require('modules/%ModuleName%/js/utils/Links.js'),
@@ -35,6 +36,10 @@ function CSettingsView()
 	this.selectedTenant = Cache.selectedTenant;
 	this.currentEntityType = ko.observable('');
 	this.currentEntitiesId = ko.observable({});
+	
+	this.showTenantsSelector = ko.computed(function () {
+		return UserSettings.EnableMultiTenant && this.tenants().length > 1;
+	}, this);
 	
 	this.aScreens = [
 		{

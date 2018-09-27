@@ -4,7 +4,7 @@
 			<span class="item logout" data-bind="click: logout">
 				<span class="link" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_LOGOUT'}"></span>
 			</span>
-			<span class="item tenants" data-bind="dropdown: {control: false}, visible: tenants().length > 1">
+			<span class="item tenants" data-bind="dropdown: {control: false}, visible: showTenantsSelector">
 				<span class="link" data-bind="text: selectedTenant().Name"></span>
 				<span class="control"></span>
 				<span class="dropdown">
