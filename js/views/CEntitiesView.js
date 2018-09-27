@@ -32,7 +32,10 @@ var
 function CEntitiesView(sEntityType)
 {
 	Cache.selectedTenantId.subscribe(function () {
-		this.requestEntities();
+		if (this.sType !== 'Tenant')
+		{
+			this.requestEntities();
+		}
 	}, this);
 	this.sType = sEntityType;
 	this.oEntityCreateView = EntitiesTabs.getEditView(this.sType);
