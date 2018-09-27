@@ -33,10 +33,12 @@ function CSettingsView()
 	
 	this.tenants = Cache.tenants;
 	this.selectedTenant = Cache.selectedTenant;
+	this.currentEntityType = ko.observable('');
+	this.currentEntitiesId = ko.observable({});
 	
 	this.aScreens = [
 		{
-			sHash: Routing.buildHashFromArray(Links.get('')),
+			linkHash: ko.observable(Routing.buildHashFromArray(Links.get(''))),
 			sLinkText: Text.i18n('%MODULENAME%/HEADING_SYSTEM_SETTINGS_TABNAME'),
 			sType: '',
 			oView: null
@@ -76,14 +78,14 @@ function CSettingsView()
 		oView.setChangeEntityHandler(fChangeEntity);
 		
 		this.aScreens.push({
-			sHash: Routing.buildHashFromArray(Links.get(oEntityData.Type)),
+			linkHash: ko.computed(function () {
+				return Routing.buildHashFromArray(Links.get(oEntityData.Type, this.currentEntitiesId()));
+			}, this),
 			sLinkText: Text.i18n(oEntityData.LinkTextKey),
 			sType: oEntityData.Type,
 			oView: oView
 		});
 	}, this));
-	this.currentEntityType = ko.observable('');
-	this.currentEntitiesId = ko.observable({});
 	this.currentEntitiesView = ko.computed(function () {
 		var
 			sCurrType = this.currentEntityType(),
@@ -93,6 +95,12 @@ function CSettingsView()
 		;
 		return oCurrEntitiesData ? oCurrEntitiesData.oView : null;
 	}, this);
+	this.currentEntitiesView.subscribe(function(){
+		if (this.currentEntitiesView())
+		{
+			this.currentEntitiesView().onHide();
+		}
+	}, this, 'beforeChange');
 	this.currentEntitiesView.subscribe(function () {
 		if (this.currentEntitiesView())
 		{
@@ -132,10 +140,9 @@ CSettingsView.prototype.ViewConstructorName = 'CSettingsView';
 
 CSettingsView.prototype.selectTenant = function (iId)
 {
-	_.each(this.tenants(), function (oTenant) {
-		oTenant.selected(oTenant.Id === iId);
-	});
-	this.changeEntity(this.currentEntityType(), this.currentEntitiesId()[this.currentEntityType()]);
+	var oEntitiesId = _.clone(this.currentEntitiesId());
+	oEntitiesId['Tenant'] = iId;
+	Routing.setHash(Links.get(this.currentEntityType(), oEntitiesId));
 };
 
 /**
@@ -200,6 +207,10 @@ CSettingsView.prototype.createEntity = function ()
 {
 	var oEntitiesId = _.clone(this.currentEntitiesId());
 	delete oEntitiesId[this.currentEntityType()];
+	if (this.currentEntityType() !== 'Tenant' && !oEntitiesId['Tenant'] && Cache.selectedTenantId())
+	{
+		oEntitiesId['Tenant'] = Cache.selectedTenantId();
+	}
 	Routing.setHash(Links.get(this.currentEntityType(), oEntitiesId, 'create'));
 };
 
@@ -220,9 +231,9 @@ CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId, sTabNam
 		sCurrTabName = this.currentTab() ? this.currentTab().name : ''
 	;
 	oEntitiesId[sEntityName] = iEntityId;
-	if (sEntityName !== 'Tenant' && this.selectedTenant().Id)
+	if (sEntityName !== 'Tenant' && Cache.selectedTenantId())
 	{
-		oEntitiesId['Tenant'] = this.selectedTenant().Id;
+		oEntitiesId['Tenant'] = Cache.selectedTenantId();
 	}
 	Routing.setHash(Links.get(sEntityName, oEntitiesId, bHasTab ? sTabName : sCurrTabName));
 };
@@ -323,6 +334,7 @@ CSettingsView.prototype.showNewScreenView = function (oParams)
 	
 	this.currentEntityType(oParams.CurrentType);
 	this.currentEntitiesId(oParams.Entities);
+	Cache.setSelectedTenant(oParams.Entities['Tenant']);
 
 	if (oCurrentEntityData && oCurrentEntityData.oView)
 	{

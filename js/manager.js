@@ -158,6 +158,9 @@ module.exports = function (oAppData) {
 				// (Requires view. All views should be required after initialization of all modules.)
 				var EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js');
 				EntitiesTabs.changeEntityData(oEntityData);
+			},
+			getKoSelectedTenantId: function () {
+				return Cache.selectedTenantId;
 			}
 		};
 	}

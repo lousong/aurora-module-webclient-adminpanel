@@ -44,18 +44,28 @@ function IsSearchParam(sTemp)
  */
 Links.get = function (sCurrEntityType, aEntities, sLast, iPage, sSearch)
 {
-	var aResult = [Settings.HashModuleName];
+	var
+		aResult = [Settings.HashModuleName],
+		bContinue = true;
+	;
 	
 	aEntities = aEntities || [];
 	
 	_.each(EntitiesTabs.getData(), function (oEntityData) {
-		if (Types.isPositiveNumber(aEntities[oEntityData.Type]))
+		if (bContinue)
 		{
-			aResult.push(oEntityData.ScreenHash.substr(0,1) + aEntities[oEntityData.Type]);
-		}
-		else if (sCurrEntityType === oEntityData.Type)
-		{
-			aResult.push(oEntityData.ScreenHash);
+			if (Types.isPositiveNumber(aEntities[oEntityData.Type]))
+			{
+				aResult.push(oEntityData.ScreenHash.substr(0,1) + aEntities[oEntityData.Type]);
+			}
+			else if (sCurrEntityType === oEntityData.Type)
+			{
+				aResult.push(oEntityData.ScreenHash);
+			}
+			if (sCurrEntityType === oEntityData.Type)
+			{
+				bContinue = false;
+			}
 		}
 	});
 	

@@ -4,14 +4,14 @@
 			<span class="item logout" data-bind="click: logout">
 				<span class="link" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_LOGOUT'}"></span>
 			</span>
-			<span class="item logout" data-bind="dropdown: {control: false}, visible: tenants().length > 1">
+			<span class="item tenants" data-bind="dropdown: {control: false}, visible: tenants().length > 1">
 				<span class="link" data-bind="text: selectedTenant().Name"></span>
 				<span class="control"></span>
 				<span class="dropdown">
 					<span class="dropdown_helper">
 						<span class="dropdown_arrow"><span></span></span>
 						<span class="dropdown_content" data-bind="foreach: tenants">
-							<span class="item" data-bind="text: Name, visible: !selected(), click: function () { $parent.selectTenant(Id); }"></span>
+							<span class="item" data-bind="text: Name, visible: Id !== $parent.selectedTenant().Id, click: function () { $parent.selectTenant(Id); }"></span>
 						</span>
 					</span>
 				</span>
@@ -19,7 +19,7 @@
 		
 			<!-- ko foreach: aScreens -->
 			<span class="item admin" data-bind="css: {'current': sType === $parent.currentEntityType()}">
-				<a class="link" href="#" data-bind="attr: {'href': sHash}">
+				<a class="link" href="#" data-bind="attr: {'href': linkHash}">
 					<span class="text" data-bind="text: sLinkText"></span>
 				</a>
 			</span>

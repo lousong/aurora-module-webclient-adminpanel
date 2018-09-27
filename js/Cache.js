@@ -14,10 +14,11 @@ var
 function CCache()
 {
 	this.tenants = ko.observableArray([]);
+	this.selectedTenantId = ko.observable(0);
 	this.selectedTenant = ko.computed(function () {
 		return _.find(this.tenants(), function (oTenant) {
-			return oTenant.selected();
-		}) || { Name: '' };
+			return oTenant.Id === this.selectedTenantId();
+		}.bind(this)) || { Name: '' };
 	}, this);
 }
 
@@ -40,16 +41,24 @@ CCache.prototype.onAjaxResponse = function (oParams) {
 
 CCache.prototype.onAjaxSend = function (oParams)
 {
-	if (!oParams.Parameters.Tenant)
+	if (!oParams.Parameters.TenantId)
 	{
-		oParams.Parameters.Tenant = this.selectedTenant().Id;
+		oParams.Parameters.TenantId = this.selectedTenantId();
+	}
+};
+
+CCache.prototype.setSelectedTenant = function (iId)
+{
+	if (_.find(this.tenants(), function (oTenant) { return oTenant.Id === iId; }))
+	{
+		this.selectedTenantId(iId);
 	}
 };
 
 CCache.prototype.parseTenants = function (oResult)
 {
 	var
-		iSelectedId = this.selectedTenant().Id,
+		iSelectedId = this.selectedTenantId(),
 		bHasSelected = false,
 		aTenantsData = oResult && _.isArray(oResult.Items) ? oResult.Items : [],
 		aTenants = []
@@ -58,12 +67,10 @@ CCache.prototype.parseTenants = function (oResult)
 	_.each(aTenantsData, function (oTenantData) {
 		var oTenant = {
 			Name: oTenantData.Name,
-			Id: Types.pInt(oTenantData.Id),
-			selected: ko.observable(false)
+			Id: Types.pInt(oTenantData.Id)
 		};
 		if (oTenant.Id === iSelectedId)
 		{
-			oTenant.selected(true);
 			bHasSelected = true;
 		}
 		aTenants.push(oTenant);
@@ -71,7 +78,7 @@ CCache.prototype.parseTenants = function (oResult)
 
 	if (!bHasSelected && aTenants.length > 0)
 	{
-		aTenants[0].selected(true);
+		this.selectedTenantId(aTenants[0].Id);
 	}
 	
 	this.tenants(aTenants);

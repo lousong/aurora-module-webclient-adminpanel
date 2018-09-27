@@ -17,8 +17,9 @@ var
 	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
 	ConfirmPopup = require('%PathToCoreWebclientModule%/js/popups/ConfirmPopup.js'),
 	
-	Settings = require('modules/%ModuleName%/js/Settings.js'),
-	EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js')
+	Cache = require('modules/%ModuleName%/js/Cache.js'),
+	EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js'),
+	Settings = require('modules/%ModuleName%/js/Settings.js')
 ;
 
 /**
@@ -30,6 +31,9 @@ var
  */
 function CEntitiesView(sEntityType)
 {
+	Cache.selectedTenantId.subscribe(function () {
+		this.requestEntities();
+	}, this);
 	this.sType = sEntityType;
 	this.oEntityCreateView = EntitiesTabs.getEditView(this.sType);
 	this.oEntityData = EntitiesTabs.getEntityData(this.sType);
@@ -104,7 +108,13 @@ CEntitiesView.prototype.CreateFormViewTemplate = '%ModuleName%_EntityCreateFormV
  */
 CEntitiesView.prototype.onShow = function ()
 {
+	this.bShown = true;
 	this.requestEntities();
+};
+
+CEntitiesView.prototype.onHide = function ()
+{
+	this.bShown = false;
 };
 
 /**
@@ -180,56 +190,59 @@ CEntitiesView.prototype.initFilters = function ()
  */
 CEntitiesView.prototype.requestEntities = function ()
 {
-	var oParameters = {
-		Type: this.sType,
-		Offset: (this.oPageSwitcher.currentPage() - 1) * Settings.EntitiesPerPage,
-		Limit: Settings.EntitiesPerPage,
-		Search: this.newSearchValue()
-	};
-	
-	_.each(this.aFilters, function (oFilterObservables) {
-		if (oFilterObservables.requestValue() !== 0)
-		{
-			oParameters[oFilterObservables.sFileld] = oFilterObservables.requestValue();
-		}
-	});
-	
-	this.searchValue(this.newSearchValue());
-	this.loading(true);
-	Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.GetListRequest, oParameters, function (oResponse) {
-		this.loading(false);
-		if (oResponse.Result)
-		{
-			var
-				aEntities = _.isArray(oResponse.Result.Items) ? oResponse.Result.Items : [],
-				iCount = Types.pInt(oResponse.Result.Count)
-			;
-			
-			_.each(aEntities, function (oEntity) {
-				oEntity.Id = Types.pInt(oEntity.Id);
-				oEntity.checked = ko.observable(false);
-				oEntity.trottleChecked = function (oItem, oEvent) {
-					oEvent.stopPropagation();
-					this.checked(!this.checked());
-				};
-			});
-			this.entities(aEntities);
-			this.totalEntitiesCount(iCount);
-			if (this.entities().length === 0)
+	if (this.bShown)
+	{
+		var oParameters = {
+			Type: this.sType,
+			Offset: (this.oPageSwitcher.currentPage() - 1) * Settings.EntitiesPerPage,
+			Limit: Settings.EntitiesPerPage,
+			Search: this.newSearchValue()
+		};
+
+		_.each(this.aFilters, function (oFilterObservables) {
+			if (oFilterObservables.requestValue() !== 0)
 			{
-				this.fChangeEntityHandler(this.sType, undefined, 'create');
+				oParameters[oFilterObservables.sFileld] = oFilterObservables.requestValue();
 			}
-			else if (this.justCreatedId() !== 0)
+		});
+
+		this.searchValue(this.newSearchValue());
+		this.loading(true);
+		Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.GetListRequest, oParameters, function (oResponse) {
+			this.loading(false);
+			if (oResponse.Result)
 			{
-				this.fChangeEntityHandler(this.sType, this.justCreatedId());
+				var
+					aEntities = _.isArray(oResponse.Result.Items) ? oResponse.Result.Items : [],
+					iCount = Types.pInt(oResponse.Result.Count)
+				;
+
+				_.each(aEntities, function (oEntity) {
+					oEntity.Id = Types.pInt(oEntity.Id);
+					oEntity.checked = ko.observable(false);
+					oEntity.trottleChecked = function (oItem, oEvent) {
+						oEvent.stopPropagation();
+						this.checked(!this.checked());
+					};
+				});
+				this.entities(aEntities);
+				this.totalEntitiesCount(iCount);
+				if (this.entities().length === 0)
+				{
+					this.fChangeEntityHandler(this.sType, undefined, 'create');
+				}
+				else if (this.justCreatedId() !== 0)
+				{
+					this.fChangeEntityHandler(this.sType, this.justCreatedId());
+				}
+				this.aIdListDeleteProcess = [];
 			}
-			this.aIdListDeleteProcess = [];
-		}
-		else
-		{
-			Api.showErrorByCode(oResponse);
-		}
-	}, this);
+			else
+			{
+				Api.showErrorByCode(oResponse);
+			}
+		}, this);
+	}
 };
 
 /**
