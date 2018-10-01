@@ -217,11 +217,20 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
+		
+		$aTenants = [];
+		
+		try {
+			// Settings should be obtainable even if db is not configured yet
+			$aTenants = \Aurora\Modules\Core\Module::Decorator()->GetEntityList('Tenant', 0, 0, '', []);
+		}
+		catch (\Exception $ex) {}
+		
 		return array(
 			'EntitiesPerPage' => $this->getConfig('EntitiesPerPage', 20),
 			'TabsOrder' => $this->getConfig('TabsOrder', ['licensing', 'admin-security', 'admin-db', 'logs-viewer', 'system', 'common', 'modules']),
 			'EntitiesOrder' => $this->getConfig('EntitiesOrder', []),
-			'Tenants' => \Aurora\Modules\Core\Module::Decorator()->GetEntityList('Tenant', 0, 0, '', []),
+			'Tenants' => $aTenants,
 		);
 	}
 	
