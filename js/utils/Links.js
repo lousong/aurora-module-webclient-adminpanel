@@ -56,7 +56,10 @@ Links.get = function (sCurrEntityType, aEntities, sLast, iPage, sSearch)
 		{
 			if (Types.isPositiveNumber(aEntities[oEntityData.Type]))
 			{
-				aResult.push(oEntityData.ScreenHash.substr(0,1) + aEntities[oEntityData.Type]);
+				if (oEntityData.Type !== 'User' || sCurrEntityType !== 'MailingList')
+				{
+					aResult.push(oEntityData.ScreenHash.substr(0,1) + aEntities[oEntityData.Type]);
+				}
 			}
 			else if (sCurrEntityType === oEntityData.Type)
 			{

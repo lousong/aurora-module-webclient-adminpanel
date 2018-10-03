@@ -62,10 +62,7 @@ function CSettingsView()
 				}
 				else
 				{
-					var
-						oEntitiesId = _.clone(this.currentEntitiesId()),
-						sCurrTabName = this.currentTab() ? this.currentTab().name : ''
-					;
+					var oEntitiesId = _.clone(this.currentEntitiesId());
 					if (Types.isPositiveNumber(iEntityId))
 					{
 						oEntitiesId[sType] = iEntityId;
@@ -74,7 +71,7 @@ function CSettingsView()
 					{
 						delete oEntitiesId[sType];
 					}
-					Routing.setHash(Links.get(this.currentEntityType(), oEntitiesId, sCurrTabName));
+					Routing.replaceHash(Links.get(this.currentEntityType(), oEntitiesId, ''));
 				}
 			}, this)
 		;
@@ -333,11 +330,13 @@ CSettingsView.prototype.showNewScreenView = function (oParams)
 	var
 		oCurrentEntityData = _.find(this.aScreens, function (oData) {
 			return oData.sType === oParams.CurrentType;
-		})
+		}),
+		oCurrentEntitiesId = _.clone(this.currentEntitiesId())
 	;
 	
 	this.currentEntityType(oParams.CurrentType);
-	this.currentEntitiesId(oParams.Entities);
+	oCurrentEntitiesId[oParams.CurrentType] = undefined;
+	this.currentEntitiesId(_.extend(oCurrentEntitiesId, oParams.Entities));
 	Cache.setSelectedTenant(oParams.Entities['Tenant']);
 
 	if (oCurrentEntityData && oCurrentEntityData.oView)

@@ -278,7 +278,10 @@ CEntitiesView.prototype.changeEntity = function (iId, oEntities)
 			oFilterObservables.requestValue(0);
 		}
 	}.bind(this));
-	this.current(Types.pInt(iId));
+	if (Types.pInt(iId))
+	{
+		this.current(Types.pInt(iId));
+	}
 	this.justCreatedId(0);
 };
 
