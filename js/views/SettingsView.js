@@ -65,7 +65,10 @@ function CSettingsView()
 					var oEntitiesId = _.clone(this.currentEntitiesId());
 					if (Types.isPositiveNumber(iEntityId))
 					{
-						oEntitiesId[sType] = iEntityId;
+						if (sType)
+						{
+							oEntitiesId[sType] = iEntityId;
+						}
 					}
 					else if (oEntitiesId[sType])
 					{
@@ -231,7 +234,10 @@ CSettingsView.prototype.changeEntity = function (sEntityName, iEntityId, sTabNam
 		}),
 		sCurrTabName = this.currentTab() ? this.currentTab().name : ''
 	;
-	oEntitiesId[sEntityName] = iEntityId;
+	if (sEntityName)
+	{
+		oEntitiesId[sEntityName] = iEntityId;
+	}
 	if (sEntityName !== 'Tenant' && Cache.selectedTenantId())
 	{
 		oEntitiesId['Tenant'] = Cache.selectedTenantId();
@@ -289,7 +295,7 @@ CSettingsView.prototype.onRoute = function (aParams)
 		bSameType = this.currentEntityType() === oParams.CurrentType,
 		bSameId = this.currentEntitiesId()[oParams.CurrentType] === oParams.Entities[oParams.CurrentType],
 		bSameTab = this.currentTab() && this.currentTab().name === oParams.Last,
-		bSameEntities = JSON.stringify(this.currentEntitiesId()) === JSON.stringify(oParams.Entities),
+		bSameEntities = _.isEmpty(oParams.Entities) || JSON.stringify(this.currentEntitiesId()) === JSON.stringify(oParams.Entities),
 		oCurrentTab = this.currentTab(),
 		fAfterTabHide = _.bind(function () {
 			this.showNewScreenView(oParams);
@@ -335,7 +341,7 @@ CSettingsView.prototype.showNewScreenView = function (oParams)
 	;
 	
 	this.currentEntityType(oParams.CurrentType);
-	oCurrentEntitiesId[oParams.CurrentType] = undefined;
+	delete oCurrentEntitiesId[oParams.CurrentType];
 	this.currentEntitiesId(_.extend(oCurrentEntitiesId, oParams.Entities));
 	Cache.setSelectedTenant(oParams.Entities['Tenant']);
 
@@ -400,7 +406,8 @@ CSettingsView.prototype.showNewTabView = function (sNewTabName, aTabParams)
  */
 CSettingsView.prototype.changeTab = function (sTabName)
 {
-	Routing.setHash(Links.get(this.currentEntityType(), this.currentEntitiesId(), sTabName));
+	var oEntitiesId = this.currentEntityType() ? this.currentEntitiesId() : {};
+	Routing.setHash(Links.get(this.currentEntityType(), oEntitiesId, sTabName));
 };
 
 /**
