@@ -35,6 +35,7 @@ function CSettingsView()
 	this.selectedTenant = Cache.selectedTenant;
 	this.currentEntityType = ko.observable('');
 	this.currentEntitiesId = ko.observable({});
+	this.lastSavedEntitiesId = ko.observable({});
 	
 	this.showTenantsSelector = ko.computed(function () {
 		return Settings.EnableMultiTenant && this.tenants().length > 1;
@@ -68,6 +69,7 @@ function CSettingsView()
 						if (sType)
 						{
 							oEntitiesId[sType] = iEntityId;
+							delete oEntitiesId[this.currentEntityType()];
 						}
 					}
 					else if (oEntitiesId[sType])
@@ -83,7 +85,9 @@ function CSettingsView()
 		
 		this.aScreens.push({
 			linkHash: ko.computed(function () {
-				return Routing.buildHashFromArray(Links.get(oEntityData.Type, this.currentEntitiesId()));
+				var oEntitiesId = _.clone(this.lastSavedEntitiesId());
+				_.extend(oEntitiesId, this.currentEntitiesId());
+				return Routing.buildHashFromArray(Links.get(oEntityData.Type, oEntitiesId));
 			}, this),
 			sLinkText: Text.i18n(oEntityData.LinkTextKey),
 			sType: oEntityData.Type,
@@ -295,7 +299,7 @@ CSettingsView.prototype.onRoute = function (aParams)
 		bSameType = this.currentEntityType() === oParams.CurrentType,
 		bSameId = this.currentEntitiesId()[oParams.CurrentType] === oParams.Entities[oParams.CurrentType],
 		bSameTab = this.currentTab() && this.currentTab().name === oParams.Last,
-		bSameEntities = _.isEmpty(oParams.Entities) || JSON.stringify(this.currentEntitiesId()) === JSON.stringify(oParams.Entities),
+		bSameEntities = JSON.stringify(this.currentEntitiesId()) === JSON.stringify(oParams.Entities),
 		oCurrentTab = this.currentTab(),
 		fAfterTabHide = _.bind(function () {
 			this.showNewScreenView(oParams);
@@ -336,13 +340,15 @@ CSettingsView.prototype.showNewScreenView = function (oParams)
 	var
 		oCurrentEntityData = _.find(this.aScreens, function (oData) {
 			return oData.sType === oParams.CurrentType;
-		}),
-		oCurrentEntitiesId = _.clone(this.currentEntitiesId())
+		})
 	;
 	
 	this.currentEntityType(oParams.CurrentType);
-	delete oCurrentEntitiesId[oParams.CurrentType];
-	this.currentEntitiesId(_.extend(oCurrentEntitiesId, oParams.Entities));
+	this.currentEntitiesId(oParams.Entities);
+	if (!_.isEmpty(oParams.Entities))
+	{
+		this.lastSavedEntitiesId(oParams.Entities);
+	}
 	Cache.setSelectedTenant(oParams.Entities['Tenant']);
 
 	if (oCurrentEntityData && oCurrentEntityData.oView)
