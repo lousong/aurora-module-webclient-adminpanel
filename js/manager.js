@@ -161,6 +161,9 @@ module.exports = function (oAppData) {
 			},
 			getKoSelectedTenantId: function () {
 				return Cache.selectedTenantId;
+			},
+			getTenantsObservable: function () {
+				return Cache.tenants;
 			}
 		};
 	}

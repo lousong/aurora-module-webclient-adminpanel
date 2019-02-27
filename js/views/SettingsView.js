@@ -138,6 +138,8 @@ function CSettingsView()
 	
 	this.aStartErrors = [];
 	
+	App.subscribeEvent('SendAjaxRequest::before', this.onAjaxSend.bind(this));
+	
 	App.broadcastEvent('%ModuleName%::ConstructView::after', {'Name': this.ViewConstructorName, 'View': this});
 }
 
@@ -145,6 +147,14 @@ _.extendOwn(CSettingsView.prototype, CAbstractScreenView.prototype);
 
 CSettingsView.prototype.ViewTemplate = '%ModuleName%_SettingsView';
 CSettingsView.prototype.ViewConstructorName = 'CSettingsView';
+
+CSettingsView.prototype.onAjaxSend = function (oParams)
+{
+	if (this.currentEntityType() !== '' && !oParams.Parameters.TenantId)
+	{
+		oParams.Parameters.TenantId = Cache.selectedTenantId();
+	}
+};
 
 CSettingsView.prototype.selectTenant = function (iId)
 {
@@ -172,6 +182,8 @@ CSettingsView.prototype.registerTab = function (fGetTabView, oTabName, oTabTitle
 				name: oTabName,
 				title: oTabTitle
 			});
+		}, function (error) {
+			console.log('failed to load settings tab', error);
 		});
 	}
 	return false;

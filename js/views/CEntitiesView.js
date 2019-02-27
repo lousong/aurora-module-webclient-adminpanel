@@ -77,7 +77,6 @@ function CEntitiesView(sEntityType)
 		return this.checkedEntities().length > 0;
 	}, this);
 	this.deleteCommand = Utils.createCommand(this, this.deleteCheckedEntities, this.hasCheckedEntities);
-	this.deactivateCommand = Utils.createCommand(this, function () {}, this.hasCheckedEntities);
 	this.selectedCount = ko.computed(function () {
 		return this.checkedEntities().length;
 	}, this);
@@ -196,6 +195,7 @@ CEntitiesView.prototype.requestEntities = function ()
 	if (this.bShown)
 	{
 		var oParameters = {
+			TenantId: Cache.selectedTenantId(),
 			Type: this.sType,
 			Offset: (this.oPageSwitcher.currentPage() - 1) * Settings.EntitiesPerPage,
 			Limit: Settings.EntitiesPerPage,
@@ -217,18 +217,23 @@ CEntitiesView.prototype.requestEntities = function ()
 			{
 				var
 					aEntities = _.isArray(oResponse.Result.Items) ? oResponse.Result.Items : [],
+					aParsedEntities = [],
 					iCount = Types.pInt(oResponse.Result.Count)
 				;
 
 				_.each(aEntities, function (oEntity) {
-					oEntity.Id = Types.pInt(oEntity.Id);
-					oEntity.checked = ko.observable(false);
-					oEntity.trottleChecked = function (oItem, oEvent) {
-						oEvent.stopPropagation();
-						this.checked(!this.checked());
-					};
+					if (oEntity && oEntity.Id)
+					{
+						oEntity.Id = Types.pInt(oEntity.Id);
+						oEntity.checked = ko.observable(false);
+						oEntity.trottleChecked = function (oItem, oEvent) {
+							oEvent.stopPropagation();
+							this.checked(!this.checked());
+						};
+						aParsedEntities.push(oEntity);
+					}
 				});
-				this.entities(aEntities);
+				this.entities(aParsedEntities);
 				this.totalEntitiesCount(iCount);
 				if (this.entities().length === 0)
 				{
@@ -306,8 +311,12 @@ CEntitiesView.prototype.createEntity = function ()
 {
 	if (this.oEntityCreateView && (!_.isFunction(this.oEntityCreateView.isValidSaveData) || this.oEntityCreateView.isValidSaveData()))
 	{
+		var oParameters = this.oEntityCreateView.getParametersForSave();
+		oParameters['TenantId'] = Cache.selectedTenantId();
+		
 		this.isCreating(true);
-		Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.CreateRequest, this.oEntityCreateView.getParametersForSave(), function (oResponse) {
+		
+		Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.CreateRequest, oParameters, function (oResponse) {
 			if (oResponse.Result)
 			{
 				Screens.showReport(this.oEntityData.ReportSuccessCreateText);
@@ -372,7 +381,13 @@ CEntitiesView.prototype.confirmedDeleteEntities = function (aIdList, bDelete)
 {
 	if (bDelete)
 	{
-		Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.DeleteRequest, {Type: this.sType, IdList: aIdList}, function (oResponse) {
+		var oParameters = {
+			TenantId: Cache.selectedTenantId(),
+			Type: this.sType,
+			IdList: aIdList
+		};
+		
+		Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.DeleteRequest, oParameters, function (oResponse) {
 			if (oResponse.Result)
 			{
 				Screens.showReport(TextUtils.i18n(this.oEntityData.ReportSuccessDeleteLangConst, {}, null, aIdList.length));

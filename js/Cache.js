@@ -23,10 +23,7 @@ function CCache()
 }
 
 CCache.prototype.init = function (oAppData) {
-	// Cache should be initialized in manager.js because it should be able to add Tenant parameter to all AJAX requests
-	
 	App.subscribeEvent('ReceiveAjaxResponse::after', this.onAjaxResponse.bind(this));
-	App.subscribeEvent('SendAjaxRequest::before', this.onAjaxSend.bind(this));
 	
 	var oAppDataSection = oAppData[Settings.ServerModuleName];
 	this.parseTenants(oAppDataSection ? oAppDataSection.Tenants : []);
@@ -36,14 +33,6 @@ CCache.prototype.onAjaxResponse = function (oParams) {
 	if (oParams.Response.Module === Settings.ServerModuleName && oParams.Response.Method === 'GetEntityList' && oParams.Request.Parameters.Type === 'Tenant')
 	{
 		this.parseTenants(oParams.Response.Result);
-	}
-};
-
-CCache.prototype.onAjaxSend = function (oParams)
-{
-	if (!oParams.Parameters.TenantId)
-	{
-		oParams.Parameters.TenantId = this.selectedTenantId();
 	}
 };
 
