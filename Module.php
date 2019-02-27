@@ -39,9 +39,9 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 		return \Aurora\Modules\Core\Module::Decorator()->GetEntity($Type, $Id);
 	}
 	
-	public function CreateTenant($ChannelId = 0, $Name = '', $Description = '')
+	public function CreateTenant($ChannelId = 0, $Name = '', $Description = '', $WebDomain = '')
 	{
-		return \Aurora\Modules\Core\Module::Decorator()->CreateTenant($ChannelId, $Name, $Description);
+		return \Aurora\Modules\Core\Module::Decorator()->CreateTenant($ChannelId, $Name, $Description, $WebDomain);
 	}
 	
 	public function CreateUser($TenantId = 0, $PublicId = '', $Role = \Aurora\System\Enums\UserRole::NormalUser, $WriteSeparateLog = false)
@@ -120,7 +120,8 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 				$iId = isset($Data['Id']) ? $Data['Id'] : null;
 				$sName = isset($Data['Name']) ? $Data['Name'] : null;
 				$sDescription = isset($Data['Description']) ? $Data['Description'] : null;
-				return \Aurora\Modules\Core\Module::Decorator()->UpdateTenant($iId, $sName, $sDescription);
+				$WebDomain = isset($Data['WebDomain']) ? $Data['WebDomain'] : null;
+				return \Aurora\Modules\Core\Module::Decorator()->UpdateTenant($iId, $sName, $sDescription, $WebDomain);
 			case 'User':
 				$iId = isset($Data['Id']) ? $Data['Id'] : null;
 				$sPublicId = isset($Data['PublicId']) ? $Data['PublicId'] : null;

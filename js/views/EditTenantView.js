@@ -15,6 +15,7 @@ function CEditTenantView()
 	this.id = ko.observable(0);
 	this.name = ko.observable('');
 	this.description = ko.observable('');
+	this.webDomain = ko.observable('');
 }
 
 CEditTenantView.prototype.ViewTemplate = '%ModuleName%_EditTenantView';
@@ -24,7 +25,8 @@ CEditTenantView.prototype.getCurrentValues = function ()
 	return [
 		this.id(),
 		this.name(),
-		this.description()
+		this.description(),
+		this.webDomain()
 	];
 };
 
@@ -33,6 +35,7 @@ CEditTenantView.prototype.clearFields = function ()
 	this.id(0);
 	this.name('');
 	this.description('');
+	this.webDomain('');
 };
 
 CEditTenantView.prototype.parse = function (iEntityId, oResult)
@@ -42,6 +45,7 @@ CEditTenantView.prototype.parse = function (iEntityId, oResult)
 		this.id(iEntityId);
 		this.name(oResult.Name);
 		this.description(oResult.Description);
+		this.webDomain(oResult.WebDomain);
 	}
 	else
 	{
@@ -54,7 +58,8 @@ CEditTenantView.prototype.getParametersForSave = function ()
 	return {
 		Id: this.id(),
 		Name: this.name(),
-		Description: this.description()
+		Description: this.description(),
+		WebDomain: this.webDomain()
 	};
 };
 
