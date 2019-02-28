@@ -118,10 +118,9 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 		{
 			case 'Tenant':
 				$iId = isset($Data['Id']) ? $Data['Id'] : null;
-				$sName = isset($Data['Name']) ? $Data['Name'] : null;
 				$sDescription = isset($Data['Description']) ? $Data['Description'] : null;
 				$WebDomain = isset($Data['WebDomain']) ? $Data['WebDomain'] : null;
-				return \Aurora\Modules\Core\Module::Decorator()->UpdateTenant($iId, $sName, $sDescription, $WebDomain);
+				return \Aurora\Modules\Core\Module::Decorator()->UpdateTenant($iId, $sDescription, $WebDomain);
 			case 'User':
 				$iId = isset($Data['Id']) ? $Data['Id'] : null;
 				$sPublicId = isset($Data['PublicId']) ? $Data['PublicId'] : null;

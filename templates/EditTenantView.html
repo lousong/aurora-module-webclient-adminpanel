@@ -1,7 +1,8 @@
 <div class="row">
 	<span class="label" data-bind="i18n: {'key': 'COREWEBCLIENT/LABEL_NAME'}"></span>
 	<span class="value">
-		<input class="input" type="text" data-bind="value: name" />
+		<input class="input" type="text" data-bind="visible: id() === 0, value: name" />
+		<span data-bind="visible: id() !== 0, text: name"></span>
 	</span>
 </div>
 <div class="row">
