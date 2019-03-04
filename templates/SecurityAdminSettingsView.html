@@ -18,19 +18,19 @@
 			<div class="row">
 				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_SECURITY_PASS'}"></span>
 				<span class="value">
-					<input class="input" type="password" data-bind="value: pass, hasFocus: passFocused, valueUpdate: 'afterkeydown', onEnter: save" />
+					<input class="input" autocomplete="new-password" type="password" data-bind="value: pass, hasFocus: passFocused, valueUpdate: 'afterkeydown', onEnter: save" />
 				</span>
 			</div>
 			<div class="row">
 				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_SECURITY_NEW_PASS'}"></span>
 				<span class="value">
-					<input class="input" type="password" data-bind="value: newPass, hasFocus: newPassFocused, valueUpdate: 'afterkeydown', onEnter: save" />
+					<input class="input" autocomplete="new-password" type="password" data-bind="value: newPass, hasFocus: newPassFocused, valueUpdate: 'afterkeydown', onEnter: save" />
 				</span>
 			</div>
 			<div class="row">
 				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_SECURITY_CONFIRM_PASS'}"></span>
 				<span class="value">
-					<input class="input" type="password" data-bind="value: confirmPass, valueUpdate: 'afterkeydown', onEnter: save" />
+					<input class="input" autocomplete="new-password" type="password" data-bind="value: confirmPass, valueUpdate: 'afterkeydown', onEnter: save" />
 				</span>
 			</div>
 			<div class="row">
