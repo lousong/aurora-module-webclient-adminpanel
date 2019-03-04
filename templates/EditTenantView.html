@@ -17,6 +17,12 @@
 		<input class="input" type="text" data-bind="value: webDomain" />
 	</span>
 </div>
+<div class="row" data-bind="visible: id() !== 0">
+	<span class="label" data-bind="i18n: {'key': 'COREWEBCLIENT/LABEL_SITENAME'}"></span>
+	<span class="value">
+		<input class="input" type="text" data-bind="value: siteName" />
+	</span>
+</div>
 <!-- ko foreach: aAdditionalFields -->
 	<div class="row" style="margin-bottom: 6px;">
 		<span class="label" data-bind="text: DisplayName"></span>

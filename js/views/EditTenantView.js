@@ -27,6 +27,7 @@ function CEditTenantView()
 	this.name = ko.observable('');
 	this.description = ko.observable('');
 	this.webDomain = ko.observable('');
+	this.siteName = ko.observable('');
 	
 	this.aAdditionalFields = ParseAdditionalFields('Tenant');
 }
@@ -39,7 +40,8 @@ CEditTenantView.prototype.getCurrentValues = function ()
 		this.id(),
 		this.name(),
 		this.description(),
-		this.webDomain()
+		this.webDomain(),
+		this.siteName()
 	];
 	
 	_.each(this.aAdditionalFields, function (oField) {
@@ -55,6 +57,7 @@ CEditTenantView.prototype.clearFields = function ()
 	this.name('');
 	this.description('');
 	this.webDomain('');
+	this.siteName('');
 	
 	_.each(this.aAdditionalFields, function (oField) {
 		oField.value('');
@@ -69,6 +72,8 @@ CEditTenantView.prototype.parse = function (iEntityId, oResult)
 		this.name(oResult.Name);
 		this.description(oResult.Description);
 		this.webDomain(oResult.WebDomain);
+		console.log('oResult', oResult, 'oResult.SiteName', oResult.SiteName);
+		this.siteName(oResult.SiteName);
 		
 		_.each(this.aAdditionalFields, function (oField) {
 			oField.value(Types.pString(oResult[oField.FieldName]));
@@ -86,7 +91,8 @@ CEditTenantView.prototype.getParametersForSave = function ()
 		Id: this.id(),
 		Name: this.name(),
 		Description: this.description(),
-		WebDomain: this.webDomain()
+		WebDomain: this.webDomain(),
+		SiteName: this.siteName()
 	};
 	
 	_.each(this.aAdditionalFields, function (oField) {
