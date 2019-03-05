@@ -72,7 +72,6 @@ CEditTenantView.prototype.parse = function (iEntityId, oResult)
 		this.name(oResult.Name);
 		this.description(oResult.Description);
 		this.webDomain(oResult.WebDomain);
-		console.log('oResult', oResult, 'oResult.SiteName', oResult.SiteName);
 		this.siteName(oResult.SiteName);
 		
 		_.each(this.aAdditionalFields, function (oField) {
