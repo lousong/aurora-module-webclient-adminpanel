@@ -321,6 +321,7 @@ CEntitiesView.prototype.createEntity = function ()
 			{
 				Screens.showReport(this.oEntityData.ReportSuccessCreateText);
 				this.justCreatedId(Types.pInt(oResponse.Result));
+				this.oEntityCreateView.updateSavedState();
 				this.cancelCreatingEntity();
 			}
 			else

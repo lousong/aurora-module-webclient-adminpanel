@@ -120,7 +120,7 @@ CCommonSettingsPaneView.prototype.requestEntityData = function ()
 		{
 			if (this.entityCreateView())
 			{
-				this.entityCreateView().parse(this.id(), oResponse.Result);
+				this.entityCreateView().parse(this.id(), oResponse.Result || {});
 			}
 			this.updateSavedState();
 		}
