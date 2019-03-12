@@ -365,9 +365,19 @@ CEntitiesView.prototype.deleteEntities = function (aIdList)
 	}
 	if (aIdList.length > 0)
 	{
+		var
+			sTitle = '',
+			oEntityToDelete = aIdList.length === 1 ? _.find(this.entities(), function (oEntity) {
+				return oEntity.Id === aIdList[0];
+			}) : null
+		;
+		if (oEntityToDelete)
+		{
+			sTitle = oEntityToDelete.Name;
+		}
 		Popups.showPopup(ConfirmPopup, [
 			TextUtils.i18n(this.oEntityData.ConfirmDeleteLangConst, {}, null, aIdList.length), 
-			_.bind(this.confirmedDeleteEntities, this, aIdList), '', TextUtils.i18n('COREWEBCLIENT/ACTION_DELETE')
+			_.bind(this.confirmedDeleteEntities, this, aIdList), sTitle, TextUtils.i18n('COREWEBCLIENT/ACTION_DELETE')
 		]);
 	}
 };

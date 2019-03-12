@@ -6,7 +6,7 @@
 			</span>
 		
 			<!-- ko foreach: aScreens -->
-			<span class="item admin" data-bind="css: {'current': sType === $parent.currentEntityType()}">
+			<span data-bind="attr: { 'class': 'item admin ' + sType.toLowerCase() + (sType === $parent.currentEntityType() ? ' current' : '') }">
 				<a class="link" href="#" data-bind="attr: {'href': linkHash}">
 					<span class="text" data-bind="text: sLinkText"></span>
 				</a>
