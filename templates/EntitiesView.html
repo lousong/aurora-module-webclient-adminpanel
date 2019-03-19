@@ -11,6 +11,9 @@
 				<span class="icon"></span>
 				<span class="text" data-bind="text: sActionCreateText"></span>
 			</span>
+			<!-- ko foreach: aAdditionalButtons -->
+				<!-- ko template: {name: $data.ButtonView.ViewTemplate, data: $data.ButtonView} --><!-- /ko -->
+			<!-- /ko -->
 			
 			<!-- ko foreach: aFilters -->
 			<span class="item filter" data-bind="visible: list().length > 0">

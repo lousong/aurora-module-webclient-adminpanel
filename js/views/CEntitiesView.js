@@ -100,6 +100,9 @@ function CEntitiesView(sEntityType)
 	}, this);
 	
 	this.aIdListDeleteProcess = [];
+	
+	this.aAdditionalButtons = [];
+	this.initAdditionalButtons();
 }
 
 CEntitiesView.prototype.ViewTemplate = '%ModuleName%_EntitiesView';
@@ -184,6 +187,20 @@ CEntitiesView.prototype.initFilters = function ()
 			this.requestEntities();
 		}, this);
 		this.aFilters.push(oFilterObservables);
+	}.bind(this));
+};
+
+CEntitiesView.prototype.initAdditionalButtons = function ()
+{
+	_.each(this.oEntityData.AdditionalButtons, function (oAdditionalButtonData) {
+		if (oAdditionalButtonData && oAdditionalButtonData.ButtonView)
+		{
+			if (_.isFunction(oAdditionalButtonData.ButtonView.init))
+			{
+				oAdditionalButtonData.ButtonView.init(this.hasCheckedEntities, this.checkedEntities);
+			}
+			this.aAdditionalButtons.push(oAdditionalButtonData);
+		}
 	}.bind(this));
 };
 
