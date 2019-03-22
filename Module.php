@@ -39,9 +39,9 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 		return \Aurora\Modules\Core\Module::Decorator()->GetEntity($Type, $Id);
 	}
 	
-	public function CreateTenant($ChannelId = 0, $Name = '', $Description = '', $WebDomain = '')
+	public function CreateTenant($ChannelId = 0, $Name = '', $Description = '', $WebDomain = '', $SiteName = null)
 	{
-		return \Aurora\Modules\Core\Module::Decorator()->CreateTenant($ChannelId, $Name, $Description, $WebDomain);
+		return \Aurora\Modules\Core\Module::Decorator()->CreateTenant($ChannelId, $Name, $Description, $WebDomain, $SiteName);
 	}
 	
 	public function CreateUser($TenantId = 0, $PublicId = '', $Role = \Aurora\System\Enums\UserRole::NormalUser, $WriteSeparateLog = false)
