@@ -65,9 +65,9 @@ CCache.prototype.parseTenants = function (oResult)
 		aTenants.push(oTenant);
 	});
 
-	if (!bHasSelected && aTenants.length > 0)
+	if (!bHasSelected)
 	{
-		this.selectedTenantId(aTenants[0].Id);
+		this.selectedTenantId(aTenants.length > 0 ? aTenants[0].Id : 0);
 	}
 	
 	this.tenants(aTenants);

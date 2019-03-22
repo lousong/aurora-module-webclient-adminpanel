@@ -265,6 +265,7 @@ CEntitiesView.prototype.requestEntities = function ()
 			else
 			{
 				Api.showErrorByCode(oResponse);
+				this.entities([]);
 			}
 		}, this);
 	}
