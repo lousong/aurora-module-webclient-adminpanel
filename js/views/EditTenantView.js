@@ -5,7 +5,9 @@ var
 	ko = require('knockout'),
 	
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
-	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js')
+	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
+	
+	Screens = require('%PathToCoreWebclientModule%/js/Screens.js')
 ;
 
 function ParseAdditionalFields(sEntityType)
@@ -82,6 +84,21 @@ CEditTenantView.prototype.parse = function (iEntityId, oResult)
 	{
 		this.clearFields();
 	}
+};
+
+CEditTenantView.prototype.isValidSaveData = function ()
+{
+	if ($.trim(this.name()) === '')
+	{
+		Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_TENANT_NAME_EMPTY'));
+		return false;
+	}
+	if ((/[\\\/\:\*\?\\\"\<\>\|]/gi).test(this.name()))
+	{
+		Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_TENANT_NAME_INVALID'));
+		return false;
+	}
+	return true;
 };
 
 CEditTenantView.prototype.getParametersForSave = function ()
