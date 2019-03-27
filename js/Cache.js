@@ -32,7 +32,10 @@ CCache.prototype.init = function (oAppData) {
 CCache.prototype.onAjaxResponse = function (oParams) {
 	if (oParams.Response.Module === Settings.ServerModuleName && oParams.Response.Method === 'GetEntityList' && oParams.Request.Parameters.Type === 'Tenant')
 	{
-		this.parseTenants(oParams.Response.Result);
+		if (oParams.Request.Parameters.Search === '' && oParams.Request.Parameters.Offset === 0)
+		{
+			this.parseTenants(oParams.Response.Result);
+		}
 	}
 };
 
