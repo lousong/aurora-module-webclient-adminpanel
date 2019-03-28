@@ -84,7 +84,7 @@ CCommonSettingsPaneView.prototype.revertGlobalValues = function ()
 
 CCommonSettingsPaneView.prototype.save = function (oParent)
 {
-	if (this.entityData().UpdateRequest && this.entityCreateView() && (!_.isFunction(this.entityCreateView().isValidSaveData) || this.entityCreateView().isValidSaveData()))
+	if (this.entityData().UpdateRequest && this.entityCreateView() && Types.isPositiveNumber(this.id()) && (!_.isFunction(this.entityCreateView().isValidSaveData) || this.entityCreateView().isValidSaveData()))
 	{
 		Ajax.send(this.entityData().ServerModuleName, this.entityData().UpdateRequest, {Type: this.type(), Data: this.entityCreateView() ? this.entityCreateView().getParametersForSave() : {}}, function (oResponse) {
 			if (oResponse.Result)
@@ -115,16 +115,19 @@ CCommonSettingsPaneView.prototype.save = function (oParent)
 
 CCommonSettingsPaneView.prototype.requestEntityData = function ()
 {
-	Ajax.send(this.entityData().ServerModuleName, this.entityData().GetRequest, {Type: this.type(), Id: this.id()}, function (oResponse, oRequest) {
-		if (this.id() === oRequest.Parameters.Id)
-		{
-			if (this.entityCreateView())
+	if (Types.isPositiveNumber(this.id()))
+	{
+		Ajax.send(this.entityData().ServerModuleName, this.entityData().GetRequest, {Type: this.type(), Id: this.id()}, function (oResponse, oRequest) {
+			if (this.id() === oRequest.Parameters.Id)
 			{
-				this.entityCreateView().parse(this.id(), oResponse.Result || {});
+				if (this.entityCreateView())
+				{
+					this.entityCreateView().parse(this.id(), oResponse.Result || {});
+				}
+				this.updateSavedState();
 			}
-			this.updateSavedState();
-		}
-	}, this);
+		}, this);
+	}
 };
 
 CCommonSettingsPaneView.prototype.setAccessLevel = function (sEntityType, iEntityId)

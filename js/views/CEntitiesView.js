@@ -209,7 +209,7 @@ CEntitiesView.prototype.initAdditionalButtons = function ()
  */
 CEntitiesView.prototype.requestEntities = function ()
 {
-	if (this.bShown)
+	if (this.bShown && (this.sType === 'Tenant' || Types.isPositiveNumber(Cache.selectedTenantId())))
 	{
 		var oParameters = {
 			TenantId: Cache.selectedTenantId(),
@@ -327,7 +327,7 @@ CEntitiesView.prototype.cancelCreatingEntity = function ()
  */
 CEntitiesView.prototype.createEntity = function ()
 {
-	if (this.oEntityCreateView && (!_.isFunction(this.oEntityCreateView.isValidSaveData) || this.oEntityCreateView.isValidSaveData()))
+	if (this.oEntityCreateView && (this.sType === 'Tenant' || Types.isPositiveNumber(Cache.selectedTenantId())) && (!_.isFunction(this.oEntityCreateView.isValidSaveData) || this.oEntityCreateView.isValidSaveData()))
 	{
 		var oParameters = this.oEntityCreateView.getParametersForSave();
 		oParameters['TenantId'] = Cache.selectedTenantId();
@@ -408,7 +408,7 @@ CEntitiesView.prototype.deleteEntities = function (aIdList)
  */
 CEntitiesView.prototype.confirmedDeleteEntities = function (aIdList, bDelete)
 {
-	if (bDelete)
+	if (bDelete && Types.isPositiveNumber(Cache.selectedTenantId()))
 	{
 		var oParameters = {
 			TenantId: Cache.selectedTenantId(),
