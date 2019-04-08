@@ -16,6 +16,9 @@ module.exports = function (oAppData) {
 			Cache = require('modules/%ModuleName%/js/Cache.js'),
 			Settings = require('modules/%ModuleName%/js/Settings.js'),
 			
+			aEntityTypesToRegister = [],
+			aEntityDataToChange = [],
+				
 			aAdminPanelTabsParams = [],
 			aAdminPanelTabsSectionsParams = []
 		;
@@ -86,6 +89,16 @@ module.exports = function (oAppData) {
 						require.ensure(
 							['modules/%ModuleName%/js/views/SettingsView.js'],
 							function(require) {
+								// EntitiesTabs shouldn't be required before every module will be initialized.
+								// (Requires view. All views should be required after initialization of all modules.)
+								var EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js');
+								_.each(aEntityTypesToRegister, function (oEntityData) {
+									EntitiesTabs.registerEntityType(oEntityData);
+								});
+								_.each(aEntityDataToChange, function (oEntityData) {
+									EntitiesTabs.changeEntityData(oEntityData);
+								});
+								
 								var
 									oSettingsView = require('modules/%ModuleName%/js/views/SettingsView.js'),
 									aPromises = []
@@ -148,16 +161,10 @@ module.exports = function (oAppData) {
 				SettingsView.setAddHash(aAddHash);
 			},
 			registerAdminPanelEntityType: function (oEntityData) {
-				// EntitiesTabs shouldn't be required before every module will be initialized.
-				// (Requires view. All views should be required after initialization of all modules.)
-				var EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js');
-				EntitiesTabs.registerEntityType(oEntityData);
+				aEntityTypesToRegister.push(oEntityData);
 			},
 			changeAdminPanelEntityData: function (oEntityData) {
-				// EntitiesTabs shouldn't be required before every module will be initialized.
-				// (Requires view. All views should be required after initialization of all modules.)
-				var EntitiesTabs = require('modules/%ModuleName%/js/EntitiesTabs.js');
-				EntitiesTabs.changeEntityData(oEntityData);
+				aEntityDataToChange.push(oEntityData);
 			},
 			getKoSelectedTenantId: function () {
 				return Cache.selectedTenantId;
