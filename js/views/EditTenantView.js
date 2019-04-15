@@ -24,12 +24,15 @@ function ParseAdditionalFields(sEntityType)
  */
 function CEditTenantView()
 {
-	this.sHeading = TextUtils.i18n('%MODULENAME%/HEADING_CREATE_TENANT');
 	this.id = ko.observable(0);
 	this.name = ko.observable('');
 	this.description = ko.observable('');
 	this.webDomain = ko.observable('');
 	this.siteName = ko.observable('');
+	
+	this.sHeading = TextUtils.i18n('%MODULENAME%/HEADING_CREATE_TENANT');
+	this.sActionCreate = TextUtils.i18n('COREWEBCLIENT/ACTION_CREATE');
+	this.sActionCreateInProgress = TextUtils.i18n('COREWEBCLIENT/ACTION_CREATE_IN_PROGRESS');
 	
 	this.aAdditionalFields = ParseAdditionalFields('Tenant');
 }

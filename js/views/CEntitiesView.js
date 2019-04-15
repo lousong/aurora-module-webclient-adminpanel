@@ -341,11 +341,8 @@ CEntitiesView.prototype.cancelCreatingEntity = function ()
  */
 CEntitiesView.prototype.createEntity = function ()
 {
-	console.log('createEntity');
-	console.log('Cache.selectedTenantId()', Cache.selectedTenantId());
 	if (this.oEntityCreateView && (this.sType === 'Tenant' || Types.isPositiveNumber(Cache.selectedTenantId())) && (!_.isFunction(this.oEntityCreateView.isValidSaveData) || this.oEntityCreateView.isValidSaveData()))
 	{
-		console.log('11');
 		var oParameters = this.oEntityCreateView.getParametersForSave();
 		oParameters['TenantId'] = Cache.selectedTenantId();
 		

@@ -12,10 +12,10 @@
 
 				<div class="buttons">
 					<span class="button" data-bind="click: createEntity, visible: !isCreating()">
-						<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE'}"></span>
+						<span data-bind="text: oEntityCreateView.sActionCreate"></span>
 					</span>
 					<span class="button" data-bind="visible: isCreating()">
-						<span data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE_IN_PROGRESS'}"></span>
+						<span data-bind="text: oEntityCreateView.sActionCreateInProgress"></span>
 					</span>
 					<span class="button secondary_button" data-bind="click: function () { $root.cancelCreatingEntity() }, visible: !isCreating()">
 						<span data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_CANCEL'}"></span>
