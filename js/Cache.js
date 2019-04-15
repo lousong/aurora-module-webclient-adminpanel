@@ -6,7 +6,9 @@ var
 	
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
 	
+	Ajax = require('%PathToCoreWebclientModule%/js/Ajax.js'),
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
+	CoreSettings = require('%PathToCoreWebclientModule%/js/Settings.js'),
 	
 	Settings = require('modules/%ModuleName%/js/Settings.js');
 ;
@@ -20,6 +22,12 @@ function CCache()
 			return oTenant.Id === this.selectedTenantId();
 		}.bind(this)) || { Name: '' };
 	}, this);
+	CoreSettings.dbSettingsChanged.subscribe(function () {
+		if (CoreSettings.dbSettingsChanged())
+		{
+			Ajax.send(Settings.ServerModuleName, 'GetEntityList', { Type: 'Tenant' });
+		}
+	});
 }
 
 CCache.prototype.init = function (oAppData) {
