@@ -64,7 +64,7 @@ function CSettingsView()
 				else
 				{
 					var oEntitiesId = _.clone(this.currentEntitiesId());
-					if (Types.isPositiveNumber(iEntityId))
+					if (Types.isNumber(iEntityId))
 					{
 						if (sType)
 						{

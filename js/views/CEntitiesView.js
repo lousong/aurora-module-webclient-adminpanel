@@ -158,17 +158,27 @@ CEntitiesView.prototype.initFilters = function ()
 				{
 					aFilterList = oFilterData.mList;
 				}
-				if (aFilterList.length > 0 && oFilterData.sAllText)
+				if (aFilterList.length > 0)
 				{
-					aFilterList.unshift({
-						text: oFilterData.sAllText,
-						value: 0
-					});
+					if (oFilterData.sAllText)
+					{
+						aFilterList.unshift({
+							text: oFilterData.sAllText,
+							value: -1
+						});
+					}
+					if (oFilterData.sNotInAnyText)
+					{
+						aFilterList.push({
+							text: oFilterData.sNotInAnyText,
+							value: 0
+						});
+					}
 				}
 				return aFilterList;
 			}, this),
-			selectedValue: ko.observable(0),
-			requestValue: ko.observable(0),
+			selectedValue: ko.observable(-1),
+			requestValue: ko.observable(-1),
 			sAllText: oFilterData.sAllText,
 			sFileld: oFilterData.sField,
 			sEntity: oFilterData.sEntity
@@ -220,10 +230,7 @@ CEntitiesView.prototype.requestEntities = function ()
 		};
 
 		_.each(this.aFilters, function (oFilterObservables) {
-			if (oFilterObservables.requestValue() !== 0)
-			{
-				oParameters[oFilterObservables.sFileld] = oFilterObservables.requestValue();
-			}
+			oParameters[oFilterObservables.sFileld] = oFilterObservables.requestValue();
 		});
 
 		this.searchValue(this.newSearchValue());
@@ -295,10 +302,17 @@ CEntitiesView.prototype.changeEntity = function (iId, oEntities)
 			oFilterObservables.selectedValue(oEntities[oFilterObservables.sEntity]);
 			oFilterObservables.requestValue(oEntities[oFilterObservables.sEntity]);
 		}
-		else if (oFilterObservables.requestValue() !== 0)
+		else if (oFilterObservables.requestValue() !== -1 || oFilterObservables.requestValue() !== 0)
 		{
-			oFilterObservables.selectedValue(0);
-			oFilterObservables.requestValue(0);
+			if (oFilterObservables.selectedValue() === -1 || oFilterObservables.selectedValue() === 0)
+			{
+				oFilterObservables.requestValue(oFilterObservables.selectedValue());
+			}
+			else
+			{
+				oFilterObservables.selectedValue(-1);
+				oFilterObservables.requestValue(-1);
+			}
 		}
 	}.bind(this));
 	this.current(Types.pInt(iId));
