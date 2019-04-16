@@ -249,4 +249,20 @@ class Module extends \Aurora\System\Module\AbstractWebclientModule
 			$EnableEventLogging, $LoggingLevel
 		);
 	}
+
+	public function UpdateConfig()
+	{
+		$bResult = true;
+		try
+		{
+			\Aurora\System\Api::Init();
+			\Aurora\System\Api::GetModuleManager()->SyncModulesConfigs();
+		}
+		catch (Exception $e)
+		{
+			$bResult = false;
+		}
+
+		return $bResult;
+	}
 }

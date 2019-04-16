@@ -158,4 +158,18 @@ CDbAdminSettingsView.prototype.createTables = function ()
 	}
 };
 
+CDbAdminSettingsView.prototype.updateConfig = function ()
+{
+	Ajax.send('UpdateConfig', null, function (oResponse) {
+		if (oResponse.Result)
+		{
+			Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_UPDATE_CONFIG_SUCCESSFUL'));
+		}
+		else
+		{
+			Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_UPDATE_CONFIG_FAILED'));
+		}
+	});
+}
+
 module.exports = new CDbAdminSettingsView();
