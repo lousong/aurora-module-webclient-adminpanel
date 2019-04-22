@@ -55,7 +55,7 @@ function CSettingsView()
 			fChangeEntity = _.bind(function (sType, iEntityId, sTabName) {
 				if (sTabName === 'create')
 				{
-					this.createEntity();
+					this.openCreateEntity();
 				}
 				else if (sType === this.currentEntityType())
 				{
@@ -223,7 +223,7 @@ CSettingsView.prototype.cancelCreatingEntity = function ()
 /**
  * Sets hash for creating entity.
  */
-CSettingsView.prototype.createEntity = function ()
+CSettingsView.prototype.openCreateEntity = function ()
 {
 	var oEntitiesId = _.clone(this.currentEntitiesId());
 	delete oEntitiesId[this.currentEntityType()];

@@ -7,7 +7,7 @@
 				<span class="hint" data-bind="text: selectedCount, visible: selectedCount() > 0"></span>
 				<span class="text" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_DELETE'}"></span>
 			</span>
-			<span class="item add_new_item" data-bind="click: function () { $root.createEntity(); }, customTooltip: sActionCreateText">
+			<span class="item add_new_item" data-bind="click: function () { $root.openCreateEntity(); }, customTooltip: sActionCreateText">
 				<span class="icon"></span>
 				<span class="text" data-bind="text: sActionCreateText"></span>
 			</span>
