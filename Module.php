@@ -8,7 +8,7 @@
 namespace Aurora\Modules\AdminPanelWebclient;
 
 /**
- * This module adds ability to login to the admin panel as a Super Administrator.
+ * Displays admin panel web interface.
  *
  * @license https://www.gnu.org/licenses/agpl-3.0.html AGPL-3.0
  * @license https://afterlogic.com/products/common-licensing Afterlogic Software License
