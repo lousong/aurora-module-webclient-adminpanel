@@ -41,14 +41,18 @@ function CSettingsView()
 		return Settings.EnableMultiTenant && this.tenants().length > 1;
 	}, this);
 	
-	this.aScreens = [
-		{
+	this.bShowLogout = App.getUserRole() === Enums.UserRole.SuperAdmin;
+	this.aScreens = [];
+	if (App.getUserRole() === Enums.UserRole.SuperAdmin)
+	{
+		this.aScreens.push({
 			linkHash: ko.observable(Routing.buildHashFromArray(Links.get(''))),
 			sLinkText: Text.i18n('%MODULENAME%/HEADING_SYSTEM_SETTINGS_TABNAME'),
 			sType: '',
 			oView: null
-		}
-	];
+		});
+	}
+	
 	_.each(EntitiesTabs.getData(), _.bind(function (oEntityData) {
 		var
 			oView = new CEntitiesView(oEntityData.Type),
@@ -225,13 +229,17 @@ CSettingsView.prototype.cancelCreatingEntity = function ()
  */
 CSettingsView.prototype.openCreateEntity = function ()
 {
-	var oEntitiesId = _.clone(this.currentEntitiesId());
-	delete oEntitiesId[this.currentEntityType()];
-	if (this.currentEntityType() !== 'Tenant' && !oEntitiesId['Tenant'] && Cache.selectedTenantId())
+	var oEntityData = EntitiesTabs.getEntityData(this.currentEntityType());
+	if (oEntityData.CreateRequest)
 	{
-		oEntitiesId['Tenant'] = Cache.selectedTenantId();
+		var oEntitiesId = _.clone(this.currentEntitiesId());
+		delete oEntitiesId[this.currentEntityType()];
+		if (this.currentEntityType() !== 'Tenant' && !oEntitiesId['Tenant'] && Cache.selectedTenantId())
+		{
+			oEntitiesId['Tenant'] = Cache.selectedTenantId();
+		}
+		Routing.setHash(Links.get(this.currentEntityType(), oEntitiesId, 'create'));
 	}
-	Routing.setHash(Links.get(this.currentEntityType(), oEntitiesId, 'create'));
 };
 
 /**
@@ -365,7 +373,8 @@ CSettingsView.prototype.showNewScreenView = function (oParams)
 
 	if (oCurrentEntityData && oCurrentEntityData.oView)
 	{
-		if (oParams.Last === 'create')
+		var sCreateRequest = oCurrentEntityData.oView.oEntityData ? oCurrentEntityData.oView.oEntityData.CreateRequest : '';
+		if (oParams.Last === 'create' && Types.isNonEmptyString(sCreateRequest))
 		{
 			oCurrentEntityData.oView.openCreateForm();
 		}

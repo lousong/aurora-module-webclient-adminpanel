@@ -10,6 +10,7 @@ var
 	
 	Ajax = require('%PathToCoreWebclientModule%/js/Ajax.js'),
 	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
+	App = require('%PathToCoreWebclientModule%/js/App.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 	
 	CPageSwitcherView = require('%PathToCoreWebclientModule%/js/views/CPageSwitcherView.js'),
@@ -31,6 +32,8 @@ var
  */
 function CEntitiesView(sEntityType)
 {
+	this.bToolbarDisabled = App.getUserRole() === Enums.UserRole.TenantAdmin && sEntityType === 'Tenant';
+	
 	Cache.selectedTenantId.subscribe(function () {
 		if (this.sType !== 'Tenant')
 		{
@@ -221,13 +224,16 @@ CEntitiesView.prototype.requestEntities = function ()
 {
 	if (this.bShown && (this.sType === 'Tenant' || Types.isPositiveNumber(Cache.selectedTenantId())))
 	{
-		var oParameters = {
-			TenantId: Cache.selectedTenantId(),
-			Type: this.sType,
-			Offset: (this.oPageSwitcher.currentPage() - 1) * Settings.EntitiesPerPage,
-			Limit: Settings.EntitiesPerPage,
-			Search: this.newSearchValue()
-		};
+		var
+			sEntityType = this.sType,
+			oParameters = {
+				TenantId: Cache.selectedTenantId(),
+				Type: sEntityType,
+				Offset: (this.oPageSwitcher.currentPage() - 1) * Settings.EntitiesPerPage,
+				Limit: Settings.EntitiesPerPage,
+				Search: this.newSearchValue()
+			}
+		;
 
 		_.each(this.aFilters, function (oFilterObservables) {
 			oParameters[oFilterObservables.sFileld] = oFilterObservables.requestValue();
@@ -249,10 +255,14 @@ CEntitiesView.prototype.requestEntities = function ()
 					if (oEntity && oEntity.Id)
 					{
 						oEntity.Id = Types.pInt(oEntity.Id);
+						oEntity.bItsMe = sEntityType === 'Tenant' && oEntity.Id === App.getTenantId() || sEntityType === 'User' && oEntity.Id === App.getUserId();
 						oEntity.checked = ko.observable(false);
 						oEntity.trottleChecked = function (oItem, oEvent) {
 							oEvent.stopPropagation();
-							this.checked(!this.checked());
+							if (!this.bItsMe)
+							{
+								this.checked(!this.checked());
+							}
 						};
 						aParsedEntities.push(oEntity);
 					}
@@ -261,11 +271,11 @@ CEntitiesView.prototype.requestEntities = function ()
 				this.totalEntitiesCount(iCount);
 				if (this.entities().length === 0)
 				{
-					this.fChangeEntityHandler(this.sType, undefined, 'create');
+					this.fChangeEntityHandler(sEntityType, undefined, 'create');
 				}
 				else if (this.justCreatedId() !== 0)
 				{
-					this.fChangeEntityHandler(this.sType, this.justCreatedId());
+					this.fChangeEntityHandler(sEntityType, this.justCreatedId());
 				}
 				this.aIdListDeleteProcess = [];
 			}
@@ -386,6 +396,11 @@ CEntitiesView.prototype.deleteCheckedEntities = function ()
 
 CEntitiesView.prototype.deleteEntities = function (aIdList)
 {
+	if (!this.oEntityData.DeleteRequest)
+	{
+		return;
+	}
+	
 	if (Types.isNonEmptyArray(this.aIdListDeleteProcess))
 	{
 		aIdList = _.difference(aIdList, this.aIdListDeleteProcess);
@@ -452,7 +467,10 @@ CEntitiesView.prototype.groupCheck = function ()
 {
 	var bCheckAll = !this.hasCheckedEntities();
 	_.each(this.entities(), function (oEntity) {
-		oEntity.checked(bCheckAll);
+		if (!oEntity.bItsMe)
+		{
+			oEntity.checked(bCheckAll);
+		}
 	});
 };
 

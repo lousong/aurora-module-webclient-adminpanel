@@ -53,6 +53,16 @@ function CCommonSettingsPaneView()
 		return !!this.entityData() && !!this.entityData().UpdateRequest;
 	}, this);
 	
+	this.allowDelete = ko.computed(function () {
+		var
+			oEntityData = this.entityData(),
+			iCurrentEntityId = this.entityCreateView() && _.isFunction(this.entityCreateView().id) ? this.entityCreateView().id() : 0,
+			sEntityType = oEntityData ? oEntityData.Type : '',
+			bCurrentEntity = sEntityType === 'User' && iCurrentEntityId === App.getUserId() || sEntityType === 'Tenant' && iCurrentEntityId === App.getTenantId()
+		;
+		return !!(oEntityData && oEntityData.DeleteRequest && !bCurrentEntity);
+	}, this);
+	
 	this.updateSavedState();
 }
 
