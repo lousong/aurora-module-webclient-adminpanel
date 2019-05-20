@@ -315,6 +315,17 @@ CSettingsView.prototype.onRoute = function (aParams)
 {
 	var
 		oParams = Links.parse(aParams),
+		oScreenByType = _.find(this.aScreens, function (oScreen) {
+			return oScreen.sType === oParams.CurrentType;
+		})
+	;
+	if (!oScreenByType && this.aScreens.length > 0)
+	{
+		Routing.replaceHash(Links.get(this.aScreens[0].sType, [], ''));
+		return;
+	}
+
+	var
 		aTabParams = aParams.slice(1),
 		bSameType = this.currentEntityType() === oParams.CurrentType,
 		bSameId = this.currentEntitiesId()[oParams.CurrentType] === oParams.Entities[oParams.CurrentType],
