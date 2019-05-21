@@ -10,12 +10,22 @@ var
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js')
 ;
 
+function GetAdditionalFieldValue (oField, sValue)
+{
+	switch (oField.FieldType)
+	{
+		case 'bool': return Types.pBool(sValue);
+		case 'int': return Types.pInt(sValue);
+		default: return Types.pString(sValue);
+	}
+};
+
 function ParseAdditionalFields(sEntityType)
 {
 	var aAdditionalFields = Types.pArray(window.auroraAppData && window.auroraAppData.additional_entity_fields_to_edit);
-	return _.filter(aAdditionalFields, function (oFieldData) {
-		oFieldData.value = ko.observable('');
-		return oFieldData.Entity === sEntityType;
+	return _.filter(aAdditionalFields, function (oField) {
+		oField.value = ko.observable(GetAdditionalFieldValue(oField, ''));
+		return oField.Entity === sEntityType;
 	});
 }
 
@@ -65,7 +75,7 @@ CEditTenantView.prototype.clearFields = function ()
 	this.siteName('');
 	
 	_.each(this.aAdditionalFields, function (oField) {
-		oField.value('');
+		oField.value(GetAdditionalFieldValue(oField, ''));
 	});
 };
 
@@ -80,7 +90,7 @@ CEditTenantView.prototype.parse = function (iEntityId, oResult)
 		this.siteName(oResult.SiteName);
 		
 		_.each(this.aAdditionalFields, function (oField) {
-			oField.value(Types.pString(oResult[oField.FieldName]));
+			oField.value(GetAdditionalFieldValue(oField, oResult[oField.FieldName]));
 		});
 	}
 	else
@@ -115,7 +125,12 @@ CEditTenantView.prototype.getParametersForSave = function ()
 	};
 	
 	_.each(this.aAdditionalFields, function (oField) {
-		oParameters[oField.FieldName] = oField.value();
+		var mValue = oField.value();
+		if (oField.FieldType === 'int')
+		{
+			mValue = Types.pInt(mValue);
+		}
+		oParameters[oField.FieldName] = mValue;
 	});
 	
 	return oParameters;
