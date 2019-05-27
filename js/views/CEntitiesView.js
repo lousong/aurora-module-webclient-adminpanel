@@ -49,6 +49,7 @@ function CEntitiesView(sEntityType)
 	this.entities = ko.observableArray([]);
 	this.aFilters = [];
 	this.initFilters();
+	this.errorMessage = ko.observable('');
 	
 	this.totalEntitiesCount = ko.observable(0);
 	this.current = ko.observable(0);
@@ -241,6 +242,7 @@ CEntitiesView.prototype.requestEntities = function ()
 
 		this.searchValue(this.newSearchValue());
 		this.loading(true);
+		this.errorMessage('');
 		Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.GetListRequest, oParameters, function (oResponse) {
 			this.loading(false);
 			if (oResponse.Result)
@@ -281,7 +283,14 @@ CEntitiesView.prototype.requestEntities = function ()
 			}
 			else
 			{
-				Api.showErrorByCode(oResponse);
+				if (Types.isNonEmptyString(oResponse.ErrorMessage))
+				{
+					this.errorMessage(oResponse.ErrorMessage);
+				}
+				else
+				{
+					Api.showErrorByCode(oResponse);
+				}
 				this.entities([]);
 			}
 		}, this);

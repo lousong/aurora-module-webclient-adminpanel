@@ -47,6 +47,9 @@
 				<span class="list_notification" data-bind="visible: loading()">
 					<span class="description" data-bind="i18n: {'key': 'COREWEBCLIENT/INFO_LOADING'}"></span>
 				</span>
+				<span class="list_notification" data-bind="visible: entities().length === 0 && errorMessage() !== ''">
+					<span class="description" data-bind="text: errorMessage"></span>
+				</span>
 				<div class="items_list" data-bind="foreach: entities, visible: !loading()">
 					<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sType, Id); }, css: {'selected': $parent.current() === Id}">
 						<div class="item_content">

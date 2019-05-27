@@ -91,6 +91,8 @@ CEditTenantView.prototype.parse = function (iEntityId, oResult)
 		
 		_.each(this.aAdditionalFields, function (oField) {
 			oField.value(GetAdditionalFieldValue(oField, oResult[oField.FieldName]));
+			oField.EnableOnCreate = Types.pBool(oField.EnableOnCreate, true);
+			oField.EnableOnEdit = Types.pBool(oField.EnableOnEdit, true);
 		});
 	}
 	else
