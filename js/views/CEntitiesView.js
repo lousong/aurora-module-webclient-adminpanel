@@ -425,14 +425,20 @@ CEntitiesView.prototype.deleteEntities = function (aIdList)
 			sTitle = '',
 			oEntityToDelete = aIdList.length === 1 ? _.find(this.entities(), function (oEntity) {
 				return oEntity.Id === aIdList[0];
-			}) : null
+			}) : null,
+			oDeleteEntityParams = {
+				'Type': this.sType,
+				'Count': aIdList.length,
+				'ConfirmText': TextUtils.i18n(this.oEntityData.ConfirmDeleteLangConst, {}, null, aIdList.length)
+			}
 		;
 		if (oEntityToDelete)
 		{
-			sTitle = oEntityToDelete.Name;
+			sTitle = oEntityToDelete.Name || oEntityToDelete.PublicId;
 		}
+		App.broadcastEvent('ConfirmDeleteEntity::before', oDeleteEntityParams);
 		Popups.showPopup(ConfirmPopup, [
-			TextUtils.i18n(this.oEntityData.ConfirmDeleteLangConst, {}, null, aIdList.length), 
+			oDeleteEntityParams.ConfirmText, 
 			_.bind(this.confirmedDeleteEntities, this, aIdList), sTitle, TextUtils.i18n('COREWEBCLIENT/ACTION_DELETE')
 		]);
 	}
