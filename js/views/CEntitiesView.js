@@ -457,7 +457,8 @@ CEntitiesView.prototype.confirmedDeleteEntities = function (aIdList, bDelete)
 		var oParameters = {
 			TenantId: Cache.selectedTenantId(),
 			Type: this.sType,
-			IdList: aIdList
+			IdList: aIdList,
+			DeletionConfirmedByAdmin: true
 		};
 		
 		Ajax.send(this.oEntityData.ServerModuleName, this.oEntityData.DeleteRequest, oParameters, function (oResponse) {
