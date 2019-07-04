@@ -14,6 +14,7 @@ var
 	CAbstractSettingsFormView = require('modules/%ModuleName%/js/views/CAbstractSettingsFormView.js'),
 	
 	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
+	AlertPopup = require('%PathToCoreWebclientModule%/js/popups/AlertPopup.js'),
 	ConfirmPopup = require('%PathToCoreWebclientModule%/js/popups/ConfirmPopup.js')
 ;
 
@@ -97,6 +98,10 @@ CDbAdminSettingsView.prototype.getParametersForSave = function ()
  */
 CDbAdminSettingsView.prototype.applySavedValues = function (oParameters)
 {
+	if (Settings.StoreAuthTokenInDB)
+	{
+		Popups.showPopup(AlertPopup, [TextUtils.i18n('%MODULENAME%/INFO_AUTHTOKEN_DB_STORED')]);
+	}
 	Settings.updateDb(oParameters.DbLogin, oParameters.DbName, oParameters.DbHost);
 	this.setStartError();
 };
