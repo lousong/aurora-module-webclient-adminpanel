@@ -25,7 +25,7 @@ function CCache()
 	CoreSettings.dbSettingsChanged.subscribe(function () {
 		if (CoreSettings.dbSettingsChanged())
 		{
-			Ajax.send(Settings.ServerModuleName, 'GetEntityList', { Type: 'Tenant' });
+			Ajax.send(Settings.ServerModuleName, 'GetTenants');
 		}
 	});
 }
@@ -33,12 +33,12 @@ function CCache()
 CCache.prototype.init = function (oAppData) {
 	App.subscribeEvent('ReceiveAjaxResponse::after', this.onAjaxResponse.bind(this));
 	
-	var oAppDataSection = oAppData[Settings.ServerModuleName];
+	var oAppDataSection = oAppData['%ModuleName%'];
 	this.parseTenants(oAppDataSection ? oAppDataSection.Tenants : []);
 };
 
 CCache.prototype.onAjaxResponse = function (oParams) {
-	if (oParams.Response.Module === Settings.ServerModuleName && oParams.Response.Method === 'GetEntityList' && oParams.Request.Parameters.Type === 'Tenant')
+	if (oParams.Response.Module === Settings.ServerModuleName && oParams.Response.Method === 'GetTenants')
 	{
 		var
 			sSearch = Types.pString(oParams.Request.Parameters.Search),

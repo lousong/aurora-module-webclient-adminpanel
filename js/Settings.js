@@ -7,7 +7,7 @@ var
 ;
 
 module.exports = {
-	ServerModuleName: 'AdminPanelWebclient',
+	ServerModuleName: 'Core',
 	HashModuleName: 'admin',
 	
 	EntitiesPerPage: 20,

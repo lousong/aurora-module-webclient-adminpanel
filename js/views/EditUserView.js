@@ -80,7 +80,7 @@ CEditUserView.prototype.isValidSaveData = function ()
 CEditUserView.prototype.getParametersForSave = function ()
 {
 	return {
-		Id: this.id(),
+		UserId: this.id(),
 		PublicId: $.trim(this.publicId()),
 		Role: this.tenantAdminSelected() ? Enums.UserRole.TenantAdmin : Enums.UserRole.NormalUser,
 		WriteSeparateLog: this.writeSeparateLog()

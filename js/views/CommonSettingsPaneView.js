@@ -96,7 +96,7 @@ CCommonSettingsPaneView.prototype.save = function (oParent)
 {
 	if (this.entityData().UpdateRequest && this.entityCreateView() && Types.isPositiveNumber(this.id()) && (!_.isFunction(this.entityCreateView().isValidSaveData) || this.entityCreateView().isValidSaveData()))
 	{
-		Ajax.send(this.entityData().ServerModuleName, this.entityData().UpdateRequest, {Type: this.type(), Data: this.entityCreateView() ? this.entityCreateView().getParametersForSave() : {}}, function (oResponse) {
+		Ajax.send(this.entityData().ServerModuleName, this.entityData().UpdateRequest, this.entityCreateView() ? this.entityCreateView().getParametersForSave() : {}, function (oResponse) {
 			if (oResponse.Result)
 			{
 				if (_.isFunction(this.entityCreateView().showAdvancedReport))

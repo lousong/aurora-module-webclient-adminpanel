@@ -119,7 +119,7 @@ CEditTenantView.prototype.isValidSaveData = function ()
 CEditTenantView.prototype.getParametersForSave = function ()
 {
 	var oParameters = {
-		Id: this.id(),
+		TenantId: this.id(),
 		Name: this.name(),
 		Description: this.description(),
 		WebDomain: this.webDomain(),
