@@ -23,7 +23,7 @@ module.exports = {
 	init: function (oAppData)
 	{
 		var
-			oAppDataSection = oAppData[this.ServerModuleName],
+			oAppDataSection = oAppData['%ModuleName%'],
 			oCoreDataSection = oAppData['Core']
 		;
 
