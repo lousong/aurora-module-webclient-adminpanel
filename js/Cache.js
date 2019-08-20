@@ -38,6 +38,10 @@ CCache.prototype.init = function (oAppData) {
 };
 
 CCache.prototype.onAjaxResponse = function (oParams) {
+	if (oParams.Response.Module === Settings.ServerModuleName && oParams.Response.Method === 'CreateTables')
+	{
+		Ajax.send(Settings.ServerModuleName, 'GetTenants');
+	}
 	if (oParams.Response.Module === Settings.ServerModuleName && oParams.Response.Method === 'GetTenants')
 	{
 		var
