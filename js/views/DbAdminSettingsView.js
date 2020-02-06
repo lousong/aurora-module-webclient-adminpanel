@@ -33,7 +33,8 @@ function CDbAdminSettingsView()
 	this.dbName = ko.observable(Settings.DbName);
 	this.dbHost = ko.observable(Settings.DbHost);
 	/*-- Editable fields */
-	
+
+	this.isCreating = ko.observable(false);
 	this.startError = ko.observable('');
 	this.setStartError();
 }
@@ -127,18 +128,22 @@ CDbAdminSettingsView.prototype.testConnection = function ()
 
 CDbAdminSettingsView.prototype.createTables = function ()
 {
-	var fCreateTables = function () {
-		Ajax.send('CreateTables', null, function (oResponse) {
-			if (oResponse.Result)
-			{
-				Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_TABLES_SUCCESSFUL'));
-			}
-			else
-			{
-				Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_CREATE_TABLES_FAILED'));
-			}
-		});
-	};
+	var 
+		self = this,		
+		fCreateTables = function () {
+			self.isCreating(true);
+			Ajax.send('CreateTables', null, function (oResponse) {
+				if (oResponse.Result)
+				{
+					Screens.showReport(TextUtils.i18n('%MODULENAME%/REPORT_CREATE_TABLES_SUCCESSFUL'));
+				}
+				else
+				{
+					Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_CREATE_TABLES_FAILED'));
+				}
+				self.isCreating(false);
+			});
+		};
 	
 	if (this.sSavedState !== this.getCurrentState())
 	{

@@ -41,7 +41,8 @@
 			<div class="row">
 				<span class="label"></span>
 				<span class="value buttons">
-					<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_DB_CREATE_TABLES'}, click: createTables"></span>
+					<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_DB_CREATE_TABLES'}, click: createTables, visible: !isCreating()"></span>
+					<span class="button" data-bind="i18n: {'key': '%MODULENAME%/BUTTON_DB_CREATING_TABLES'}, visible: isCreating()"></span>
 				</span>
 			</div>
 			<div class="row hint">
