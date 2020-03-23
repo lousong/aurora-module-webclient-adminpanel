@@ -7,6 +7,7 @@ var
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
 	
+	App = require('%PathToCoreWebclientModule%/js/App.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js')
 ;
 
@@ -34,6 +35,7 @@ function ParseAdditionalFields(sEntityType)
  */
 function CEditTenantView()
 {
+	this.bAllowEditWebDomain = App.getUserRole() === Enums.UserRole.SuperAdmin;
 	this.id = ko.observable(0);
 	this.name = ko.observable('');
 	this.description = ko.observable('');

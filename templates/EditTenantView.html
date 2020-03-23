@@ -11,12 +11,20 @@
 		<input class="input" type="text" data-bind="value: description" />
 	</span>
 </div>
+<!-- ko if: bAllowEditWebDomain -->
 <div class="row">
 	<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_WEB_DOMAIN'}"></span>
 	<span class="value">
 		<input class="input" type="text" data-bind="value: webDomain" />
 	</span>
 </div>
+<!-- /ko -->
+<!-- ko if: !bAllowEditWebDomain && webDomain() !== '' -->
+<div class="row">
+	<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_WEB_DOMAIN'}"></span>
+	<span class="value" data-bind="text: webDomain"></span>
+</div>
+<!-- /ko -->
 <div class="row">
 	<span class="label" data-bind="i18n: {'key': 'COREWEBCLIENT/LABEL_SITENAME'}"></span>
 	<span class="value">
