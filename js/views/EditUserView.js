@@ -83,7 +83,8 @@ CEditUserView.prototype.getParametersForSave = function ()
 		UserId: this.id(),
 		PublicId: $.trim(this.publicId()),
 		Role: this.tenantAdminSelected() ? Enums.UserRole.TenantAdmin : Enums.UserRole.NormalUser,
-		WriteSeparateLog: this.writeSeparateLog()
+		WriteSeparateLog: this.writeSeparateLog(),
+		Forced: true
 	};
 };
 
