@@ -52,6 +52,13 @@ function CEntitiesView(sEntityType)
 	this.errorMessage = ko.observable('');
 	
 	this.totalEntitiesCount = ko.observable(0);
+	this.entitiesCountText = ko.computed(function () {
+		if (this.oEntityData.EntitiesCountText)
+		{
+			return this.oEntityData.EntitiesCountText.replace(/%COUNT%/g, this.totalEntitiesCount());
+		}
+		return '';
+	}, this);
 	this.current = ko.observable(0);
 	this.showCreateForm = ko.observable(false);
 	this.isCreating = ko.observable(false);

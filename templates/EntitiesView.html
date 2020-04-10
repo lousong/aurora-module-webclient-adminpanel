@@ -68,6 +68,9 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel_bottom unselectable" data-bind="visible: oPageSwitcher.pages().length > 0, template: {name: oPageSwitcher.ViewTemplate, data: oPageSwitcher}"></div>
+		<div class="panel_bottom unselectable" data-bind="visible: entitiesCountText() !== '' || oPageSwitcher.pages().length > 0">
+			<div style="float: left;" data-bind="text: entitiesCountText, visible: entitiesCountText() !== ''"></div>
+			<!-- ko template: {name: oPageSwitcher.ViewTemplate, data: oPageSwitcher} --><!-- /ko -->
+		</div>
 	</div>
 </div>

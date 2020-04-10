@@ -67,7 +67,8 @@ function CEntitiesTabs()
 			ActionDeleteText: TextUtils.i18n('%MODULENAME%/ACTION_DELETE_USER'),
 			ConfirmDeleteLangConst: '%MODULENAME%/CONFIRM_DELETE_USER_PLURAL',
 			ReportSuccessDeleteLangConst: '%MODULENAME%/REPORT_DELETE_ENTITIES_USER_PLURAL',
-			ErrorDeleteLangConst: '%MODULENAME%/ERROR_DELETE_ENTITIES_USER_PLURAL'
+			ErrorDeleteLangConst: '%MODULENAME%/ERROR_DELETE_ENTITIES_USER_PLURAL',
+			EntitiesCountText: TextUtils.i18n('%MODULENAME%/LABEL_USERS_COUNT')
 		}
 	);
 
