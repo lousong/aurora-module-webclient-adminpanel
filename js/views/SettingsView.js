@@ -339,7 +339,9 @@ CSettingsView.prototype.onRoute = function (aParams)
 		fAfterRefuseTabHide = _.bind(function () {
 			if (oCurrentTab)
 			{
-				Routing.replaceHashDirectly(Links.get(this.currentEntityType(), this.currentEntitiesId(), this.currentTab() ? this.currentTab().name : ''));
+				Routing.stopListening();
+				Routing.setPreviousHash();
+				Routing.startListening();
 			}
 		}, this)
 	;
