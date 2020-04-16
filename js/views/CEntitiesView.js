@@ -389,8 +389,6 @@ CEntitiesView.prototype.createEntity = function ()
 			this.requestEntities();
 			this.isCreating(false);
 		}, this);
-
-		this.oEntityCreateView.clearFields();
 	}
 };
 

@@ -23,6 +23,7 @@ function CEditUserView()
 	this.bAllowMakeTenant = Settings.EnableMultiTenant && App.getUserRole() === Enums.UserRole.SuperAdmin;
 	this.tenantAdminSelected = ko.observable(false);
 	this.writeSeparateLog = ko.observable(false);
+	this.comment = ko.observable('');
 	
 	this.sHeading = TextUtils.i18n('%MODULENAME%/HEADING_CREATE_USER');
 	this.sActionCreate = TextUtils.i18n('COREWEBCLIENT/ACTION_CREATE');
@@ -40,7 +41,8 @@ CEditUserView.prototype.getCurrentValues = function ()
 		this.id(),
 		this.publicId(),
 		this.tenantAdminSelected(),
-		this.writeSeparateLog()
+		this.writeSeparateLog(),
+		this.comment()
 	];
 };
 
@@ -50,6 +52,7 @@ CEditUserView.prototype.clearFields = function ()
 	this.publicId('');
 	this.tenantAdminSelected(false);
 	this.writeSeparateLog(false);
+	this.comment('');
 };
 
 CEditUserView.prototype.parse = function (iEntityId, oResult)
@@ -60,6 +63,7 @@ CEditUserView.prototype.parse = function (iEntityId, oResult)
 		this.publicId(oResult.PublicId);
 		this.tenantAdminSelected(oResult.Role === Enums.UserRole.TenantAdmin);
 		this.writeSeparateLog(!!oResult.WriteSeparateLog);
+		this.comment(oResult.Comment);
 	}
 	else
 	{
@@ -84,6 +88,7 @@ CEditUserView.prototype.getParametersForSave = function ()
 		PublicId: $.trim(this.publicId()),
 		Role: this.tenantAdminSelected() ? Enums.UserRole.TenantAdmin : Enums.UserRole.NormalUser,
 		WriteSeparateLog: this.writeSeparateLog(),
+		Comment: this.comment(),
 		Forced: true
 	};
 };
