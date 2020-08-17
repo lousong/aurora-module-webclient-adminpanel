@@ -160,11 +160,30 @@ CSettingsView.prototype.onAjaxSend = function (oParams)
 	}
 };
 
+/**
+ * Sets tenant with specified ID as current.
+ * If it's not on current page, tries to set required page before setting new current tenant.
+ * @param {type} iId
+ * @returns {undefined}
+ */
 CSettingsView.prototype.selectTenant = function (iId)
 {
-	var oEntitiesId = _.clone(this.currentEntitiesId());
-	oEntitiesId['Tenant'] = iId;
-	Routing.setHash(Links.get(this.currentEntityType(), oEntitiesId));
+	if (this.currentEntitiesView().hasEntity(iId))
+	{
+		var oEntitiesId = _.clone(this.currentEntitiesId());
+		oEntitiesId['Tenant'] = iId;
+		Routing.setHash(Links.get(this.currentEntityType(), oEntitiesId));
+	}
+	else
+	{
+		var
+			iTenantIndex = _.findIndex(Cache.tenants(), function (oTenant) {
+				return oTenant.Id === iId;
+			}),
+			iPage = Math.ceil((iTenantIndex + 1) / Settings.EntitiesPerPage)
+		;
+		this.currentEntitiesView().setPageAndEntity(iPage, iId);
+	}
 };
 
 /**

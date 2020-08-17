@@ -63,17 +63,16 @@ function CEntitiesView(sEntityType)
 	this.showCreateForm = ko.observable(false);
 	this.isCreating = ko.observable(false);
 	this.hasSelectedEntity = ko.computed(function () {
-		var aIds = _.map(this.entities(), function (oEntity) {
-			return oEntity.Id;
-		});
-		return _.indexOf(aIds, this.current()) !== -1;
+		return !!_.find(this.entities(), function (oEntity) {
+			return oEntity.Id === this.current();
+		}.bind(this));
 	}, this);
 	
-	this.justCreatedId = ko.observable(0);
+	this.idToDisplayAfterGetTenants = ko.observable(0);
 	this.fChangeEntityHandler = function () {};
 	
 	ko.computed(function () {
-		if (this.justCreatedId() === 0 && !this.showCreateForm() && !this.hasSelectedEntity() && this.entities().length > 0)
+		if (this.idToDisplayAfterGetTenants() === 0 && !this.showCreateForm() && !this.hasSelectedEntity() && this.entities().length > 0)
 		{
 			this.fChangeEntityHandler(this.sType, this.entities()[0].Id);
 		}
@@ -131,6 +130,30 @@ CEntitiesView.prototype.onShow = function ()
 CEntitiesView.prototype.onHide = function ()
 {
 	this.bShown = false;
+};
+
+/**
+ * Checks if entity with specified identifier is on current page.
+ * @param {Number} iEntityId
+ * @returns {Boolean}
+ */
+CEntitiesView.prototype.hasEntity = function (iEntityId) {
+	return !!_.find(this.entities(), function (oEntity) {
+		return oEntity.Id === iEntityId;
+	});
+};
+
+/**
+ * Sets specified page and memorizes to set entity with specified ID as current after getting entities for specified page.
+ * @param {Number} iPage
+ * @param {Number} iEntityId
+ */
+CEntitiesView.prototype.setPageAndEntity = function (iPage, iEntityId) {
+	if (this.oPageSwitcher.currentPage() !== iPage)
+	{
+		this.idToDisplayAfterGetTenants(iEntityId);
+		this.oPageSwitcher.setPage(iPage, Settings.EntitiesPerPage);
+	}
 };
 
 /**
@@ -282,9 +305,9 @@ CEntitiesView.prototype.requestEntities = function ()
 				{
 					this.fChangeEntityHandler(sEntityType, undefined, 'create');
 				}
-				else if (this.justCreatedId() !== 0)
+				else if (this.idToDisplayAfterGetTenants() !== 0)
 				{
-					this.fChangeEntityHandler(sEntityType, this.justCreatedId());
+					this.fChangeEntityHandler(sEntityType, this.idToDisplayAfterGetTenants());
 				}
 				this.aIdListDeleteProcess = [];
 			}
@@ -342,7 +365,7 @@ CEntitiesView.prototype.changeEntity = function (iId, oEntities)
 		}
 	}.bind(this));
 	this.current(Types.pInt(iId));
-	this.justCreatedId(0);
+	this.idToDisplayAfterGetTenants(0);
 };
 
 /**
@@ -378,7 +401,7 @@ CEntitiesView.prototype.createEntity = function ()
 			if (oResponse.Result)
 			{
 				Screens.showReport(this.oEntityData.ReportSuccessCreateText);
-				this.justCreatedId(Types.pInt(oResponse.Result));
+				this.idToDisplayAfterGetTenants(Types.pInt(oResponse.Result));
 				this.oEntityCreateView.updateSavedState();
 				this.cancelCreatingEntity();
 			}
