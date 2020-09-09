@@ -168,7 +168,7 @@ CSettingsView.prototype.onAjaxSend = function (oParams)
  */
 CSettingsView.prototype.selectTenant = function (iId)
 {
-	if (this.currentEntitiesView().hasEntity(iId))
+	if (!this.currentEntitiesView() || this.currentEntitiesView().sType !== 'Tenant' || this.currentEntitiesView().hasEntity(iId))
 	{
 		var oEntitiesId = _.clone(this.currentEntitiesId());
 		oEntitiesId['Tenant'] = iId;
