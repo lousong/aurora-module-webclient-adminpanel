@@ -2,8 +2,12 @@
 
 var
 	_ = require('underscore'),
+	$ = require('jquery'),
+	ko = require('knockout'),
 	
-	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js')
+	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
+	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
+	UrlUtils = require('%PathToCoreWebclientModule%/js/utils/Url.js')
 ;
 
 module.exports = {
@@ -14,6 +18,8 @@ module.exports = {
 	TabsOrder: ['licensing', 'admin-security', 'admin-db', 'logs-viewer', 'system', 'common', 'modules'],
 	EntitiesOrder: [],
 	EnableMultiTenant: false,
+
+	startError: ko.observable(''),
 	
 	/**
 	 * Initializes settings from AppData object sections.
@@ -38,5 +44,35 @@ module.exports = {
 		{
 			this.EnableMultiTenant = Types.pBool(oCoreDataSection.EnableMultiTenant, this.EnableMultiTenant);
 		}
+		
+		this.setStartError();
+	},
+
+	setStartError: function ()
+	{
+		$.ajax({
+			url: UrlUtils.getAppPath() + 'data/settings/config.json',
+			type: 'GET',
+			async: true,
+			dataType: 'json',
+			complete: function (oXhr, sType) {
+				console.log('sType', sType);
+				if (sType === 'success')
+				{
+					this.startError(TextUtils.i18n('%MODULENAME%/ERROR_DATA_FOLDER_ACCESSIBLE_FROM_WEB'));
+				}
+			}.bind(this),
+			timeout: 50000
+		});
+	},
+
+	/**
+	 * Returns error text to show on start if the tab has empty fields.
+	 * 
+	 * @returns {String}
+	 */
+	getStartError: function ()
+	{
+		return this.startError;
 	}
 };

@@ -306,6 +306,18 @@ CSettingsView.prototype.onBind = function ()
 			}
 		}
 	}, this));
+
+	if (Settings && _.isFunction(Settings.getStartError))
+	{
+		var koError = Settings.getStartError();
+		if (_.isFunction(koError))
+		{
+			koError.subscribe(function () {
+				this.showStartError();
+			}, this);
+			this.aStartErrors.push(koError);
+		}
+	}
 	
 	this.showStartError();
 };
