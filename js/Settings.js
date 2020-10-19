@@ -56,7 +56,6 @@ module.exports = {
 			async: true,
 			dataType: 'json',
 			complete: function (oXhr, sType) {
-				console.log('sType', sType);
 				if (sType === 'success')
 				{
 					this.startError(TextUtils.i18n('%MODULENAME%/ERROR_DATA_FOLDER_ACCESSIBLE_FROM_WEB'));
