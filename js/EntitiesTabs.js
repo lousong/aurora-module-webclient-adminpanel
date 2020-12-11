@@ -113,7 +113,14 @@ CEntitiesTabs.prototype.changeEntityData = function (oEntityData)
 	if (oData)
 	{
 		_.each(oEntityData, function (mValue, sKey) {
-			oData[sKey] = mValue;
+			if (sKey === 'Filters' && _.isArray(oData[sKey]) && _.isArray(mValue))
+			{
+				oData[sKey] = oData[sKey].concat(mValue);
+			}
+			else
+			{
+				oData[sKey] = mValue;
+			}
 		});
 	}
 };
