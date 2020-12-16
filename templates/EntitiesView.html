@@ -54,14 +54,14 @@
 					<div class="item canSelect" data-bind="click: function () { $root.changeEntity($parent.sType, Id); }, css: {'selected': $parent.current() === Id}">
 						<div class="item_content">
 							<span class="controls" data-bind="visible: !$parent.bToolbarDisabled">
-								<span class="custom_checkbox" data-bind="click: trottleChecked, css: {'checked': checked(), 'disabled': bItsMe}">
+								<span class="custom_checkbox" data-bind="click: trottleChecked, css: {'checked': checked(), 'disabled': bItsMe || bIsDefault}">
 									<span class="icon"></span>
 								</span>
 							</span>
 							<span class="data">
 								<span class="title" data-bind="text: Name || PublicId"></span>
 								<span data-bind="visible: bItsMe, i18n: {'key': '%MODULENAME%/LABEL_ITS_ME'}" class="me"></span>
-								<span data-bind="visible: IsDefault, i18n: {'key': '%MODULENAME%/LABEL_DEFAULT'}" class="me"></span>
+								<span data-bind="visible: bIsDefault, i18n: {'key': '%MODULENAME%/LABEL_DEFAULT'}" class="me"></span>
 								<span style="position: absolute; right: 15px; top: 15px;" data-bind="visible: typeof Count === 'number', text: typeof Count === 'number' ? Count : 0"></span>
 							</span>
 						</div>

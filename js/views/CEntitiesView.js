@@ -288,10 +288,11 @@ CEntitiesView.prototype.requestEntities = function ()
 					{
 						oEntity.Id = Types.pInt(oEntity.Id);
 						oEntity.bItsMe = sEntityType === 'Tenant' && oEntity.Id === App.getTenantId() || sEntityType === 'User' && oEntity.Id === App.getUserId();
+						oEntity.bIsDefault = !!oEntity.IsDefault;
 						oEntity.checked = ko.observable(false);
 						oEntity.trottleChecked = function (oItem, oEvent) {
 							oEvent.stopPropagation();
-							if (!this.bItsMe)
+							if (!this.bItsMe && !this.bIsDefault)
 							{
 								this.checked(!this.checked());
 							}
@@ -511,7 +512,7 @@ CEntitiesView.prototype.groupCheck = function ()
 {
 	var bCheckAll = !this.hasCheckedEntities();
 	_.each(this.entities(), function (oEntity) {
-		if (!oEntity.bItsMe)
+		if (!oEntity.bItsMe && !oEntity.bIsDefault)
 		{
 			oEntity.checked(bCheckAll);
 		}

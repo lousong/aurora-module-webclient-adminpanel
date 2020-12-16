@@ -57,10 +57,11 @@ function CCommonSettingsPaneView()
 		var
 			oEntityData = this.entityData(),
 			iCurrentEntityId = this.entityCreateView() && _.isFunction(this.entityCreateView().id) ? this.entityCreateView().id() : 0,
+			bAllowDelete = this.entityCreateView() && _.isFunction(this.entityCreateView().allowDelete) ? this.entityCreateView().allowDelete() : true,
 			sEntityType = oEntityData ? oEntityData.Type : '',
 			bCurrentEntity = sEntityType === 'User' && iCurrentEntityId === App.getUserId() || sEntityType === 'Tenant' && iCurrentEntityId === App.getTenantId()
 		;
-		return !!(oEntityData && oEntityData.DeleteRequest && !bCurrentEntity);
+		return !!(oEntityData && oEntityData.DeleteRequest && !bCurrentEntity && bAllowDelete);
 	}, this);
 	
 	this.updateSavedState();
