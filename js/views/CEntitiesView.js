@@ -497,7 +497,7 @@ CEntitiesView.prototype.confirmedDeleteEntities = function (aIdList, bDelete)
 			}
 			else
 			{
-				Screens.showError(TextUtils.i18n(this.oEntityData.ErrorDeleteLangConst, {}, null, aIdList.length));
+				Api.showErrorByCode(oResponse, TextUtils.i18n(this.oEntityData.ErrorDeleteLangConst, {}, null, aIdList.length));
 			}
 			this.requestEntities();
 		}, this);
