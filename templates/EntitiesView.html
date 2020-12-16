@@ -61,6 +61,7 @@
 							<span class="data">
 								<span class="title" data-bind="text: Name || PublicId"></span>
 								<span data-bind="visible: bItsMe, i18n: {'key': '%MODULENAME%/LABEL_ITS_ME'}" class="me"></span>
+								<span data-bind="visible: IsDefault, i18n: {'key': '%MODULENAME%/LABEL_DEFAULT'}" class="me"></span>
 								<span style="position: absolute; right: 15px; top: 15px;" data-bind="visible: typeof Count === 'number', text: typeof Count === 'number' ? Count : 0"></span>
 							</span>
 						</div>
