@@ -352,9 +352,9 @@ CEntitiesView.prototype.changeEntity = function (iId, oEntities)
 			oFilterObservables.selectedValue(oEntities[oFilterObservables.sEntity]);
 			oFilterObservables.requestValue(oEntities[oFilterObservables.sEntity]);
 		}
-		else if (oFilterObservables.requestValue() !== -1 || oFilterObservables.requestValue() !== 0)
+		else
 		{
-			if (oFilterObservables.selectedValue() === -1 || oFilterObservables.selectedValue() === 0)
+			if (oFilterObservables.selectedValue() <= 0)
 			{
 				oFilterObservables.requestValue(oFilterObservables.selectedValue());
 			}
