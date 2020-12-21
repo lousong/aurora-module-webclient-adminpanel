@@ -443,6 +443,12 @@ CSettingsView.prototype.showNewTabView = function (sNewTabName, aTabParams)
 		if (oTab.view && _.isFunction(oTab.view.setAccessLevel))
 		{
 			oTab.view.setAccessLevel(this.currentEntityType(), this.currentEntitiesId()[this.currentEntityType()]);
+			_.each(oTab.view.aSettingsSections, function (oSection) {
+				if (_.isFunction(oSection.setAccessLevel))
+				{
+					oSection.setAccessLevel(this.currentEntityType(), this.currentEntitiesId()[this.currentEntityType()]);
+				}
+			}, this);
 		}
 	}, this));
 	
