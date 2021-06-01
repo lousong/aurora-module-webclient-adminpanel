@@ -48,6 +48,7 @@
         </q-btn>
       </div>
     </div>
+    <UnsavedChangesDialog ref="unsavedChangesDialog" />
   </q-scroll-area>
 </template>
 
@@ -60,8 +61,14 @@ import webApi from 'src/utils/web-api'
 
 import settings from 'src/settings'
 
+import UnsavedChangesDialog from 'src/components/UnsavedChangesDialog'
+
 export default {
   name: 'AdminAccount',
+
+  components: {
+    UnsavedChangesDialog,
+  },
 
   data() {
     return {
@@ -75,15 +82,36 @@ export default {
     }
   },
 
+  beforeRouteLeave (to, from, next) {
+    if (this.hasChanges() && _.isFunction(this?.$refs?.unsavedChangesDialog?.openConfirmDiscardChangesDialog)) {
+      this.$refs.unsavedChangesDialog.openConfirmDiscardChangesDialog(next)
+    } else {
+      next()
+    }
+  },
+
   mounted () {
-    const data = settings.getAdminAccountData()
-    this.login = data.adminLogin
-    this.language = data.adminLanguage
     this.languageOptions = settings.getLanguageList()
     this.saving = false
+    this.populate()
   },
 
   methods: {
+    populate () {
+      const data = settings.getAdminAccountData()
+      this.login = data.adminLogin
+      this.oldPassword = ''
+      this.newPassword = ''
+      this.confirmNewPassword = ''
+      this.language = data.adminLanguage
+    },
+
+    hasChanges () {
+      const data = settings.getAdminAccountData()
+      return this.login !== data.adminLogin || this.oldPassword !== '' || this.newPassword !== '' ||
+        this.confirmNewPassword !== '' || this.language !== data.adminLanguage
+    },
+
     isDataValid () {
       const data = settings.getAdminAccountData()
       const oldPassword = _.trim(this.oldPassword)
@@ -106,6 +134,7 @@ export default {
       }
       return true
     },
+
     save () {
       if (!this.saving && this.isDataValid()) {
         this.saving = true
@@ -127,6 +156,7 @@ export default {
               password: parameters.NewPassword,
               language: parameters.AdminLanguage,
             })
+            this.populate()
             notification.showReport(this.$t('COREWEBCLIENT.REPORT_SETTINGS_UPDATE_SUCCESS'))
           } else {
             notification.showError(this.$t('COREWEBCLIENT.ERROR_SAVING_SETTINGS_FAILED'))

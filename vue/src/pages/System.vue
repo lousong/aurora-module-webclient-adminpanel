@@ -8,7 +8,7 @@
             <q-list>
               <div v-for="item in tabs" :key="item.name">
                 <q-item clickable @click="changeTab(item.name)"
-                        :class="sSelectedTab === item.name ? 'bg-selected-item text-white' : ''"
+                        :class="currentRouteName === item.name ? 'bg-selected-item text-white' : ''"
                 >
                   <q-item-section>
                     <q-item-label lines="1">{{ $t(item.title) }}</q-item-label>
@@ -20,7 +20,7 @@
           </q-scroll-area>
         </template>
         <template v-slot:after>
-          <component :is="tabComponent" />
+          <router-view></router-view>
         </template>
       </q-splitter>
     </q-page>
@@ -33,11 +33,10 @@ import _ from 'lodash'
 import modulesManager from 'src/modules-manager'
 import settings from 'src/settings'
 
+import typesUtils from 'src/utils/types'
+
 export default {
   name: 'system',
-
-  components: {
-  },
 
   data() {
     return {
@@ -45,42 +44,41 @@ export default {
 
       splitterWidth: 20,
 
-      sSelectedTab: 'admin-security',
+      currentRouteName: '',
     }
   },
 
-  computed: {
-    tabComponent () {
-      const sSelectedTab = this.sSelectedTab
-      const oTabData = _.find(this.tabs, function (tab) {
-        return tab.name === sSelectedTab
-      })
-      if (oTabData) {
-        return oTabData.component
-      }
-      return null
-    },
-  },
-
   watch: {
-    splitterWidth () {
-      console.log('splitterWidth', this.splitterWidth)
+    $route(to, from) {
+      this.currentRouteName = to.name
     }
   },
 
   mounted () {
     const tabsOrder = settings.getTabsOrder()
     let tabs = modulesManager.getAdminSystemTabs()
-    tabs = _.sortBy(tabs, (tab) => {
-      const index = _.indexOf(tabsOrder, tab.name)
-      return index !== -1 ? index : tabsOrder.length
-    })
-    this.tabs = tabs
+    if (typesUtils.isNonEmptyArray(tabs)) {
+      tabs = _.sortBy(tabs, (tab) => {
+        const index = _.indexOf(tabsOrder, tab.name)
+        return index !== -1 ? index : tabsOrder.length
+      })
+      this.tabs = tabs
+      _.each(tabs, (tab) => {
+        this.$router.addRoute('system', { path: tab.name, name: tab.name, component: tab.component })
+      })
+      this.changeTab(tabs[0].name)
+    }
   },
 
   methods: {
     changeTab (tabName) {
-      this.sSelectedTab = tabName
+      const currentPath = this.$router.currentRoute && this.$router.currentRoute.path ? this.$router.currentRoute.path : ''
+      const newPath = '/system/' + tabName
+      if (currentPath !== newPath) {
+        this.$router.push(newPath)
+      } else {
+        this.currentRouteName = tabName
+      }
     },
   },
 }
