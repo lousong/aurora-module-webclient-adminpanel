@@ -1,13 +1,9 @@
 export default {
   namespaced: true,
   state: {
-    apiHost: 'https://local.host/p8',
     siteName: '',
   },
   mutations: {
-    setApiHost (state, apiHost) {
-      state.apiHost = apiHost
-    },
     setSiteName (state, siteName) {
       state.siteName = siteName
     },
@@ -19,7 +15,7 @@ export default {
   },
   getters: {
     getApiHost (state) {
-      return state.apiHost
+      return process.env.API || ''
     },
     getSiteName (state) {
       return state.siteName

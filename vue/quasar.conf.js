@@ -9,7 +9,7 @@
 const ESLintPlugin = require('eslint-webpack-plugin')
 // const PrepareLangsWebpackPlugin = require('./webpack-plugins/prepare-langs-webpack-plugin/index.js')
 
-module.exports = function (/* ctx */) {
+module.exports = function (ctx) {
   return {
     // https://v1.quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -48,6 +48,11 @@ module.exports = function (/* ctx */) {
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
+      env: {
+        API: ctx.dev
+          ? 'https://local.host/p8'
+          : ''
+      },
 
       // transpile: false,
 

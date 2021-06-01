@@ -6,17 +6,15 @@ import store from 'src/store'
 import typesUtils from 'src/utils/types'
 
 export default {
-  sendRequest: function ({ apiHost, moduleName, methodName, parameters }) {
+  sendRequest: function ({ moduleName, methodName, parameters }) {
     return new Promise((resolve, reject) => {
       const unknownError = {
         ErrorCode: 0,
         Module: moduleName,
       }
 
-      let url = store.getters['main/getApiHost'] + '/?/Api/'
-      if (typesUtils.isNonEmptyString(apiHost)) {
-        url = apiHost + '/?/Api/'
-      }
+      const apiHost = store.getters['main/getApiHost']
+      const url = typesUtils.isNonEmptyString(apiHost) ? apiHost + '/?/Api/' : '?/Api/'
 
       const data = new FormData()
       data.set('Module', moduleName)
