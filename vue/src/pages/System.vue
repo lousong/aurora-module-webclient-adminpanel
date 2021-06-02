@@ -65,6 +65,9 @@ export default {
       this.tabs = tabs
       _.each(tabs, (tab) => {
         this.$router.addRoute('system', { path: tab.name, name: tab.name, component: tab.component })
+        if (tab.path) {
+          this.$router.addRoute('system', { path: tab.path, name: tab.name, component: tab.component })
+        }
       })
       this.changeTab(tabs[0].name)
     }

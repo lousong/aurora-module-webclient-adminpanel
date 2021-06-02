@@ -161,9 +161,9 @@ export default {
           } else {
             notification.showError(this.$t('COREWEBCLIENT.ERROR_SAVING_SETTINGS_FAILED'))
           }
-        }, responce => {
+        }, response => {
           this.saving = false
-          notification.showError(errors.getTextFromResponse(responce, this.$t('COREWEBCLIENT.ERROR_SAVING_SETTINGS_FAILED')))
+          notification.showError(errors.getTextFromResponse(response, this.$t('COREWEBCLIENT.ERROR_SAVING_SETTINGS_FAILED')))
         })
       }
     },

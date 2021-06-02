@@ -87,6 +87,16 @@ export default {
     return {}
   },
 
+  pEnum: function (value, enumObject, defaultValue) {
+    if (value === _.find(enumObject, (enumValue) => { return enumValue === value })) {
+      return value
+    }
+    if (defaultValue === _.find(enumObject, (enumValue) => { return enumValue === defaultValue })) {
+      return defaultValue
+    }
+    return _.find(enumObject, () => { return true })
+  },
+
   pStringToJson: function (value) {
     let oResult = null
     if (this.isNonEmptyString(value)) {

@@ -66,9 +66,9 @@ export default {
           } else {
             notification.showError(this.$t('COREWEBCLIENT.ERROR_PASS_INCORRECT'))
           }
-        }, responce => {
+        }, response => {
           this.loading = false
-          notification.showError(errors.getTextFromResponse(responce, this.$t('COREWEBCLIENT.ERROR_PASS_INCORRECT')))
+          notification.showError(errors.getTextFromResponse(response, this.$t('COREWEBCLIENT.ERROR_PASS_INCORRECT')))
         })
       }
     },

@@ -53,3 +53,11 @@ $selected-item: #78b8f0;
 .tab-selected .tab-label {
   border-bottom: solid 1px
 }
+
+.required-field:before {
+  color: red;
+  content: "*";
+  display: inline-block;
+  margin-left: -0.6em;
+  width: 0.6em;
+}
