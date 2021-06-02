@@ -1,4 +1,5 @@
 import { i18n } from 'boot/i18n'
+import axios from 'axios'
 import store from 'src/store'
 
 import _ from 'lodash'
@@ -92,6 +93,7 @@ class AdminPanelSettings {
       notification.showError(i18n.tc('COREWEBCLIENT.ERROR_SYSTEM_NOT_CONFIGURED'), 0)
     }
     if (store.getters['user/isUserSuperAdmin']) {
+      this.showErrorIfConfigIsAccessible()
       if (!this.adminHasPassword) {
         this.dismissPasswordError = notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_ADMIN_EMPTY_PASSWORD'), 0)
       }
@@ -99,6 +101,24 @@ class AdminPanelSettings {
         notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_SALT_EMPTY'), 0)
       }
     }
+  }
+
+  showErrorIfConfigIsAccessible () {
+    const apiHost = store.getters['main/getApiHost']
+    const url = typesUtils.isNonEmptyString(apiHost) ? apiHost + '/data/settings/config.json' : 'data/settings/config.json'
+    axios({
+      method: 'get',
+      url,
+    })
+      .then((response) => {
+        const isOkResponse = !!response && response.status === 200 && !!response.data
+        if (isOkResponse) {
+          notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_DATA_FOLDER_ACCESSIBLE_FROM_WEB'), 0)
+        }
+      })
+      .catch((/* error */) => {
+        // Do nothing. It id good that config file is not available
+      })
   }
 
   saveAdminAccountData ({ login, password, language }) {
