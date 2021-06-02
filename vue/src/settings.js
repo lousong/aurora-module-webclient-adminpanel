@@ -7,8 +7,6 @@ import notification from 'src/utils/notification'
 import typesUtils from 'src/utils/types'
 // import urlUtils from 'src/utils/url'
 
-let dismissPasswordError = null
-
 class AdminPanelSettings {
   constructor(appData) {
     const coreData = typesUtils.pObject(appData.Core, {})
@@ -89,13 +87,27 @@ class AdminPanelSettings {
     }
   }
 
+  showErrorsIfSystemNotConfigured () {
+    if (this.isSystemConfigured === false) {
+      notification.showError(i18n.tc('COREWEBCLIENT.ERROR_SYSTEM_NOT_CONFIGURED'), 0)
+    }
+    if (store.getters['user/isUserSuperAdmin']) {
+      if (!this.adminHasPassword) {
+        this.dismissPasswordError = notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_ADMIN_EMPTY_PASSWORD'), 0)
+      }
+      if (!this.saltNotEmpty) {
+        notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_SALT_EMPTY'), 0)
+      }
+    }
+  }
+
   saveAdminAccountData ({ login, password, language }) {
     this.adminHasPassword = !_.isEmpty(password)
     this.adminLanguage = language
     this.adminLogin = login
-    if (this.adminHasPassword && _.isFunction(dismissPasswordError)) {
-      dismissPasswordError()
-      dismissPasswordError = null
+    if (this.adminHasPassword && _.isFunction(this.dismissPasswordError)) {
+      this.dismissPasswordError()
+      this.dismissPasswordError = null
     }
   }
 
@@ -117,18 +129,10 @@ let settings = null
 export default {
   init (appData) {
     settings = new AdminPanelSettings(appData)
-    console.log(settings)
+    settings.showErrorsIfSystemNotConfigured()
+
     if (!_.isEmpty(settings.shortLanguage) && i18n.availableLocales.indexOf(settings.shortLanguage) !== -1) {
       i18n.locale = settings.shortLanguage
-    }
-    if (settings.isSystemConfigured === false) {
-      notification.showError(i18n.tc('COREWEBCLIENT.ERROR_SYSTEM_NOT_CONFIGURED'), 0)
-    }
-    if (!settings.adminHasPassword) {
-      dismissPasswordError = notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_ADMIN_EMPTY_PASSWORD'), 0)
-    }
-    if (!settings.saltNotEmpty) {
-      notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_SALT_EMPTY'), 0)
     }
     store.commit('main/setSiteName', settings.siteName)
   },

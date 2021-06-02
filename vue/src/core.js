@@ -37,8 +37,8 @@ const core = {
           notification.showError(i18n.tc('COREWEBCLIENT.ERROR_UNKNOWN'))
           reject()
         }
-      }, error => {
-        notification.showError(errors.getTextFromResponse(error, i18n.tc('COREWEBCLIENT.ERROR_UNKNOWN')))
+      }, responce => {
+        notification.showError(errors.getTextFromResponse(responce, i18n.tc('COREWEBCLIENT.ERROR_UNKNOWN')))
         reject()
       })
     })
