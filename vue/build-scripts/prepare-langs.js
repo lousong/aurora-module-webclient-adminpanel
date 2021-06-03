@@ -1,4 +1,7 @@
 'use strict'
+
+// TODO: Replace %PLACEHOLDER% to {PLACEHOLDER}
+
 const fs = require('fs')
 const ini = require('ini')
 
