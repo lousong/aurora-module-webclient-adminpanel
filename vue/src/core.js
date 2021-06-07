@@ -96,4 +96,7 @@ export default {
     const tenant = core.getTenantById(id)
     return typesUtils.pString(tenant?.name)
   },
+  getTenants () {
+    return core.tenants
+  },
 }
