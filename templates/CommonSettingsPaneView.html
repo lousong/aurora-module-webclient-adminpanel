@@ -4,11 +4,9 @@
 	</div>
 	<div class="panel_center">
 		<div class="fields">
-
 			<div class="fieldset">
 				<!-- ko template: {name: entityCreateView().ViewTemplate, data: entityCreateView()} --><!-- /ko -->
 			</div>
-
 			<div class="buttons">
 				<span class="button" data-bind="visible: allowDelete(), click: function () { $root.deleteCurrentEntity(); }">
 					<span data-bind="text: entityData().ActionDeleteText"></span>

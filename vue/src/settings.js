@@ -13,6 +13,7 @@ class AdminPanelSettings {
     const coreData = typesUtils.pObject(appData.Core, {})
     const coreWebclientData = typesUtils.pObject(appData.CoreWebclient, {})
     const adminPanelWebclientData = typesUtils.pObject(appData.AdminPanelWebclient, {})
+    const coreMobileWebclient = typesUtils.pObject(appData.CoreMobileWebclient, {})
 
     if (!_.isEmpty(coreData)) {
       // this.authTokenCookieExpireTime = typesUtils.pInt(coreData.AuthTokenCookieExpireTime, 30)
@@ -25,14 +26,14 @@ class AdminPanelSettings {
       // }
       // this.EUserRole = typesUtils.pObject(coreData.EUserRole)
       this.isSystemConfigured = typesUtils.pBool(coreData.IsSystemConfigured)
-      // this.language = typesUtils.pString(coreData.Language, 'English')
+      this.language = typesUtils.pString(coreData.Language, 'English')
       // this.lastErrorCode = typesUtils.pInt(coreData.LastErrorCode)
       this.shortLanguage = this._getShortLanguage(coreData)
       this.siteName = typesUtils.pString(coreData.SiteName)
       // this.socialName = typesUtils.pString(coreData.SocialName)
       // this.storeAuthTokenInDB = typesUtils.pBool(coreData.StoreAuthTokenInDB)
       // this.tenantName = typesUtils.pString(coreData.TenantName || urlUtils.getRequestParam('tenant'))
-      // this.timeFormat = typesUtils.pString(coreData.TimeFormat) // 0 - 24, 1 - 12
+      this.timeFormat = typesUtils.pString(coreData.TimeFormat) // 0 - 24, 1 - 12
       // this.timezone = typesUtils.pString(coreData.Timezone)
       // this.userId = typesUtils.pInt(coreData.UserId)
       // this.passwordMinLength = typesUtils.pNonNegativeInt(coreData.PasswordMinLength)
@@ -75,8 +76,8 @@ class AdminPanelSettings {
       // this.multipleFilesUploadLimit = typesUtils.pNonNegativeInt(coreWebclientData.MultipleFilesUploadLimit, 50)
       // this.showQuotaBar = typesUtils.pBool(coreWebclientData.ShowQuotaBar)
       // this.quotaWarningPerc = typesUtils.pInt(coreWebclientData.QuotaWarningPerc)
-      // this.theme = typesUtils.pString(coreWebclientData.Theme, 'Default')
-      // this.themeList = typesUtils.pArray(coreWebclientData.ThemeList, ['Default'])
+      this.theme = typesUtils.pString(coreWebclientData.Theme, 'Default')
+      this.themeList = typesUtils.pArray(coreWebclientData.ThemeList, ['Default'])
       // this.hideLogout = typesUtils.pBool(coreWebclientData.HideLogout)
     }
 
@@ -85,6 +86,10 @@ class AdminPanelSettings {
       // this.entitiesPerPage = typesUtils.pInt(adminPanelWebclientData.EntitiesPerPage, -1)
       this.tabsOrder = typesUtils.pArray(adminPanelWebclientData.TabsOrder)
       // this.tenants = typesUtils.pObject(adminPanelWebclientData.Tenants)
+    }
+    if (!_.isEmpty(coreMobileWebclient)) {
+      this.mobileTheme = typesUtils.pString(coreMobileWebclient.Theme, 'Default')
+      this.mobileThemeList = typesUtils.pArray(coreMobileWebclient.ThemeList, ['Default'])
     }
   }
 
@@ -131,6 +136,14 @@ class AdminPanelSettings {
     }
   }
 
+  saveCommonSettingData ({ siteName, theme, mobileTheme, language, timeFormat }) {
+    this.siteName = siteName
+    this.theme = theme
+    this.mobileTheme = mobileTheme
+    this.language = language
+    this.timeFormat = timeFormat
+  }
+
   _getShortLanguage (coreData) {
     let shortLanguage = typesUtils.pString(coreData.ShortLanguage, 'en')
     if (_.isEmpty(shortLanguage) || i18n.availableLocales.indexOf(shortLanguage) === -1) {
@@ -164,7 +177,12 @@ export default {
   getLanguageList () {
     return settings?.languageList || []
   },
-
+  getThemeList () {
+    return settings?.themeList || []
+  },
+  getMobileThemeList () {
+    return settings?.mobileThemeList || []
+  },
   getAdminAccountData () {
     return {
       adminLogin: settings?.adminLogin || '',
@@ -173,7 +191,21 @@ export default {
     }
   },
 
+  getCommonSettingData () {
+    return {
+      siteName: settings.siteName,
+      theme: settings.theme,
+      mobileTheme: settings.mobileTheme,
+      language: settings.language,
+      timeFormat: settings.timeFormat
+    }
+  },
+
   saveAdminAccountData (data) {
     settings.saveAdminAccountData(data)
   },
+
+  saveCommonSettingData (data) {
+    settings.saveCommonSettingData(data)
+  }
 }
