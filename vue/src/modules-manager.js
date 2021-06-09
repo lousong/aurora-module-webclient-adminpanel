@@ -3,6 +3,7 @@ import _ from 'lodash'
 import moduleList from 'src/modules'
 
 let allModules = null
+let allModulesNames = []
 let systemTabs = null
 
 export default {
@@ -14,8 +15,12 @@ export default {
           return _.isObject(module.default) ? module.default : null
         })
         allModules = modules.filter(module => _.isObject(module));
+        allModulesNames = allModules.map(module => {
+          return module.name
+        })
       } else {
         allModules = []
+        allModulesNames = []
       }
     }
   },
@@ -39,5 +44,9 @@ export default {
       })
     }
     return systemTabs === null ? [] : systemTabs
+  },
+
+  isModuleAvailable (moduleName) {
+    return allModulesNames.indexOf(moduleName) !== -1
   },
 }

@@ -1,6 +1,7 @@
 import settings from 'src/settings'
 
 export default {
+  name: 'AdminPanelWebclient',
   getAdminSystemTabs () {
     return [
       {
