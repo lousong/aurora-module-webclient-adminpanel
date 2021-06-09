@@ -31,7 +31,7 @@ class AdminPanelSettings {
       this.shortLanguage = this._getShortLanguage(coreData)
       this.siteName = typesUtils.pString(coreData.SiteName)
       // this.socialName = typesUtils.pString(coreData.SocialName)
-      // this.storeAuthTokenInDB = typesUtils.pBool(coreData.StoreAuthTokenInDB)
+      this.storeAuthTokenInDB = typesUtils.pBool(coreData.StoreAuthTokenInDB)
       // this.tenantName = typesUtils.pString(coreData.TenantName || urlUtils.getRequestParam('tenant'))
       this.timeFormat = typesUtils.pString(coreData.TimeFormat) // 0 - 24, 1 - 12
       // this.timezone = typesUtils.pString(coreData.Timezone)
@@ -51,9 +51,9 @@ class AdminPanelSettings {
       this.adminLanguage = typesUtils.pString(coreData.AdminLanguage)
       this.adminLogin = typesUtils.pString(coreData.AdminLogin)
       // this.commonLanguage = typesUtils.pString(coreData.CommonLanguage)
-      // this.dbHost = typesUtils.pString(coreData.DBHost)
-      // this.dbLogin = typesUtils.pString(coreData.DBLogin)
-      // this.dbName = typesUtils.pString(coreData.DBName)
+      this.dbHost = typesUtils.pString(coreData.DBHost)
+      this.dbLogin = typesUtils.pString(coreData.DBLogin)
+      this.dbName = typesUtils.pString(coreData.DBName)
       this.saltNotEmpty = typesUtils.pBool(coreData.SaltNotEmpty)
     }
 
@@ -108,6 +108,12 @@ class AdminPanelSettings {
     }
   }
 
+  showErrorsIfDbNotConfigured() {
+    if (this.dbLogin === '' || this.dbHost === '' || this.dbName === '') {
+      notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_DB_ACCESS'), 0)
+    }
+  }
+
   showErrorIfConfigIsAccessible () {
     const apiHost = store.getters['main/getApiHost']
     const url = typesUtils.isNonEmptyString(apiHost) ? apiHost + '/data/settings/config.json' : 'data/settings/config.json'
@@ -144,6 +150,12 @@ class AdminPanelSettings {
     this.timeFormat = timeFormat
   }
 
+  saveDatabaseSetting ({ dbName, dbLogin, dbHost }) {
+    this.dbName = dbName
+    this.dbLogin = dbLogin
+    this.dbHost = dbHost
+  }
+
   _getShortLanguage (coreData) {
     let shortLanguage = typesUtils.pString(coreData.ShortLanguage, 'en')
     if (_.isEmpty(shortLanguage) || i18n.availableLocales.indexOf(shortLanguage) === -1) {
@@ -163,7 +175,7 @@ export default {
   init (appData) {
     settings = new AdminPanelSettings(appData)
     settings.showErrorsIfSystemNotConfigured()
-
+    settings.showErrorsIfDbNotConfigured()
     if (!_.isEmpty(settings.shortLanguage) && i18n.availableLocales.indexOf(settings.shortLanguage) !== -1) {
       i18n.locale = settings.shortLanguage
     }
@@ -201,11 +213,26 @@ export default {
     }
   },
 
+  getDatabaseSettingsData () {
+    return {
+      dbName: settings.dbName,
+      dbLogin: settings.dbLogin,
+      dbHost: settings.dbHost,
+    }
+  },
+  getStoreAuthTokenInDB () {
+    return settings.storeAuthTokenInDB
+  },
+
   saveAdminAccountData (data) {
     settings.saveAdminAccountData(data)
   },
 
   saveCommonSettingData (data) {
     settings.saveCommonSettingData(data)
+  },
+
+  saveDatabaseSetting (data) {
+    settings.saveDatabaseSetting(data)
   }
 }

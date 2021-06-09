@@ -6,7 +6,8 @@ export default {
       await import('src/../../../GMailConnector/vue/manager'),
       await import('src/../../../LicensingWebclient/vue/manager'),
       await import('src/../../../MailWebclient/vue/manager'),
-      await import('src/../../../CoreWebclient/vue/manager')
+      await import('src/../../../CoreWebclient/vue/manager'),
+      await import('src/../../../LogsViewerWebclient/vue/manager')
     ]
   },
 }

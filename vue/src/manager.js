@@ -11,6 +11,13 @@ export default {
           return import('components/AccountAdminSettings')
         },
       },
+      {
+        name: 'db-settings',
+        title: 'ADMINPANELWEBCLIENT.HEADING_DB_SETTINGS',
+        component () {
+          return import('components/DbAdminSettingsView')
+        },
+      },
     ]
   },
   init (appData) {
