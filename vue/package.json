@@ -14,6 +14,7 @@
     "@quasar/extras": "^1.10.5",
     "axios": "^0.21.1",
     "core-js": "^3.13.0",
+    "file-saver": "^2.0.5",
     "ini": "^2.0.0",
     "quasar": "^1.15.16",
     "vue-cookie": "^1.1.4",

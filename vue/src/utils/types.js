@@ -8,7 +8,9 @@ export default {
     }
     return intValue
   },
-
+  roundNumber(iNum, iDec) {
+    return Math.round(iNum * Math.pow(10, iDec)) / Math.pow(10, iDec);
+  },
   pPositiveInt (value, defaultValue = 1) {
     const intValue = window.parseInt(value, 10)
     if (!isNaN(intValue) && intValue >= 1) {

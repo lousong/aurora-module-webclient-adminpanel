@@ -90,6 +90,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <UnsavedChangesDialog ref="unsavedChangesDialog" />
   </q-scroll-area>
 </template>
 
@@ -98,6 +99,8 @@ import webApi from 'src/utils/web-api';
 import settings from '../../../../AdminPanelWebclient/vue/src/settings';
 import notification from 'src/utils/notification';
 import errors from 'src/utils/errors';
+import UnsavedChangesDialog from 'components/UnsavedChangesDialog';
+import _ from 'lodash';
 
 export default {
   name: 'DbAdminSettingsView',
@@ -113,6 +116,14 @@ export default {
     }
   },
   components: {
+    UnsavedChangesDialog,
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.hasChanges() && _.isFunction(this?.$refs?.unsavedChangesDialog?.openConfirmDiscardChangesDialog)) {
+      this.$refs.unsavedChangesDialog.openConfirmDiscardChangesDialog(next)
+    } else {
+      next()
+    }
   },
   mounted() {
     this.populate()
@@ -123,6 +134,12 @@ export default {
     }
   },
   methods: {
+    hasChanges () {
+      const data = settings.getDatabaseSettingsData()
+      return this.dbLogin !== data.dbLogin ||
+      this.dbName !== data.dbName ||
+      this.dbHost !== data.dbHost
+    },
     populate () {
       const data = settings.getDatabaseSettingsData()
       this.dbLogin = data.dbLogin

@@ -46,6 +46,10 @@ class AdminPanelSettings {
       // this.version = typesUtils.pString(coreData.Version)
       // this.productName = typesUtils.pString(coreData.ProductName)
 
+      this.enableLogging = typesUtils.pBool(coreData.EnableLogging)
+      this.enableEventLogging = typesUtils.pBool(coreData.EnableEventLogging)
+      this.loggingLevel = typesUtils.pInt(coreData.LoggingLevel)
+
       // only for admin
       this.adminHasPassword = typesUtils.pBool(coreData.AdminHasPassword)
       this.adminLanguage = typesUtils.pString(coreData.AdminLanguage)
@@ -142,6 +146,12 @@ class AdminPanelSettings {
     }
   }
 
+  saveLoggingData ({ enableLogging, enableEventLogging, loggingLevel }) {
+    this.enableLogging = enableLogging
+    this.enableEventLogging = enableEventLogging
+    this.loggingLevel = loggingLevel
+  }
+
   saveCommonSettingData ({ siteName, theme, mobileTheme, language, timeFormat }) {
     this.siteName = siteName
     this.theme = theme
@@ -224,6 +234,14 @@ export default {
     return settings.storeAuthTokenInDB
   },
 
+  getLoggingData () {
+    return {
+      EnableEventLogging: settings.enableEventLogging,
+      EnableLogging: settings.enableLogging,
+      LoggingLevel: settings.loggingLevel,
+    }
+  },
+
   saveAdminAccountData (data) {
     settings.saveAdminAccountData(data)
   },
@@ -234,5 +252,9 @@ export default {
 
   saveDatabaseSetting (data) {
     settings.saveDatabaseSetting(data)
+  },
+
+  saveLoggingData (data) {
+    settings.saveLoggingData(data)
   }
 }
