@@ -7,7 +7,9 @@ export default {
       await import('src/../../../LicensingWebclient/vue/manager'),
       await import('src/../../../MailWebclient/vue/manager'),
       await import('src/../../../CoreWebclient/vue/manager'),
-      await import('src/../../../LogsViewerWebclient/vue/manager')
+      await import('src/../../../LogsViewerWebclient/vue/manager'),
+      await import('src/../../../FilesWebclient/vue/manager'),
+      await import('src/../../../StandardResetPassword/vue/manager'),
     ]
   },
 }
