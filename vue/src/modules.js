@@ -10,6 +10,9 @@ export default {
       await import('src/../../../LogsViewerWebclient/vue/manager'),
       await import('src/../../../FilesWebclient/vue/manager'),
       await import('src/../../../StandardResetPassword/vue/manager'),
+      await import('src/../../../Google/vue/manager'),
+      await import('src/../../../Facebook/vue/manager'),
+      await import('src/../../../Dropbox/vue/manager'),
     ]
   },
 }
