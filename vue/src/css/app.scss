@@ -2,12 +2,18 @@ body {
   background: #1998a4 no-repeat 0 0 / cover url("https://test.afterlogic.com/static/styles/themes/Default/images/background.jpg");
 }
 
-main {
-  background-color: white
+.q-tab--active .tab-label {
+  border-bottom: solid 1px;
 }
 
-main.login-page {
-  background-color: unset;
+.q-splitter__panel {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: -1px 0 2px rgb(0 0 0 / 11%);
+}
+
+.q-splitter__separator {
+  width: 0px !important;
 }
 
 .q-scrollarea__thumb {
@@ -36,22 +42,30 @@ button {
   color: #503d68;
 }
 
-.q-focus-helper {
+// removes hover effect from buttons
+.q-item__section--side button .q-focus-helper {
   display: none;
+}
+
+// makes background white correctly for rounded inputs
+.q-input.q-field--rounded .q-field__control {
+  background: white;
 }
 
 $selected-item: #78b8f0;
 .bg-selected-item {
   background-color: $selected-item;
+  color: white;
+}
+
+$checked-item: #ebf7cb;
+.bg-checked-item {
+  background-color: $checked-item;
 }
 
 .card-edit-settings {
   background: #f1f1f1;
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACtJREFUeNo0iIEJACAAwlT8/1GPMAsaKGNMYpskAOPRdq9tWbrifpaOAAMAMvEO3ANCJPYAAAAASUVORK5CYII=');
-}
-
-.tab-selected .tab-label {
-  border-bottom: solid 1px
 }
 
 .required-field:before {

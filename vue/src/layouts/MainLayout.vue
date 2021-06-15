@@ -1,8 +1,8 @@
 <template>
   <q-layout view="hHh LpR lfr">
-    <q-header bordered class="bg-gray" v-show="showHeader">
+    <q-header v-show="showHeader">
       <q-tabs no-caps align="left" indicator-color="transparent">
-        <q-route-tab to="/system" :ripple="false" class="tab-selected q-px-none">
+        <q-route-tab to="/system" :ripple="false" class="q-px-none">
           <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_SYSTEM_SETTINGS_TABNAME'"></div>
         </q-route-tab>
 <!--        <q-tab :ripple="false" class="q-px-none">-->
@@ -20,9 +20,9 @@
 <!--            </q-list>-->
 <!--          </q-btn-dropdown>-->
 <!--        </q-tab>-->
-<!--        <q-route-tab to="/users" :ripple="false" class="q-px-none">-->
-<!--          <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_USERS_SETTINGS_TABNAME'"></div>-->
-<!--        </q-route-tab>-->
+        <q-route-tab to="/users" :ripple="false" class="q-px-none">
+          <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_USERS_SETTINGS_TABNAME'"></div>
+        </q-route-tab>
         <q-space />
         <q-tab :ripple="false" class="q-px-none" @click="proceedLogout">
           <div class="q-px-sm tab-label" v-t="'COREWEBCLIENT.ACTION_LOGOUT'"></div>

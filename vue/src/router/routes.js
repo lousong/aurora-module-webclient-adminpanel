@@ -6,14 +6,12 @@ const routes = [
     children: [
       { path: '', name: 'login', component: () => import('pages/Login.vue') },
       { path: '/system', name: 'system', component: () => import('pages/System.vue') },
+      { path: '/users', name: 'users', component: () => import('pages/Users.vue') },
     ]
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '*',
-    component: () => import('pages/Error404.vue')
+    component: () => import('pages/System.vue')
   }
 ]
 
