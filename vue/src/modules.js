@@ -13,6 +13,7 @@ export default {
       await import('src/../../../Google/vue/manager'),
       await import('src/../../../Facebook/vue/manager'),
       await import('src/../../../Dropbox/vue/manager'),
+      await import('src/../../../MobileSyncWebclient/vue/manager'),
     ]
   },
 }
