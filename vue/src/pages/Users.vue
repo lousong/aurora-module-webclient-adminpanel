@@ -38,7 +38,7 @@
           </div>
         </template>
         <template v-slot:after>
-<!--          <router-view></router-view>-->
+          <router-view @no-user-found="handleNoUserFound"></router-view>
         </template>
       </q-splitter>
     </q-page>
@@ -58,6 +58,8 @@ import core from 'src/core'
 import cache from 'src/cache'
 
 import ConfirmDialog from 'src/components/ConfirmDialog'
+import EditUser from 'src/components/EditUser'
+import Empty from 'src/components/Empty'
 import StandardList from 'src/components/StandardList'
 
 export default {
@@ -106,12 +108,8 @@ export default {
   watch: {
     $route (to, from) {
       if (this.$route.path === '/users/create') {
-        // this.createMode = true
-        // this.showServerFields = false
-        // this.populateUser()
+        // temp
       } else {
-        // this.createMode = false
-
         const search = typesUtils.pString(this.$route?.params?.search)
         const page = typesUtils.pPositiveInt(this.$route?.params?.page)
         if (this.search !== search || this.page !== page) {
@@ -125,7 +123,6 @@ export default {
         const userId = typesUtils.pNonNegativeInt(this.$route?.params?.id)
         if (this.selectedUserId !== userId) {
           this.selectedUserId = userId
-          this.populateUser()
         }
       }
     },
@@ -148,14 +145,14 @@ export default {
   },
 
   mounted () {
-    this.$router.addRoute('users', { path: 'id/:id', component: this })
-    this.$router.addRoute('users', { path: 'create', component: this })
-    this.$router.addRoute('users', { path: 'search/:search', component: this })
-    this.$router.addRoute('users', { path: 'search/:search/id/:id', component: this })
-    this.$router.addRoute('users', { path: 'page/:page', component: this })
-    this.$router.addRoute('users', { path: 'page/:page/id/:id', component: this })
-    this.$router.addRoute('users', { path: 'search/:search/page/:page', component: this })
-    this.$router.addRoute('users', { path: 'search/:search/page/:page/id/:id', component: this })
+    this.$router.addRoute('users', { path: 'id/:id', component: EditUser })
+    this.$router.addRoute('users', { path: 'create', component: EditUser })
+    this.$router.addRoute('users', { path: 'search/:search', component: Empty })
+    this.$router.addRoute('users', { path: 'search/:search/id/:id', component: EditUser })
+    this.$router.addRoute('users', { path: 'page/:page', component: Empty })
+    this.$router.addRoute('users', { path: 'page/:page/id/:id', component: EditUser })
+    this.$router.addRoute('users', { path: 'search/:search/page/:page', component: Empty })
+    this.$router.addRoute('users', { path: 'search/:search/page/:page/id/:id', component: EditUser })
     this.populate()
   },
 
@@ -192,8 +189,10 @@ export default {
       this.hasCheckedItems = ids.length > 0
     },
 
-    populateUser () {
-      console.log('populateUser')
+    handleNoUserFound () {
+      notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_USER_NOT_FOUND'))
+      this.route()
+      this.populate()
     },
 
     askDeleteUsers () {

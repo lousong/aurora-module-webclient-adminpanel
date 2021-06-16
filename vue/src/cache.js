@@ -7,9 +7,12 @@ import webApi from 'src/utils/web-api'
 
 import UserModel from 'src/classes/user'
 
+let users = []
+
 export default {
   getUsers (tenantId, search, page, limit) {
     return new Promise((resolve, reject) => {
+      users = []
       webApi.sendRequest({
         moduleName: 'Core',
         methodName: 'GetUsers',
@@ -21,18 +24,52 @@ export default {
         },
       }).then(result => {
         if (_.isArray(result?.Items)) {
-          const users = _.map(result.Items, function (serverData) {
-            return new UserModel(serverData)
+          users = _.map(result.Items, function (serverData) {
+            return new UserModel(tenantId, serverData)
           })
           const totalCount = typesUtils.pInt(result.Count)
           resolve({ users, totalCount, search, page, limit })
         } else {
-          resolve({ users: [], totalCount: 0, search, page, limit })
+          resolve({ users, totalCount: 0, search, page, limit })
         }
       }, response => {
         notification.showError(errors.getTextFromResponse(response))
-        resolve({ users: [], totalCount: 0, search, page, limit })
+        resolve({ users, totalCount: 0, search, page, limit })
       })
+    })
+  },
+  getUser (tenantId, id) {
+    return new Promise((resolve, reject) => {
+      let user = users.find(user => {
+        return user.tenantId === tenantId && user.id === id
+      })
+      if (user && user.completeData) {
+        resolve({ user })
+      } else {
+        webApi.sendRequest({
+          moduleName: 'Core',
+          methodName: 'GetUser',
+          parameters: {
+            Type: 'User',
+            TenantId: tenantId,
+            Id: id,
+          },
+        }).then(result => {
+          if (_.isObject(result)) {
+            if (user) {
+              user.setCompleteData(result)
+            } else {
+              user = new UserModel(tenantId, result, result)
+            }
+            resolve({ user })
+          } else {
+            resolve({ user: null })
+          }
+        }, response => {
+          notification.showError(errors.getTextFromResponse(response))
+          resolve({ user: null })
+        })
+      }
     })
   },
 }
