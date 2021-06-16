@@ -95,12 +95,12 @@
 </template>
 
 <script>
-import webApi from 'src/utils/web-api';
-import settings from '../../../../AdminPanelWebclient/vue/src/settings';
-import notification from 'src/utils/notification';
-import errors from 'src/utils/errors';
-import UnsavedChangesDialog from 'components/UnsavedChangesDialog';
-import _ from 'lodash';
+import webApi from 'src/utils/web-api'
+import settings from '../../../../AdminPanelWebclient/vue/src/settings'
+import notification from 'src/utils/notification'
+import errors from 'src/utils/errors'
+import UnsavedChangesDialog from 'components/UnsavedChangesDialog'
+import _ from 'lodash'
 
 export default {
   name: 'DbAdminSettingsView',

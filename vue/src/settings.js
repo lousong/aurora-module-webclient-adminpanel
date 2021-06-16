@@ -175,7 +175,7 @@ class AdminPanelSettings {
         shortLanguage = i18n.availableLocales[0]
       }
     }
-    return shortLanguage;
+    return shortLanguage
   }
 }
 

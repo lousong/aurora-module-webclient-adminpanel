@@ -14,7 +14,7 @@ export default {
         modules = modules.map(module => {
           return _.isObject(module.default) ? module.default : null
         })
-        allModules = modules.filter(module => _.isObject(module));
+        allModules = modules.filter(module => _.isObject(module))
         allModulesNames = allModules.map(module => {
           return module.name
         })

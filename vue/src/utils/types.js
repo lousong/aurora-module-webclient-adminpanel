@@ -9,7 +9,7 @@ export default {
     return intValue
   },
   roundNumber(iNum, iDec) {
-    return Math.round(iNum * Math.pow(10, iDec)) / Math.pow(10, iDec);
+    return Math.round(iNum * Math.pow(10, iDec)) / Math.pow(10, iDec)
   },
   pPositiveInt (value, defaultValue = 1) {
     const intValue = window.parseInt(value, 10)
@@ -17,7 +17,7 @@ export default {
       return intValue
     }
     if (!isNaN(defaultValue) && defaultValue >= 1) {
-      return defaultValue;
+      return defaultValue
     }
     return 1
   },

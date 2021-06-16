@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import core from 'src/core';
+import core from 'src/core'
 
 import webApi from 'src/utils/web-api'
 
