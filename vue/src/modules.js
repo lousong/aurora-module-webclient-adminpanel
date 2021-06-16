@@ -14,6 +14,8 @@ export default {
       await import('src/../../../Facebook/vue/manager'),
       await import('src/../../../Dropbox/vue/manager'),
       await import('src/../../../MobileSyncWebclient/vue/manager'),
+      await import('src/../../../CalendarWebclient/vue/manager'),
+      await import('src/../../../ActiveServer/vue/manager'),
     ]
   },
 }
