@@ -16,6 +16,7 @@ export default {
       await import('src/../../../MobileSyncWebclient/vue/manager'),
       await import('src/../../../CalendarWebclient/vue/manager'),
       await import('src/../../../ActiveServer/vue/manager'),
+      await import('src/../../../CpanelIntegrator/vue/manager'),
     ]
   },
 }

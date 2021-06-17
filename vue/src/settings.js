@@ -19,7 +19,7 @@ class AdminPanelSettings {
 
     if (!_.isEmpty(coreData)) {
       // this.authTokenCookieExpireTime = typesUtils.pInt(coreData.AuthTokenCookieExpireTime, 30)
-      // this.autodetectLanguage = typesUtils.pBool(coreData.AutodetectLanguage)
+      this.autodetectLanguage = typesUtils.pBool(coreData.AutodetectLanguage)
       // this.userSelectsDateFormat = typesUtils.pBool(coreData.UserSelectsDateFormat)
       // this.dateFormat = typesUtils.pString(coreData.DateFormat, 'DD/MM/YYYY')
       // this.dateFormatList = typesUtils.pArray(coreData.DateFormatList, ['DD/MM/YYYY'])
@@ -28,7 +28,7 @@ class AdminPanelSettings {
       // }
       this.userRoleEnum = typesUtils.pObject(coreData.EUserRole)
       this.isSystemConfigured = typesUtils.pBool(coreData.IsSystemConfigured)
-      this.language = typesUtils.pString(coreData.Language, 'English')
+      this.language = typesUtils.pString(coreData.CommonLanguage, 'English')
       // this.lastErrorCode = typesUtils.pInt(coreData.LastErrorCode)
       this.shortLanguage = this._getShortLanguage(coreData)
       this.setSiteName(coreData.SiteName)
@@ -154,12 +154,13 @@ class AdminPanelSettings {
     this.loggingLevel = loggingLevel
   }
 
-  saveCommonSettingData ({ siteName, theme, mobileTheme, language, timeFormat }) {
+  saveCommonSettingData ({ siteName, theme, mobileTheme, language, timeFormat, autodetectLanguage }) {
     this.setSiteName(siteName)
     this.theme = theme
     this.mobileTheme = mobileTheme
     this.language = language
     this.timeFormat = timeFormat
+    this.autodetectLanguage = autodetectLanguage
   }
 
   setSiteName (siteName) {
