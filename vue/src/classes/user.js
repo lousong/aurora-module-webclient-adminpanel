@@ -1,8 +1,6 @@
 import typesUtils from 'src/utils/types'
 
-import settings from 'src/settings'
-
-const userRoleEnum = settings.getUserRoleEnum()
+import enums from 'src/enums'
 
 class UserModel {
   constructor (tenantId, serverData, completeData = null) {
@@ -18,8 +16,13 @@ class UserModel {
   setCompleteData (data) {
     this.completeData = data
 
-    this.role = typesUtils.pEnum(data?.Role, userRoleEnum, userRoleEnum.NormalUser)
-    this.writeSeparateLog = typesUtils.pBool(data?.WriteSeparateLog)
+    this.update(data?.Role, data?.WriteSeparateLog)
+  }
+
+  update (role, writeSeparateLog) {
+    const UserRoles = enums.getUserRoles()
+    this.role = typesUtils.pEnum(role, UserRoles, UserRoles.Anonymous)
+    this.writeSeparateLog = typesUtils.pBool(writeSeparateLog)
   }
 }
 

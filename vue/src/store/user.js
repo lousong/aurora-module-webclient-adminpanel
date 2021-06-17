@@ -1,14 +1,15 @@
 import VueCookie from 'vue-cookie'
 
+import UserModel from 'src/classes/user'
+
+import enums from 'src/enums'
+const UserRoles = enums.getUserRoles()
+
 export default {
   namespaced: true,
   state: {
     authToken: VueCookie.get('AuthToken') || '',
-    userId: 0,
-    userName: '',
-    userPublicId: '',
-    userRole: 4, // Anonymous
-    userTenantId: 0,
+    user: null,
   },
   mutations: {
     setAuthToken (state, v) {
@@ -16,11 +17,7 @@ export default {
       VueCookie.set('AuthToken', v)
     },
     setUserData (state, oUserData) {
-      state.userId = oUserData.Id
-      state.userName = oUserData.Name
-      state.userPublicId = oUserData.PublicId
-      state.userRole = oUserData.Role
-      state.userTenantId = oUserData.TenantId
+      state.user = new UserModel(null, oUserData)
     },
   },
   actions: {
@@ -49,10 +46,10 @@ export default {
       }
     },
     getUserPublicId (state) {
-      return state.userPublicId
+      return state.user?.publicId || ''
     },
     isUserSuperAdmin (state) {
-      return state.userRole === 0
+      return state.user?.role === UserRoles.SuperAdmin
     },
   },
 }

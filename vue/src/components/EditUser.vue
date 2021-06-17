@@ -9,7 +9,7 @@
           <div class="row q-mb-md">
             <div class="col-1" v-t="'COREWEBCLIENT.LABEL_EMAIL'"></div>
             <div class="col-5">
-              <q-input outlined dense class="bg-white" v-model="publicId" ref="publicId" @keyup.enter="save" />
+              <q-input outlined dense class="bg-white" v-model="publicId" ref="publicId" :disable="disablePublicId" @keyup.enter="save" />
             </div>
           </div>
           <div class="row q-mb-md">
@@ -49,11 +49,11 @@ import webApi from 'src/utils/web-api'
 
 import cache from 'src/cache'
 import core from 'src/core'
-import settings from 'src/settings'
 
 import UnsavedChangesDialog from 'src/components/UnsavedChangesDialog'
 
-const userRoleEnum = settings.getUserRoleEnum()
+import enums from 'src/enums'
+const UserRoles = enums.getUserRoles()
 
 export default {
   name: 'EditUser',
@@ -64,13 +64,19 @@ export default {
 
   data() {
     return {
-      id: 0,
+      user: null,
       publicId: '',
       isTenantAdmin: false,
       writeSeparateLog: false,
       loading: false,
       saving: false,
     }
+  },
+
+  computed: {
+    disablePublicId () {
+      return !!this.user?.id
+    },
   },
 
   watch: {
@@ -102,9 +108,11 @@ export default {
       } else {
         // this.createMode = false
 
-        const id = typesUtils.pPositiveInt(this.$route?.params?.id)
-        if (this.id !== id) {
-          this.id = id
+        const userId = typesUtils.pPositiveInt(this.$route?.params?.id)
+        if (this.user?.id !== userId) {
+          this.user = {
+            id: userId,
+          }
           this.populate()
         }
       }
@@ -120,28 +128,30 @@ export default {
       this.clear()
       this.loading = true
       const currentTenantId = core.getCurrentTenantId()
-      cache.getUser(currentTenantId, this.id).then(({ user }) => {
-        this.loading = false
-        if (user) {
-          this.publicId = user.publicId
-          this.isTenantAdmin = user.role === userRoleEnum.TenantAdmin
-          this.writeSeparateLog = user.writeSeparateLog
-        } else {
-          this.$emit('no-user-found')
+      cache.getUser(currentTenantId, this.user.id).then(({ user, userId }) => {
+        if (userId === this.user.id) {
+          this.loading = false
+          if (user) {
+            this.user = user
+            this.publicId = user.publicId
+            this.isTenantAdmin = user.role === UserRoles.TenantAdmin
+            this.writeSeparateLog = user.writeSeparateLog
+          } else {
+            this.$emit('no-user-found')
+          }
         }
       })
     },
 
     hasChanges () {
-      return false
-      // const data = settings.getAdminAccountData()
-      // return this.login !== data.adminLogin || this.oldPassword !== '' || this.newPassword !== '' ||
-      //   this.confirmNewPassword !== '' || this.language !== data.adminLanguage
+      return this.publicId !== this.user?.publicId ||
+        this.isTenantAdmin !== (this.user?.role === UserRoles.TenantAdmin) ||
+        this.writeSeparateLog !== this.user?.writeSeparateLog
     },
 
     isDataValid () {
       const publicId = _.trim(this.publicId)
-      if (publicId !== '') {
+      if (publicId === '') {
         notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_USER_NAME_EMPTY'))
         this.$refs.publicId.$el.focus()
         return false
@@ -153,10 +163,11 @@ export default {
       if (!this.saving && this.isDataValid()) {
         this.saving = true
         const parameters = {
-          UserId: 0,
-          PublicId: this.publicId,
-          Role: 2,
-          WriteSeparateLog: this.writeSeparateLog, // this.tenantAdminSelected() ? Enums.UserRole.TenantAdmin : Enums.UserRole.NormalUser
+          UserId: this.user.id,
+          TenantId: this.user.tenantId,
+          PublicId: this.user.publicId,
+          Role: this.isTenantAdmin ? UserRoles.TenantAdmin : UserRoles.NormalUser,
+          WriteSeparateLog: this.writeSeparateLog,
           Forced: true,
         }
         webApi.sendRequest({
@@ -166,12 +177,10 @@ export default {
         }).then(result => {
           this.saving = false
           if (result === true) {
-            // settings.saveAdminAccountData({
-            //   login: parameters.AdminLogin,
-            //   password: parameters.NewPassword,
-            //   language: parameters.AdminLanguage,
-            // })
-            this.populate()
+            cache.getUser(parameters.TenantId, parameters.UserId).then(({ user }) => {
+              user.update(parameters.Role, parameters.WriteSeparateLog)
+              this.populate()
+            })
             notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_USER'))
           } else {
             notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_ENTITY_USER'))

@@ -26,7 +26,6 @@ class AdminPanelSettings {
       // if (_.indexOf(this.dateFormatList, this.dateFormat) === -1) {
       //   this.dateFormatList.unshift(this.dateFormat)
       // }
-      this.userRoleEnum = typesUtils.pObject(coreData.EUserRole)
       this.isSystemConfigured = typesUtils.pBool(coreData.IsSystemConfigured)
       this.language = typesUtils.pString(coreData.CommonLanguage, 'English')
       // this.lastErrorCode = typesUtils.pInt(coreData.LastErrorCode)
@@ -265,9 +264,5 @@ export default {
 
   saveLoggingData (data) {
     settings.saveLoggingData(data)
-  },
-
-  getUserRoleEnum () {
-    return settings.userRoleEnum
   },
 }

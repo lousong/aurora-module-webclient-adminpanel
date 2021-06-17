@@ -38,13 +38,13 @@ export default {
       })
     })
   },
-  getUser (tenantId, id) {
+  getUser (tenantId, userId) {
     return new Promise((resolve, reject) => {
       let user = users.find(user => {
-        return user.tenantId === tenantId && user.id === id
+        return user.tenantId === tenantId && user.id === userId
       })
       if (user && user.completeData) {
-        resolve({ user })
+        resolve({ user, userId })
       } else {
         webApi.sendRequest({
           moduleName: 'Core',
@@ -52,7 +52,7 @@ export default {
           parameters: {
             Type: 'User',
             TenantId: tenantId,
-            Id: id,
+            Id: userId,
           },
         }).then(result => {
           if (_.isObject(result)) {
@@ -61,13 +61,13 @@ export default {
             } else {
               user = new UserModel(tenantId, result, result)
             }
-            resolve({ user })
+            resolve({ user, userId })
           } else {
-            resolve({ user: null })
+            resolve({ user: null, userId })
           }
         }, response => {
           notification.showError(errors.getTextFromResponse(response))
-          resolve({ user: null })
+          resolve({ user: null, userId })
         })
       }
     })

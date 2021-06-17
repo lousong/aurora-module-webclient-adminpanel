@@ -3,6 +3,7 @@ import { i18n } from 'src/boot/i18n'
 import _ from 'lodash'
 
 import store from 'src/store'
+import enums from 'src/enums'
 
 import errors from 'src/utils/errors'
 import notification from 'src/utils/notification'
@@ -52,6 +53,7 @@ const core = {
   setAppData (appData) {
     return new Promise((resolve, reject) => {
       this.appData = appData
+      enums.parseAppData(appData)
       store.dispatch('user/parseAppData', this.appData).then(() => {
         modulesManager.initModules(this.appData)
         resolve()
