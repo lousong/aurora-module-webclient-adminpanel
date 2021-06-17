@@ -1099,7 +1099,6 @@
     "LABEL_LICENSING_HINT": "Allows you to enter the license key for the product and displays current details on the license.",
     "LABEL_LICENSING_PERMANENT_KEY_HINT": "You can purchase a license and get your permanent key at {LINK}",
     "LABEL_LICENSING_TRIAL_KEY_HINT": "You can get 30-day trial key at {LINK}",
-    "LABEL_LICENSING_TRIAL_KEY_HINT": "You can get 30-day trial key at {LINK}",
     "LABEL_LICENSING_KEY": "License key",
     "LABEL_LICENSING_USERS_NUMBER": "Current number of users",
     "LABEL_LICENSING_TYPE": "License type",
