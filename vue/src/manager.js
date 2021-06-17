@@ -12,7 +12,7 @@ export default {
         },
       },
       {
-        name: 'db-settings',
+        name: 'admin-db',
         title: 'ADMINPANELWEBCLIENT.HEADING_DB_SETTINGS',
         component () {
           return import('components/DbAdminSettingsView')

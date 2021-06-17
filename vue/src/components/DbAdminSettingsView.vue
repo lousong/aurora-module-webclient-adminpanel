@@ -106,7 +106,8 @@ export default {
   name: 'DbAdminSettingsView',
   data() {
     return {
-      dbPassword: '**********',
+      fakePass: '     ',
+      dbPassword: '',
       dbLogin: '',
       dbName: '',
       dbHost: '',
@@ -145,15 +146,18 @@ export default {
       this.dbLogin = data.dbLogin
       this.dbName = data.dbName
       this.dbHost = data.dbHost
+      this.dbPassword = this.fakePass
     },
     save() {
       if (!this.saving) {
         this.saving = true
         const parameters = {
           DbLogin: this.dbLogin,
-          DbPassword: this.dbPassword !== '**********' && this.dbPassword !== '' ? this.dbPassword : '',
           DbName: this.dbName,
           DbHost: this.dbHost,
+        }
+        if (this.fakePass !== this.dbPassword) {
+          parameters.DbPassword = this.dbPassword
         }
         webApi.sendRequest({
           moduleName: 'Core',

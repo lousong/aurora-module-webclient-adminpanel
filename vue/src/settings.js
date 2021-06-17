@@ -111,12 +111,9 @@ class AdminPanelSettings {
       if (!this.saltNotEmpty) {
         notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_SALT_EMPTY'), 0)
       }
-    }
-  }
-
-  showErrorsIfDbNotConfigured() {
-    if (this.dbLogin === '' || this.dbHost === '' || this.dbName === '') {
-      notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_DB_ACCESS'), 0)
+      if (this.dbLogin === '' || this.dbHost === '' || this.dbName === '') {
+        notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_DB_ACCESS'), 0)
+      }
     }
   }
 
@@ -194,7 +191,6 @@ export default {
   init (appData) {
     settings = new AdminPanelSettings(appData)
     settings.showErrorsIfSystemNotConfigured()
-    settings.showErrorsIfDbNotConfigured()
     if (!_.isEmpty(settings.shortLanguage) && i18n.availableLocales.indexOf(settings.shortLanguage) !== -1) {
       i18n.locale = settings.shortLanguage
     }
