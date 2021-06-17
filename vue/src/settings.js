@@ -29,7 +29,7 @@ class AdminPanelSettings {
       this.language = typesUtils.pString(coreData.Language, 'English')
       // this.lastErrorCode = typesUtils.pInt(coreData.LastErrorCode)
       this.shortLanguage = this._getShortLanguage(coreData)
-      this.siteName = typesUtils.pString(coreData.SiteName)
+      this.setSiteName(coreData.SiteName)
       // this.socialName = typesUtils.pString(coreData.SocialName)
       this.storeAuthTokenInDB = typesUtils.pBool(coreData.StoreAuthTokenInDB)
       // this.tenantName = typesUtils.pString(coreData.TenantName || urlUtils.getRequestParam('tenant'))
@@ -153,11 +153,16 @@ class AdminPanelSettings {
   }
 
   saveCommonSettingData ({ siteName, theme, mobileTheme, language, timeFormat }) {
-    this.siteName = siteName
+    this.setSiteName(siteName)
     this.theme = theme
     this.mobileTheme = mobileTheme
     this.language = language
     this.timeFormat = timeFormat
+  }
+
+  setSiteName (siteName) {
+    this.siteName = typesUtils.pString(siteName)
+    store.commit('main/setSiteName', this.siteName)
   }
 
   saveDatabaseSetting ({ dbName, dbLogin, dbHost }) {
@@ -189,7 +194,6 @@ export default {
     if (!_.isEmpty(settings.shortLanguage) && i18n.availableLocales.indexOf(settings.shortLanguage) !== -1) {
       i18n.locale = settings.shortLanguage
     }
-    store.commit('main/setSiteName', settings.siteName)
   },
 
   getTabsOrder () {
