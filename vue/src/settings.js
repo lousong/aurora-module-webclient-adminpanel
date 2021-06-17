@@ -43,8 +43,8 @@ class AdminPanelSettings {
       //   this.cookiePath = '/'
       // }
       // this.cookieSecure = typesUtils.pBool(coreData.CookieSecure)
-      // this.version = typesUtils.pString(coreData.Version)
-      // this.productName = typesUtils.pString(coreData.ProductName)
+      this.version = typesUtils.pString(coreData.Version)
+      this.productName = typesUtils.pString(coreData.ProductName)
 
       this.enableLogging = typesUtils.pBool(coreData.EnableLogging)
       this.enableEventLogging = typesUtils.pBool(coreData.EnableEventLogging)
@@ -195,7 +195,12 @@ export default {
   getTabsOrder () {
     return settings?.tabsOrder || []
   },
-
+  getAboutSettings () {
+    return {
+      version: settings?.version || '',
+      productName: settings?.productName || ''
+    }
+  },
   getLanguageList () {
     return settings?.languageList || []
   },

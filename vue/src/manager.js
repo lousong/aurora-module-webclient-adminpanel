@@ -18,6 +18,13 @@ export default {
           return import('components/DbAdminSettingsView')
         },
       },
+      {
+        name: 'about',
+        title: 'ADMINPANELWEBCLIENT.LABEL_ABOUT_SETTINGS_TAB',
+        component () {
+          return import('components/AboutAdminSettings')
+        },
+      }
     ]
   },
   init (appData) {
