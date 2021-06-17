@@ -10,7 +10,7 @@
                 {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
               </q-tooltip>
             </q-btn>
-            <q-btn flat color="grey-8" size="lg" icon="add">
+            <q-btn flat color="grey-8" size="lg" icon="add" @click="routeCreateUser">
               <q-tooltip>
                 {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
               </q-tooltip>
@@ -32,13 +32,14 @@
               <q-separator />
           </q-list>
           <StandardList :items="userItems" :selectedItem="selectedUserId" :hasCheckedItems="hasCheckedItems"
-                        :loading="loadingUsers" @select="changeUser" @check="afterCheck" />
+                        :loading="loadingUsers" @select="route" @check="afterCheck" />
           <div v-if="pagesCount > 1">
             <q-pagination flat active-color="primary" color="grey-6" v-model="selectedPage" :max="pagesCount" />
           </div>
         </template>
         <template v-slot:after>
-          <router-view @no-user-found="handleNoUserFound"></router-view>
+          <router-view @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
+                       @cancel-create="route"></router-view>
         </template>
       </q-splitter>
     </q-page>
@@ -86,11 +87,9 @@ export default {
       checkedIds: [],
       hasCheckedItems: false,
 
-      tabs: [],
+      justCreatedId: 0,
 
       splitterWidth: 20,
-
-      currentRouteName: '',
     }
   },
 
@@ -108,11 +107,11 @@ export default {
   watch: {
     $route (to, from) {
       if (this.$route.path === '/users/create') {
-        // temp
+        this.selectedUserId = 0
       } else {
         const search = typesUtils.pString(this.$route?.params?.search)
         const page = typesUtils.pPositiveInt(this.$route?.params?.page)
-        if (this.search !== search || this.page !== page) {
+        if (this.search !== search || this.page !== page || this.justCreatedId !== 0) {
           this.search = search
           this.enteredSearch = search
           this.page = page
@@ -165,6 +164,12 @@ export default {
           this.users = users
           this.totalCount = totalCount
           this.loadingUsers = false
+          if (this.justCreatedId && users.find(user => {
+            return user.id === this.justCreatedId
+          })) {
+            this.route(this.justCreatedId)
+            this.justCreatedId = 0
+          }
         }
       })
     },
@@ -180,8 +185,13 @@ export default {
       }
     },
 
-    changeUser (id) {
-      this.route(id)
+    routeCreateUser () {
+      this.$router.push('/users/create')
+    },
+
+    handleCreateUser (id) {
+      this.justCreatedId = id
+      this.route()
     },
 
     afterCheck (ids) {

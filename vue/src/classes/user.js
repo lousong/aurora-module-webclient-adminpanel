@@ -19,10 +19,13 @@ class UserModel {
     this.update(data?.Role, data?.WriteSeparateLog)
   }
 
-  update (role, writeSeparateLog) {
+  update (role, writeSeparateLog, publicId = null) {
     const UserRoles = enums.getUserRoles()
     this.role = typesUtils.pEnum(role, UserRoles, UserRoles.Anonymous)
     this.writeSeparateLog = typesUtils.pBool(writeSeparateLog)
+    if (publicId !== null) {
+      this.publicId = typesUtils.pString(publicId)
+    }
   }
 }
 

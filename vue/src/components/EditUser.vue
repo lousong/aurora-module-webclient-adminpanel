@@ -2,14 +2,16 @@
   <q-scroll-area class="full-height full-width relative-position">
     <div class="q-pa-lg ">
       <div class="row q-mb-md">
-        <div class="col text-h5" v-t="'COREWEBCLIENT.HEADING_COMMON_SETTINGS'"></div>
+        <div class="col text-h5" v-if="!createMode" v-t="'COREWEBCLIENT.HEADING_COMMON_SETTINGS'"></div>
+        <div class="col text-h5" v-if="createMode" v-t="'ADMINPANELWEBCLIENT.HEADING_CREATE_USER'"></div>
       </div>
       <q-card flat bordered class="card-edit-settings">
         <q-card-section>
           <div class="row q-mb-md">
             <div class="col-1" v-t="'COREWEBCLIENT.LABEL_EMAIL'"></div>
             <div class="col-5">
-              <q-input outlined dense class="bg-white" v-model="publicId" ref="publicId" :disable="disablePublicId" @keyup.enter="save" />
+              <q-input outlined dense class="bg-white" v-model="publicId" ref="publicId" :disable="!createMode"
+                       @keyup.enter="save" />
             </div>
           </div>
           <div class="row q-mb-md">
@@ -18,17 +20,21 @@
               <q-checkbox dense v-model="isTenantAdmin" :label="$t('ADMINPANELWEBCLIENT.LABEL_USER_IS_TENANT_ADMIN')" />
             </div>
           </div>
-          <div class="row">
+          <div class="row" v-if="!createMode">
             <div class="col-1"></div>
             <div class="col-5">
-              <q-checkbox dense v-model="writeSeparateLog" :label="$t('ADMINPANELWEBCLIENT.LABEL_LOGGING_SEPARATE_LOG_FOR_USER')" />
+              <q-checkbox dense v-model="writeSeparateLog"
+                          :label="$t('ADMINPANELWEBCLIENT.LABEL_LOGGING_SEPARATE_LOG_FOR_USER')" />
             </div>
           </div>
         </q-card-section>
       </q-card>
       <div class="q-pa-md text-right">
         <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="save"
-               :label="saving ? $t('COREWEBCLIENT.ACTION_SAVE_IN_PROGRESS') : $t('COREWEBCLIENT.ACTION_SAVE')">
+               :label="saveButtonText">
+        </q-btn>
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-md" :ripple="false" color="secondary" @click="cancel"
+               :label="$t('COREWEBCLIENT.ACTION_CANCEL')" v-if="createMode" >
         </q-btn>
       </div>
     </div>
@@ -49,6 +55,8 @@ import webApi from 'src/utils/web-api'
 
 import cache from 'src/cache'
 import core from 'src/core'
+
+import UserModel from 'src/classes/user'
 
 import UnsavedChangesDialog from 'src/components/UnsavedChangesDialog'
 
@@ -74,8 +82,25 @@ export default {
   },
 
   computed: {
-    disablePublicId () {
-      return !!this.user?.id
+    createMode () {
+      console.log('this.user?.id', this.user?.id)
+      return this.user?.id === 0
+    },
+
+    saveButtonText () {
+      if (this.createMode) {
+        if (this.saving) {
+          return this.$t('COREWEBCLIENT.ACTION_CREATE_IN_PROGRESS')
+        } else {
+          return this.$t('COREWEBCLIENT.ACTION_CREATE')
+        }
+      } else {
+        if (this.saving) {
+          return this.$t('COREWEBCLIENT.ACTION_SAVE_IN_PROGRESS')
+        } else {
+          return this.$t('COREWEBCLIENT.ACTION_SAVE')
+        }
+      }
     },
   },
 
@@ -102,12 +127,10 @@ export default {
   methods: {
     parseRoute () {
       if (this.$route.path === '/users/create') {
-        // this.createMode = true
-        // this.showServerFields = false
-        // this.populateUser()
+        const currentTenantId = core.getCurrentTenantId()
+        const user = new UserModel(currentTenantId, {})
+        this.fillUp(user)
       } else {
-        // this.createMode = false
-
         const userId = typesUtils.pPositiveInt(this.$route?.params?.id)
         if (this.user?.id !== userId) {
           this.user = {
@@ -124,6 +147,13 @@ export default {
       this.writeSeparateLog = false
     },
 
+    fillUp (user) {
+      this.user = user
+      this.publicId = user.publicId
+      this.isTenantAdmin = user.role === UserRoles.TenantAdmin
+      this.writeSeparateLog = user.writeSeparateLog
+    },
+
     populate () {
       this.clear()
       this.loading = true
@@ -132,10 +162,7 @@ export default {
         if (userId === this.user.id) {
           this.loading = false
           if (user) {
-            this.user = user
-            this.publicId = user.publicId
-            this.isTenantAdmin = user.role === UserRoles.TenantAdmin
-            this.writeSeparateLog = user.writeSeparateLog
+            this.fillUp(user)
           } else {
             this.$emit('no-user-found')
           }
@@ -165,31 +192,55 @@ export default {
         const parameters = {
           UserId: this.user.id,
           TenantId: this.user.tenantId,
-          PublicId: this.user.publicId,
+          PublicId: this.createMode ? this.publicId : this.user.publicId,
           Role: this.isTenantAdmin ? UserRoles.TenantAdmin : UserRoles.NormalUser,
           WriteSeparateLog: this.writeSeparateLog,
           Forced: true,
         }
+        const createMode = this.createMode
         webApi.sendRequest({
           moduleName: 'Core',
-          methodName: 'UpdateUser',
+          methodName: createMode ? 'CreateUser' : 'UpdateUser',
           parameters,
         }).then(result => {
           this.saving = false
-          if (result === true) {
-            cache.getUser(parameters.TenantId, parameters.UserId).then(({ user }) => {
-              user.update(parameters.Role, parameters.WriteSeparateLog)
-              this.populate()
-            })
-            notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_USER'))
+          if (createMode) {
+            this.handleCreateResult(result, parameters)
           } else {
-            notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_ENTITY_USER'))
+            this.handleUpdateResult(result, parameters)
           }
         }, response => {
           this.saving = false
-          notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_ENTITY_USER')))
+          const errorConst = createMode ? 'ERROR_CREATE_ENTITY_USER' : 'ERROR_UPDATE_ENTITY_USER'
+          notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.' + errorConst)))
         })
       }
+    },
+
+    handleCreateResult (result, parameters) {
+      if (_.isSafeInteger(result)) {
+        notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_ENTITY_USER'))
+        this.user.update(parameters.Role, parameters.WriteSeparateLog, parameters.PublicId)
+        this.$emit('user-created', result)
+      } else {
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UCREATE_ENTITY_USER'))
+      }
+    },
+
+    handleUpdateResult (result, parameters) {
+      if (result === true) {
+        cache.getUser(parameters.TenantId, parameters.UserId).then(({ user }) => {
+          user.update(parameters.Role, parameters.WriteSeparateLog)
+          this.populate()
+        })
+        notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_USER'))
+      } else {
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_ENTITY_USER'))
+      }
+    },
+
+    cancel () {
+      this.$emit('cancel-create')
     },
   },
 }
