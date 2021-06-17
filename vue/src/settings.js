@@ -111,7 +111,7 @@ class AdminPanelSettings {
         notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_SALT_EMPTY'), 0)
       }
       if (this.dbLogin === '' || this.dbHost === '' || this.dbName === '') {
-        notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_DB_ACCESS'), 0)
+        this.dismissDbError = notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_DB_ACCESS'), 0)
       }
     }
   }
@@ -168,6 +168,10 @@ class AdminPanelSettings {
     this.dbName = dbName
     this.dbLogin = dbLogin
     this.dbHost = dbHost
+    if (!_.isEmpty(this.dbLogin) && !_.isEmpty(this.dbHost) && !_.isEmpty(this.dbName) && _.isFunction(this.dismissDbError)) {
+      this.dismissDbError()
+      this.dismissDbError = null
+    }
     core.requestTenants()
   }
 
