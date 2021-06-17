@@ -36,8 +36,6 @@
 <script>
 import core from 'src/core'
 
-import webApi from 'src/utils/web-api'
-
 export default {
   name: 'admin',
 
@@ -46,12 +44,12 @@ export default {
 
   data() {
     return {
-      aTenants: [
-        { name: 'Default', id: 1 },
-        { name: 'Business', id: 2 },
-        { name: 'Other', id: 3 },
-      ],
-      sSelectedTenantId: 1,
+      // aTenants: [
+      //   { name: 'Default', id: 1 },
+      //   { name: 'Business', id: 2 },
+      //   { name: 'Other', id: 3 },
+      // ],
+      // sSelectedTenantId: 1,
     }
   },
 
@@ -69,15 +67,7 @@ export default {
 
   methods: {
     proceedLogout () {
-      webApi.sendRequest({
-        moduleName: 'Core',
-        methodName: 'Logout',
-        parameters: {},
-      }).then(() => {
-        core.setAuthToken('')
-      }, () => {
-        core.setAuthToken('')
-      })
+      core.logout()
     },
   },
 }

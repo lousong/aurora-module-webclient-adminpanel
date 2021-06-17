@@ -153,5 +153,9 @@ export default {
 
   getTextFromResponse (response, defaultText) {
     return errorsUtils.getTextFromResponse(response, defaultText)
-  }
+  },
+
+  isAuthError (errorCode) {
+    return errorCode === errorsCodes.AuthError
+  },
 }

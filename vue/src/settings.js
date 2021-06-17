@@ -8,6 +8,8 @@ import notification from 'src/utils/notification'
 import typesUtils from 'src/utils/types'
 // import urlUtils from 'src/utils/url'
 
+import core from 'src/core'
+
 class AdminPanelSettings {
   constructor(appData) {
     const coreData = typesUtils.pObject(appData.Core, {})
@@ -169,6 +171,7 @@ class AdminPanelSettings {
     this.dbName = dbName
     this.dbLogin = dbLogin
     this.dbHost = dbHost
+    core.requestTenants()
   }
 
   _getShortLanguage (coreData) {

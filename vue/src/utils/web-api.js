@@ -1,9 +1,12 @@
 import _ from 'lodash'
-
 import axios from 'axios'
-import store from 'src/store'
 import { saveAs } from 'file-saver'
+
+import errors from 'src/utils/errors'
 import typesUtils from 'src/utils/types'
+
+import core from 'src/core'
+import store from 'src/store'
 
 export default {
   sendRequest: function ({ moduleName, methodName, parameters, format }) {
@@ -41,7 +44,11 @@ export default {
           if (isOkResponse) {
             const result = response.data.Result
             if (!result && (response.data.ErrorCode || response.data.ErrorMessage || response.data.SubscriptionsResult)) {
-              reject(response.data)
+              if (methodName !== 'Logout' && errors.isAuthError(response.data.ErrorCode)) {
+                core.logout()
+              } else {
+                reject(response.data)
+              }
             } else {
               resolve(result)
             }

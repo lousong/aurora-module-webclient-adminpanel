@@ -16,9 +16,18 @@ const core = {
   tenants: [],
   tenantsByIds: null,
 
-  parseTenants () {
+  async setAuthToken (authToken) {
+    await store.dispatch('user/setAuthToken', authToken)
+    await this.requestAppData()
+  },
+
+  parseTenantsFromAppData () {
     const adminPanelWebclientData = typesUtils.pObject(this.appData?.AdminPanelWebclient)
     const tenantsData = typesUtils.pArray(adminPanelWebclientData?.Tenants?.Items)
+    this.parseTenants(tenantsData)
+  },
+
+  parseTenants (tenantsData) {
     const tenants = []
     tenantsData.forEach(data => {
       tenants.push({
@@ -60,7 +69,28 @@ const core = {
       }).then(result => {
         if (_.isObject(result)) {
           this.setAppData(result).then(resolve, reject)
-          this.parseTenants()
+          if (store.getters['user/isUserSuperAdmin']) {
+            this.parseTenantsFromAppData()
+          }
+        } else {
+          notification.showError(i18n.tc('COREWEBCLIENT.ERROR_UNKNOWN'))
+          reject()
+        }
+      }, response => {
+        notification.showError(errors.getTextFromResponse(response, i18n.tc('COREWEBCLIENT.ERROR_UNKNOWN')))
+        reject()
+      })
+    })
+  },
+
+  requestTenants () {
+    return new Promise((resolve, reject) => {
+      webApi.sendRequest({
+        moduleName: 'Core',
+        methodName: 'GetTenants',
+      }).then(result => {
+        if (_.isObject(result)) {
+          this.parseTenants(result)
         } else {
           notification.showError(i18n.tc('COREWEBCLIENT.ERROR_UNKNOWN'))
           reject()
@@ -85,12 +115,23 @@ export default {
       }
     })
   },
-  async setAuthToken (authToken) {
-    await store.dispatch('user/setAuthToken', authToken)
-    await core.requestAppData()
+  logout () {
+    webApi.sendRequest({
+      moduleName: 'Core',
+      methodName: 'Logout',
+      parameters: {},
+    }).then(() => {
+      core.setAuthToken('')
+    }, () => {
+      core.setAuthToken('')
+    })
   },
+  setAuthToken: core.setAuthToken.bind(core),
   getAppData () {
     return core.appData
+  },
+  requestTenants () {
+    return core.requestTenants()
   },
   getCurrentTenantId () {
     return (!_.isEmpty(core.tenants)) ? core.tenants[0].id : 0
