@@ -54,11 +54,13 @@ const core = {
     return new Promise((resolve, reject) => {
       this.appData = appData
       enums.parseAppData(appData)
-      store.dispatch('user/parseAppData', this.appData).then(() => {
-        modulesManager.initModules(this.appData)
-        resolve()
-      }, reject)
       errors.init(appData)
+      modulesManager.getModules(appData).then(() => {
+        store.dispatch('user/parseAppData', appData).then(() => {
+          modulesManager.initModules(appData)
+          resolve()
+        }, reject)
+      }, reject)
     })
   },
 
@@ -109,9 +111,7 @@ export default {
   init () {
     return new Promise((resolve, reject) => {
       if (core.appData === null) {
-        modulesManager.getModules().then(() => {
-          core.requestAppData().then(resolve, reject)
-        }, reject)
+        core.requestAppData().then(resolve, reject)
       } else {
         resolve()
       }

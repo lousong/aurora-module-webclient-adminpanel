@@ -5,9 +5,9 @@
         <template v-slot:before>
           <q-scroll-area class="full-height full-width">
             <q-list>
-              <div v-for="item in tabs" :key="item.name">
-                <q-item clickable @click="changeTab(item.name)"
-                        :class="currentRouteName === item.name ? 'bg-selected-item text-white' : ''"
+              <div v-for="item in tabs" :key="item.tabName">
+                <q-item clickable @click="changeTab(item.tabName)"
+                        :class="currentRouteName === item.tabName ? 'bg-selected-item text-white' : ''"
                 >
                   <q-item-section>
                     <q-item-label lines="1">{{ $t(item.title) }}</q-item-label>
@@ -58,20 +58,20 @@ export default {
     let tabs = modulesManager.getAdminSystemTabs()
     if (typesUtils.isNonEmptyArray(tabs)) {
       tabs = _.sortBy(tabs, (tab) => {
-        const index = _.indexOf(tabsOrder, tab.name)
+        const index = _.indexOf(tabsOrder, tab.tabName)
         return index !== -1 ? index : tabsOrder.length
       })
       this.tabs = tabs
       _.each(tabs, (tab) => {
         if (typesUtils.isNonEmptyArray(tab.paths)) {
           tab.paths.forEach(path => {
-            this.$router.addRoute('system', { path, name: tab.name, component: tab.component })
+            this.$router.addRoute('system', { path, name: tab.tabName, component: tab.component })
           })
         } else {
-          this.$router.addRoute('system', { path: tab.name, name: tab.name, component: tab.component })
+          this.$router.addRoute('system', { path: tab.tabName, name: tab.tabName, component: tab.component })
         }
       })
-      this.changeTab(tabs[0].name)
+      this.changeTab(tabs[0].tabName)
     }
   },
 

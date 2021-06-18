@@ -30,8 +30,8 @@ export default {
   },
 
   actions: {
-    parseAppData ({ commit }, oAppData) {
-      commit('setUserData', oAppData.User)
+    parseAppData ({ commit }, appData) {
+      commit('setUserData', appData.User)
     },
 
     setAuthToken ({ commit }, authToken) {
