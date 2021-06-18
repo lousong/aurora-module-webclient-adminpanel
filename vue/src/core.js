@@ -29,6 +29,7 @@ const core = {
   },
 
   parseTenants (tenantsData) {
+    console.log('tenantsData', tenantsData)
     const tenants = []
     tenantsData.forEach(data => {
       tenants.push({
@@ -91,8 +92,8 @@ const core = {
         moduleName: 'Core',
         methodName: 'GetTenants',
       }).then(result => {
-        if (_.isObject(result)) {
-          this.parseTenants(result)
+        if (_.isObject(result?.Items)) {
+          this.parseTenants(result.Items)
         } else {
           notification.showError(i18n.tc('COREWEBCLIENT.ERROR_UNKNOWN'))
           reject()
