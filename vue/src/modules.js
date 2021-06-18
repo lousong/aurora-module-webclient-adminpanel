@@ -17,6 +17,7 @@ export default {
       await import('src/../../../CalendarWebclient/vue/manager'),
       await import('src/../../../ActiveServer/vue/manager'),
       await import('src/../../../CpanelIntegrator/vue/manager'),
+      await import('src/../../../IframeAppWebclient/vue/manager')
     ]
   },
 }
