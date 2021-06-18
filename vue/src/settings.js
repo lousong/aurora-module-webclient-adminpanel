@@ -16,6 +16,7 @@ class AdminPanelSettings {
     const coreWebclientData = typesUtils.pObject(appData.CoreWebclient, {})
     const adminPanelWebclientData = typesUtils.pObject(appData.AdminPanelWebclient, {})
     const coreMobileWebclient = typesUtils.pObject(appData.CoreMobileWebclient, {})
+    const appDataSectionLogsViewerWebclient = typesUtils.pObject(appData.LogsViewerWebclient, {})
 
     if (!_.isEmpty(coreData)) {
       // this.authTokenCookieExpireTime = typesUtils.pInt(coreData.AuthTokenCookieExpireTime, 30)
@@ -95,6 +96,9 @@ class AdminPanelSettings {
     if (!_.isEmpty(coreMobileWebclient)) {
       this.mobileTheme = typesUtils.pString(coreMobileWebclient.Theme, 'Default')
       this.mobileThemeList = typesUtils.pArray(coreMobileWebclient.ThemeList, ['Default'])
+    }
+    if (!_.isEmpty(appDataSectionLogsViewerWebclient)) {
+      this.viewLastLogSize = typesUtils.pInt(appDataSectionLogsViewerWebclient.ViewLastLogSize)
     }
   }
 
@@ -248,9 +252,10 @@ export default {
 
   getLoggingData () {
     return {
-      EnableEventLogging: settings.enableEventLogging,
-      EnableLogging: settings.enableLogging,
-      LoggingLevel: settings.loggingLevel,
+      enableEventLogging: settings.enableEventLogging,
+      enableLogging: settings.enableLogging,
+      loggingLevel: settings.loggingLevel,
+      viewLastLogSize: settings.viewLastLogSize
     }
   },
 
