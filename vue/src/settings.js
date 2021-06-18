@@ -139,9 +139,11 @@ class AdminPanelSettings {
   }
 
   saveAdminAccountData ({ login, password, language }) {
-    this.adminHasPassword = !_.isEmpty(password)
-    this.adminLanguage = language
+    if (this.adminLanguage !== language) {
+      window.location.reload()
+    }
     this.adminLogin = login
+    this.adminHasPassword = !_.isEmpty(password)
     if (this.adminHasPassword && _.isFunction(this.dismissPasswordError)) {
       this.dismissPasswordError()
       this.dismissPasswordError = null
