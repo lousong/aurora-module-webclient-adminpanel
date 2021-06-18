@@ -110,7 +110,7 @@ export default {
     },
 
     deleting () {
-      return this.deletingIds.indexOf(this.user.id) !== -1
+      return this.deletingIds.indexOf(this.user?.id) !== -1
     },
   },
 

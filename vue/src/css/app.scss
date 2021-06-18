@@ -43,7 +43,7 @@ button {
 }
 
 // removes hover effect from buttons
-.q-item__section--side button .q-focus-helper {
+button.no-hover .q-focus-helper {
   display: none;
 }
 
