@@ -30,16 +30,19 @@
         </q-card-section>
       </q-card>
       <div class="q-pa-md text-right">
-        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="save"
+        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="deleteUser"
+               :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_USER')" v-if="!createMode">
+        </q-btn>
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
                :label="saveButtonText">
         </q-btn>
-        <q-btn unelevated no-caps dense class="q-px-sm q-ml-md" :ripple="false" color="secondary" @click="cancel"
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="secondary" @click="cancel"
                :label="$t('COREWEBCLIENT.ACTION_CANCEL')" v-if="createMode" >
         </q-btn>
       </div>
     </div>
     <UnsavedChangesDialog ref="unsavedChangesDialog" />
-    <q-inner-loading :showing="loading">
+    <q-inner-loading :showing="loading || deleting || saving">
       <q-spinner size="50px" color="primary" />
     </q-inner-loading>
   </q-scroll-area>
@@ -70,6 +73,10 @@ export default {
     UnsavedChangesDialog,
   },
 
+  props: {
+    deletingIds: Array,
+  },
+
   data() {
     return {
       user: null,
@@ -83,7 +90,6 @@ export default {
 
   computed: {
     createMode () {
-      console.log('this.user?.id', this.user?.id)
       return this.user?.id === 0
     },
 
@@ -101,6 +107,10 @@ export default {
           return this.$t('COREWEBCLIENT.ACTION_SAVE')
         }
       }
+    },
+
+    deleting () {
+      return this.deletingIds.indexOf(this.user.id) !== -1
     },
   },
 
@@ -241,6 +251,10 @@ export default {
 
     cancel () {
       this.$emit('cancel-create')
+    },
+
+    deleteUser () {
+      this.$emit('delete-user', this.user.id)
     },
   },
 }

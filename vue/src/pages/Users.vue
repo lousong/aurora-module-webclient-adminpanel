@@ -5,7 +5,7 @@
         <template v-slot:before>
           <q-toolbar>
             <q-btn flat color="grey-8" size="lg" icon="delete" :label="countLabel" :disable="checkedIds.length === 0"
-                   @click="askDeleteUsers">
+                   @click="askDeleteCheckedUsers">
               <q-tooltip>
                 {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
               </q-tooltip>
@@ -39,7 +39,7 @@
         </template>
         <template v-slot:after>
           <router-view @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
-                       @cancel-create="route"></router-view>
+                       @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"></router-view>
         </template>
       </q-splitter>
     </q-page>
@@ -88,6 +88,8 @@ export default {
       hasCheckedItems: false,
 
       justCreatedId: 0,
+
+      deletingIds: [],
 
       splitterWidth: 20,
     }
@@ -205,10 +207,24 @@ export default {
       this.populate()
     },
 
-    askDeleteUsers () {
+    askDeleteUser (id) {
+      this.askDeleteUsers([id])
+    },
+
+    askDeleteCheckedUsers () {
+      this.askDeleteUsers(this.checkedIds)
+    },
+
+    askDeleteUsers (ids) {
       if (_.isFunction(this?.$refs?.confirmDialog?.openDialog)) {
-        const ids = this.checkedIds
+        const user = ids.length === 1
+          ? this.users.find(user => {
+            return user.id === ids[0]
+          })
+          : null
+        const title = user ? user.publicId : ''
         this.$refs.confirmDialog.openDialog({
+          title,
           message: this.$tc('ADMINPANELWEBCLIENT.CONFIRM_DELETE_USER_PLURAL', ids.length),
           okHandler: this.deleteUsers.bind(this, ids)
         })
@@ -216,6 +232,7 @@ export default {
     },
 
     deleteUsers (ids) {
+      this.deletingIds = ids
       this.loadingUsers = true
       webApi.sendRequest({
         moduleName: 'Core',
@@ -225,18 +242,26 @@ export default {
           DeletionConfirmedByAdmin: true
         },
       }).then(result => {
+        this.deletingIds = []
         this.loadingUsers = false
         if (result === true) {
-          if (this.users.length > 1 || this.selectedPage === 1) {
-            this.populate()
-          } else {
+          notification.showReport(this.$tc('ADMINPANELWEBCLIENT.REPORT_DELETE_ENTITIES_USER_PLURAL', ids.length))
+          const isSelectedUserRemoved = ids.indexOf(this.selectedUserId) !== -1
+          const shouldChangePage = this.users.length === ids.length && this.selectedPage > 1
+          if (shouldChangePage) {
             this.selectedPage -= 1
             this.route()
+          } else if (isSelectedUserRemoved) {
+            this.route()
+            this.populate()
+          } else {
+            this.populate()
           }
         } else {
           notification.showError(this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_USER_PLURAL', ids.length))
         }
       }, error => {
+        this.deletingIds = []
         this.loadingUsers = false
         notification.showError(errors.getTextFromResponse(error, this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_USER_PLURAL', ids.length)))
       })
