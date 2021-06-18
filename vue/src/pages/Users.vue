@@ -3,22 +3,24 @@
     <q-page class="flex flex-stretch full-height">
       <q-splitter class="full-height full-width" v-model="splitterWidth" :limits="[10,30]">
         <template v-slot:before>
-          <q-toolbar>
-            <q-btn flat color="grey-8" size="lg" icon="delete" :label="countLabel" :disable="checkedIds.length === 0"
-                   @click="askDeleteCheckedUsers">
-              <q-tooltip>
-                {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
-              </q-tooltip>
-            </q-btn>
-            <q-btn flat color="grey-8" size="lg" icon="add" @click="routeCreateUser">
-              <q-tooltip>
-                {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
-              </q-tooltip>
-            </q-btn>
-          </q-toolbar>
-          <StandardList :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
-                        :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
-                        ref="userList" @route="route" @check="afterCheck" />
+          <div class="flex column full-height">
+            <q-toolbar class="col-auto">
+              <q-btn flat color="grey-8" size="lg" icon="delete" :label="countLabel" :disable="checkedIds.length === 0"
+                     @click="askDeleteCheckedUsers">
+                <q-tooltip>
+                  {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
+                </q-tooltip>
+              </q-btn>
+              <q-btn flat color="grey-8" size="lg" icon="add" @click="routeCreateUser">
+                <q-tooltip>
+                  {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
+                </q-tooltip>
+              </q-btn>
+            </q-toolbar>
+            <StandardList class="col-grow" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
+                          :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
+                          ref="userList" @route="route" @check="afterCheck" />
+          </div>
         </template>
         <template v-slot:after>
           <router-view @no-user-found="handleNoUserFound" @user-created="handleCreateUser"

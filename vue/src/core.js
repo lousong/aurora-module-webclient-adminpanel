@@ -29,7 +29,6 @@ const core = {
   },
 
   parseTenants (tenantsData) {
-    console.log('tenantsData', tenantsData)
     const tenants = []
     tenantsData.forEach(data => {
       tenants.push({

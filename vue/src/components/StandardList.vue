@@ -1,6 +1,6 @@
 <template>
-  <div class="full-height">
-    <q-list class="bg-grey-3">
+  <div class="flex column">
+    <q-list class="col-auto bg-grey-3">
       <q-item>
         <q-item-section side>
           <q-checkbox dense v-model="hasCheckedItems" />
@@ -15,7 +15,7 @@
       </q-item>
       <q-separator />
     </q-list>
-    <q-scroll-area class="full-height full-width relative-position">
+    <q-scroll-area class="col-grow relative-position">
       <div v-if="search" class="text-right">
         <q-btn dense flat no-caps color="primary" class="no-hover" :label="$t('COREWEBCLIENT.ACTION_CLEAR_SEARCH')"
                @click.native.stop="clearSearch"/>
@@ -40,7 +40,7 @@
         <q-spinner size="50px" color="primary" />
       </q-inner-loading>
     </q-scroll-area>
-    <q-list>
+    <q-list class="col-auto">
       <q-item>
         <q-item-section>
           <span>{{ totalCountText }}</span>
