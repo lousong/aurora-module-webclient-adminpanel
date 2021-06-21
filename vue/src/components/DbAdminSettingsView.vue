@@ -139,7 +139,8 @@ export default {
       const data = settings.getDatabaseSettingsData()
       return this.dbLogin !== data.dbLogin ||
       this.dbName !== data.dbName ||
-      this.dbHost !== data.dbHost
+      this.dbHost !== data.dbHost ||
+      this.dbPassword !== this.fakePass
     },
     populate () {
       const data = settings.getDatabaseSettingsData()
@@ -171,6 +172,7 @@ export default {
               dbLogin: this.dbLogin,
               dbHost: this.dbHost
             })
+            this.fakePass = this.dbPassword
             if (this.storeAuthTokenInDB) {
               this.showDialog = true
             }
