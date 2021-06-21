@@ -20,6 +20,7 @@ export default {
       await import('src/../../../IframeAppWebclient/vue/manager'),
       await import('src/../../../MailMasterPassword/vue/manager'),
       await import('src/../../../MailChangePasswordPoppassdPlugin/vue/manager'),
+      await import('src/../../../MailChangePasswordHmailserverPlugin/vue/manager'),
     ]
   },
 }
