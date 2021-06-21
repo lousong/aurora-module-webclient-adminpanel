@@ -9,29 +9,38 @@ let allModulesNames = []
 let systemTabs = null
 let availableModules = []
 
+function _checkIfModuleAvailable (module, modules, depth = 1) {
+  if (depth > 4) {
+    return true // to prevent infinite recursion if some modules require each other for some reason
+  }
+  const isAvailable = availableModules.indexOf(module.moduleName) !== -1
+  const isEveryRequireAvailable = _.isArray(module.requiredModules)
+    ? module.requiredModules.every(requiredModuleName => {
+      const requiredModule = modules.find(module => {
+        return module.moduleName === requiredModuleName
+      })
+      return requiredModule
+        ? _checkIfModuleAvailable(requiredModule, modules, depth + 1)
+        : availableModules.indexOf(requiredModuleName) !== -1
+    })
+    : true
+  return isAvailable && isEveryRequireAvailable
+}
+
 export default {
   async getModules (appData) {
     if (allModules === null) {
       const availableClientModules = typesUtils.pArray(appData?.Core?.AvailableClientModules)
       const availableBackendModules = typesUtils.pArray(appData?.Core?.AvailableBackendModules)
       availableModules = _.uniq(availableClientModules.concat(availableBackendModules))
-      // console.log('availableModules', availableModules)
       let modules = await moduleList.getModules()
-      // console.log('modules', modules)
       if (_.isArray(modules)) {
         modules = modules.map(module => {
           return _.isObject(module.default) ? module.default : null
         })
         allModules = modules.filter(module => {
           if (_.isObject(module)) {
-            const isAvailable = availableModules.indexOf(module.moduleName) !== -1
-            const isEveryRequireAvailable = _.isArray(module.requiredModules)
-              ? module.requiredModules.every(requiredModuleName => {
-                return availableModules.indexOf(requiredModuleName) !== -1
-              })
-              : true
-            // console.log(module.moduleName, isEveryRequireAvailable)
-            return isAvailable && isEveryRequireAvailable
+            return _checkIfModuleAvailable(module, modules)
           }
           return false
         })
@@ -42,7 +51,6 @@ export default {
         allModules = []
         allModulesNames = []
       }
-      // console.log('allModules', allModules)
     }
   },
 
