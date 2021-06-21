@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver'
 
 import errors from 'src/utils/errors'
 import typesUtils from 'src/utils/types'
+import urlUtils from 'src/utils/url'
 
 import core from 'src/core'
 import store from 'src/store'
@@ -16,8 +17,11 @@ export default {
         Module: moduleName,
       }
 
-      const apiHost = store.getters['main/getApiHost']
-      const url = typesUtils.isNonEmptyString(apiHost) ? apiHost + '/?/Api/' : '?/Api/'
+      let apiHost = store.getters['main/getApiHost']
+      if (!typesUtils.isNonEmptyString(apiHost)) {
+        apiHost = urlUtils.getAppPath().replace('/adminpanel', '')
+      }
+      const url = apiHost + '/?/Api/'
 
       const data = new FormData()
       data.set('Module', moduleName)

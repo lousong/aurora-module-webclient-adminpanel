@@ -1,12 +1,13 @@
 import { i18n } from 'boot/i18n'
 import axios from 'axios'
+import VueCookies from 'vue-cookies'
 import store from 'src/store'
 
 import _ from 'lodash'
 
 import notification from 'src/utils/notification'
 import typesUtils from 'src/utils/types'
-// import urlUtils from 'src/utils/url'
+import urlUtils from 'src/utils/url'
 
 import core from 'src/core'
 
@@ -19,7 +20,7 @@ class AdminPanelSettings {
     const appDataSectionLogsViewerWebclient = typesUtils.pObject(appData.LogsViewerWebclient, {})
 
     if (!_.isEmpty(coreData)) {
-      // this.authTokenCookieExpireTime = typesUtils.pInt(coreData.AuthTokenCookieExpireTime, 30)
+      this.authTokenCookieExpireTime = typesUtils.pInt(coreData.AuthTokenCookieExpireTime, 30)
       this.autodetectLanguage = typesUtils.pBool(coreData.AutodetectLanguage)
       // this.userSelectsDateFormat = typesUtils.pBool(coreData.UserSelectsDateFormat)
       // this.dateFormat = typesUtils.pString(coreData.DateFormat, 'DD/MM/YYYY')
@@ -44,7 +45,8 @@ class AdminPanelSettings {
       // if (this.cookiePath === '') {
       //   this.cookiePath = '/'
       // }
-      // this.cookieSecure = typesUtils.pBool(coreData.CookieSecure)
+      this.cookiePath = urlUtils.getAppPath()
+      this.cookieSecure = typesUtils.pBool(coreData.CookieSecure)
       this.version = typesUtils.pString(coreData.Version)
       this.productName = typesUtils.pString(coreData.ProductName)
 
@@ -134,7 +136,7 @@ class AdminPanelSettings {
         }
       })
       .catch((/* error */) => {
-        // Do nothing. It id good that config file is not available
+        // Do nothing. It is good that config file is not available
       })
   }
 
@@ -204,6 +206,7 @@ export default {
     if (!_.isEmpty(settings.shortLanguage) && i18n.availableLocales.indexOf(settings.shortLanguage) !== -1) {
       i18n.locale = settings.shortLanguage
     }
+    VueCookies.config('', settings.cookiePath, '', settings.cookieSecure)
   },
 
   getTabsOrder () {
@@ -224,6 +227,15 @@ export default {
   getMobileThemeList () {
     return settings?.mobileThemeList || []
   },
+
+  getCookieSettings () {
+    return {
+      authTokenCookieExpireTime: settings.authTokenCookieExpireTime,
+      cookieSecure: settings.cookieSecure,
+      cookiePath: settings.cookiePath,
+    }
+  },
+
   getAdminAccountData () {
     return {
       adminLogin: settings?.adminLogin || '',

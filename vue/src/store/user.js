@@ -1,23 +1,27 @@
 import _ from 'lodash'
-import VueCookie from 'vue-cookie'
+import VueCookies from 'vue-cookies'
 
 import UserModel from 'src/classes/user'
 
 import enums from 'src/enums'
 
+import settings from 'src/settings'
+
 export default {
   namespaced: true,
 
   state: {
-    authToken: VueCookie.get('AuthToken') || '',
+    authToken: VueCookies.get('AuthToken') || '',
     userRole: null,
     userPublicId: null,
   },
 
   mutations: {
-    setAuthToken (state, v) {
-      state.authToken = v
-      VueCookie.set('AuthToken', v)
+    setAuthToken (state, authToken) {
+      const cookieSettings = settings.getCookieSettings()
+      const expire = cookieSettings.authTokenCookieExpireTime > 0 ? cookieSettings.authTokenCookieExpireTime + 'd' : ''
+      VueCookies.set('AuthToken', authToken, expire)
+      state.authToken = authToken
     },
 
     setUserData (state, userData) {
