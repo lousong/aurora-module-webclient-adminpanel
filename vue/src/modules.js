@@ -21,6 +21,7 @@ export default {
       await import('src/../../../MailMasterPassword/vue/manager'),
       await import('src/../../../MailChangePasswordPoppassdPlugin/vue/manager'),
       await import('src/../../../MailChangePasswordHmailserverPlugin/vue/manager'),
+      await import('src/../../../S3Filestorage/vue/manager'),
     ]
   },
 }
