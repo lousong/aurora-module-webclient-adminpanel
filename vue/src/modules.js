@@ -20,6 +20,7 @@ export default {
       await import('src/../../../MailMasterPassword/vue/manager'),
       await import('src/../../../MailWebclient/vue/manager'),
       await import('src/../../../MobileSyncWebclient/vue/manager'),
+      await import('src/../../../S3Filestorage/vue/manager'),
       await import('src/../../../StandardResetPassword/vue/manager'),
     ]
   },
