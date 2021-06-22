@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import typesUtils from 'src/utils/types'
 
 import enums from 'src/enums'
@@ -25,6 +27,20 @@ class UserModel {
     this.writeSeparateLog = typesUtils.pBool(writeSeparateLog)
     if (publicId !== null) {
       this.publicId = typesUtils.pString(publicId)
+    }
+  }
+
+  getData (field) {
+    return this.completeData && this.completeData[field]
+  }
+
+  updateData (fieldsData) {
+    if (!_.isEmpty(this.completeData)) {
+      fieldsData.forEach(data => {
+        if (this.completeData[data.field] !== undefined) {
+          this.completeData[data.field] = data.value
+        }
+      })
     }
   }
 }

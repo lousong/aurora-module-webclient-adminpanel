@@ -1,7 +1,7 @@
 <template>
   <q-page-container style="height: 100vh">
     <q-page class="flex flex-stretch full-height">
-      <q-splitter class="full-height full-width" v-model="splitterWidth" :limits="[10,30]">
+      <q-splitter class="full-height full-width" v-model="listSplitterWidth" :limits="[10,30]">
         <template v-slot:before>
           <div class="flex column full-height">
             <q-toolbar class="col-auto">
@@ -23,7 +23,33 @@
           </div>
         </template>
         <template v-slot:after>
-          <router-view @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
+          <q-splitter v-if="showTabs" class="full-height full-width" v-model="tabsSplitterWidth" :limits="[10,30]">
+            <template v-slot:before>
+              <q-list>
+                <div>
+                  <q-item clickable @click="route(selectedUserId)" :class="selectedTab === '' ? 'bg-selected-item' : ''">
+                    <q-item-section>
+                      <q-item-label lines="1" v-t="'ADMINPANELWEBCLIENT.LABEL_COMMON_SETTINGS_TAB'"></q-item-label>
+                    </q-item-section>
+                  </q-item>
+                  <q-separator />
+                </div>
+                <div v-for="tab in tabs" :key="tab.tabName">
+                  <q-item clickable @click="route(selectedUserId, tab.tabName)" :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
+                    <q-item-section>
+                      <q-item-label lines="1">{{ $t(tab.title) }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                  <q-separator />
+                </div>
+              </q-list>
+            </template>
+            <template v-slot:after>
+              <router-view @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
+                           @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"></router-view>
+            </template>
+          </q-splitter>
+          <router-view v-if="!showTabs" @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
                        @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"></router-view>
         </template>
       </q-splitter>
@@ -42,6 +68,7 @@ import webApi from 'src/utils/web-api'
 
 import core from 'src/core'
 import cache from 'src/cache'
+import modulesManager from 'src/modules-manager'
 
 import ConfirmDialog from 'src/components/ConfirmDialog'
 import EditUser from 'src/components/EditUser'
@@ -74,7 +101,11 @@ export default {
 
       deletingIds: [],
 
-      splitterWidth: 20,
+      tabs: [],
+      selectedTab: '',
+
+      listSplitterWidth: 20,
+      tabsSplitterWidth: 20,
     }
   },
 
@@ -90,6 +121,10 @@ export default {
 
     totalCountText () {
       return this.$tc('ADMINPANELWEBCLIENT.LABEL_USERS_COUNT', this.totalCount, { COUNT: this.totalCount })
+    },
+
+    showTabs () {
+      return this.tabs.length > 0 && this.selectedUserId > 0
     },
   },
 
@@ -110,6 +145,11 @@ export default {
         if (this.selectedUserId !== userId) {
           this.selectedUserId = userId
         }
+
+        const pathParts = this.$route.path.split('/')
+        const lastPart = pathParts.length > 0 ? pathParts[pathParts.length - 1] : ''
+        const tab = this.tabs.find(tab => { return tab.tabName === lastPart })
+        this.selectedTab = tab ? tab.tabName : ''
       }
     },
 
@@ -133,10 +173,24 @@ export default {
     this.$router.addRoute('users', { path: 'page/:page/id/:id', component: EditUser })
     this.$router.addRoute('users', { path: 'search/:search/page/:page', component: Empty })
     this.$router.addRoute('users', { path: 'search/:search/page/:page/id/:id', component: EditUser })
+    this.populateTabs()
     this.populate()
   },
 
   methods: {
+    populateTabs () {
+      this.tabs = typesUtils.pArray(modulesManager.getAdminUserTabs())
+      _.each(this.tabs, (tab) => {
+        if (typesUtils.isNonEmptyArray(tab.paths)) {
+          tab.paths.forEach(path => {
+            this.$router.addRoute('users', { path, component: tab.component })
+          })
+        } else {
+          this.$router.addRoute('users', { path: tab.tabName, component: tab.component })
+        }
+      })
+    },
+
     populate () {
       this.loadingUsers = true
       const currentTenantId = core.getCurrentTenantId()
@@ -155,18 +209,19 @@ export default {
       })
     },
 
-    route (userId = 0) {
+    route (userId = 0, tabName = '') {
       const enteredSearch = this.$refs?.userList?.enteredSearch || ''
-      const searchRoute = enteredSearch !== '' ? ('/search/' + enteredSearch) : ''
+      const searchRoute = enteredSearch !== '' ? `/search/${enteredSearch}` : ''
 
       let selectedPage = this.$refs?.userList?.selectedPage || 1
       if (this.search !== enteredSearch) {
         selectedPage = 1
       }
-      const pageRoute = selectedPage > 1 ? ('/page/' + selectedPage) : ''
+      const pageRoute = selectedPage > 1 ? `/page/${selectedPage}` : ''
 
-      const idRoute = userId > 0 ? ('/id/' + userId) : ''
-      const path = '/users' + searchRoute + pageRoute + idRoute
+      const idRoute = userId > 0 ? `/id/${userId}` : ''
+      const tabRoute = tabName !== '' ? `/${tabName}` : ''
+      const path = '/users' + searchRoute + pageRoute + idRoute + tabRoute
       if (path !== this.$route.path) {
         this.$router.push(path)
       }

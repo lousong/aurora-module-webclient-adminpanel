@@ -7,9 +7,9 @@ import moduleList from 'src/modules'
 let allModules = null
 let allModulesNames = []
 let systemTabs = null
-let availableModules = []
+let userTabs = null
 
-function _checkIfModuleAvailable (module, modules, depth = 1) {
+function _checkIfModuleAvailable (module, modules, availableModules, depth = 1) {
   if (depth > 4) {
     return true // to prevent infinite recursion if some modules require each other for some reason
   }
@@ -20,7 +20,7 @@ function _checkIfModuleAvailable (module, modules, depth = 1) {
         return module.moduleName === requiredModuleName
       })
       return requiredModule
-        ? _checkIfModuleAvailable(requiredModule, modules, depth + 1)
+        ? _checkIfModuleAvailable(requiredModule, modules, availableModules, depth + 1)
         : availableModules.indexOf(requiredModuleName) !== -1
     })
     : true
@@ -32,7 +32,7 @@ export default {
     if (allModules === null) {
       const availableClientModules = typesUtils.pArray(appData?.Core?.AvailableClientModules)
       const availableBackendModules = typesUtils.pArray(appData?.Core?.AvailableBackendModules)
-      availableModules = _.uniq(availableClientModules.concat(availableBackendModules))
+      const availableModules = _.uniq(availableClientModules.concat(availableBackendModules))
       let modules = await moduleList.getModules()
       if (_.isArray(modules)) {
         modules = modules.map(module => {
@@ -40,7 +40,7 @@ export default {
         })
         allModules = modules.filter(module => {
           if (_.isObject(module)) {
-            return _checkIfModuleAvailable(module, modules)
+            return _checkIfModuleAvailable(module, modules, availableModules)
           }
           return false
         })
@@ -73,6 +73,19 @@ export default {
       })
     }
     return systemTabs === null ? [] : systemTabs
+  },
+
+  getAdminUserTabs () {
+    if (userTabs === null && allModules !== null) {
+      userTabs = []
+      _.each(allModules, oModule => {
+        const aModuleSystemTabs = _.isFunction(oModule.getAdminUserTabs) && oModule.getAdminUserTabs()
+        if (_.isArray(aModuleSystemTabs)) {
+          userTabs = userTabs.concat(aModuleSystemTabs)
+        }
+      })
+    }
+    return userTabs === null ? [] : userTabs
   },
 
   isModuleAvailable (moduleName) {
