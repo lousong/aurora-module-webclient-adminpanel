@@ -17,7 +17,7 @@
     </q-list>
     <q-scroll-area class="col-grow relative-position">
       <div v-if="search" class="text-right">
-        <q-btn dense flat no-caps color="primary" class="no-hover" :label="$t('COREWEBCLIENT.ACTION_CLEAR_SEARCH')"
+        <q-btn dense flat no-caps color="primary" class="no-hover q-mr-sm" :label="$t('COREWEBCLIENT.ACTION_CLEAR_SEARCH')"
                @click.native.stop="clearSearch"/>
       </div>
       <div v-if="search" class="text-center text-h6 text-grey-5 text-weight-regular">

@@ -72,10 +72,12 @@ const core = {
         parameters: {},
       }).then(result => {
         if (_.isObject(result)) {
-          this.setAppData(result).then(resolve, reject)
-          if (store.getters['user/isUserSuperAdmin']) {
-            this.parseTenantsFromAppData()
-          }
+          this.setAppData(result).then(() => {
+            if (store.getters['user/isUserSuperAdmin']) {
+              this.parseTenantsFromAppData()
+            }
+            resolve()
+          }, reject)
         } else {
           notification.showError(i18n.tc('COREWEBCLIENT.ERROR_UNKNOWN'))
           reject()

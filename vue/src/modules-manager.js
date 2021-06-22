@@ -8,6 +8,7 @@ let allModules = null
 let allModulesNames = []
 let systemTabs = null
 let userTabs = null
+let userMainDataComponent = null
 
 function _checkIfModuleAvailable (module, modules, availableModules, depth = 1) {
   if (depth > 4) {
@@ -86,6 +87,26 @@ export default {
       })
     }
     return userTabs === null ? [] : userTabs
+  },
+
+  async getUserMainDataComponent () {
+    if (userMainDataComponent === null) {
+      for (const module of allModules) {
+        if (_.isFunction(module.getUserMainDataComponent)) {
+          const component = await module.getUserMainDataComponent()
+          if (component?.default) {
+            userMainDataComponent = component.default
+          }
+        }
+      }
+      if (userMainDataComponent === null) {
+        const component = await import('components/EditUserMainData')
+        if (component?.default) {
+          userMainDataComponent = component.default
+        }
+      }
+    }
+    return userMainDataComponent
   },
 
   isModuleAvailable (moduleName) {

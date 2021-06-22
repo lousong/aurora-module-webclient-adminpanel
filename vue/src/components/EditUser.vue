@@ -7,13 +7,8 @@
       </div>
       <q-card flat bordered class="card-edit-settings">
         <q-card-section>
-          <div class="row q-mb-md">
-            <div class="col-1 q-my-sm" v-t="'COREWEBCLIENT.LABEL_EMAIL'"></div>
-            <div class="col-5">
-              <q-input outlined dense class="bg-white" v-model="publicId" ref="publicId" :disable="!createMode"
-                       @keyup.enter="save" />
-            </div>
-          </div>
+          <component v-bind:is="mainDataComponent" ref="mainDataComponent" :currentTenantId="currentTenantId"
+                     :user="user" :createMode="createMode" @save="save" />
           <div class="row q-mb-md">
             <div class="col-1"></div>
             <div class="col-5">
@@ -58,6 +53,7 @@ import webApi from 'src/utils/web-api'
 
 import cache from 'src/cache'
 import core from 'src/core'
+import modulesManager from 'src/modules-manager'
 
 import UserModel from 'src/classes/user'
 
@@ -79,6 +75,9 @@ export default {
 
   data() {
     return {
+      mainDataComponent: null,
+
+      currentTenantId: 0,
       user: null,
       publicId: '',
       isTenantAdmin: false,
@@ -128,7 +127,9 @@ export default {
     }
   },
 
-  mounted () {
+  async mounted () {
+    this.currentTenantId = core.getCurrentTenantId()
+    this.mainDataComponent = await modulesManager.getUserMainDataComponent()
     this.loading = false
     this.saving = false
     this.parseRoute()
@@ -137,8 +138,7 @@ export default {
   methods: {
     parseRoute () {
       if (this.$route.path === '/users/create') {
-        const currentTenantId = core.getCurrentTenantId()
-        const user = new UserModel(currentTenantId, {})
+        const user = new UserModel(this.currentTenantId, {})
         this.fillUp(user)
       } else {
         const userId = typesUtils.pPositiveInt(this.$route?.params?.id)
@@ -167,8 +167,7 @@ export default {
     populate () {
       this.clear()
       this.loading = true
-      const currentTenantId = core.getCurrentTenantId()
-      cache.getUser(currentTenantId, this.user.id).then(({ user, userId }) => {
+      cache.getUser(this.currentTenantId, this.user.id).then(({ user, userId }) => {
         if (userId === this.user.id) {
           this.loading = false
           if (user) {
@@ -181,32 +180,32 @@ export default {
     },
 
     hasChanges () {
-      return this.publicId !== this.user?.publicId ||
-        this.isTenantAdmin !== (this.user?.role === UserRoles.TenantAdmin) ||
+      const hasMainDataChanges = _.isFunction(this.$refs?.mainDataComponent?.hasChanges)
+        ? this.$refs.mainDataComponent.hasChanges()
+        : false
+      return hasMainDataChanges || this.isTenantAdmin !== (this.user?.role === UserRoles.TenantAdmin) ||
         this.writeSeparateLog !== this.user?.writeSeparateLog
     },
 
     isDataValid () {
-      const publicId = _.trim(this.publicId)
-      if (publicId === '') {
-        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_USER_NAME_EMPTY'))
-        this.$refs.publicId.$el.focus()
-        return false
-      }
-      return true
+      return _.isFunction(this.$refs?.mainDataComponent?.isDataValid)
+        ? this.$refs.mainDataComponent.isDataValid()
+        : true
     },
 
     save () {
       if (!this.saving && this.isDataValid()) {
         this.saving = true
-        const parameters = {
+        const mainDataParameters = _.isFunction(this.$refs?.mainDataComponent?.getSaveParameters)
+          ? this.$refs.mainDataComponent.getSaveParameters()
+          : {}
+        const parameters = _.extend({
           UserId: this.user.id,
           TenantId: this.user.tenantId,
-          PublicId: this.createMode ? this.publicId : this.user.publicId,
           Role: this.isTenantAdmin ? UserRoles.TenantAdmin : UserRoles.NormalUser,
           WriteSeparateLog: this.writeSeparateLog,
           Forced: true,
-        }
+        }, mainDataParameters)
         const createMode = this.createMode
         webApi.sendRequest({
           moduleName: 'Core',
