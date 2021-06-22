@@ -9,6 +9,7 @@ let allModulesNames = []
 let systemTabs = null
 let userTabs = null
 let userMainDataComponent = null
+let userOtherDataComponents = null
 
 function _checkIfModuleAvailable (module, modules, availableModules, depth = 1) {
   if (depth > 4) {
@@ -107,6 +108,21 @@ export default {
       }
     }
     return userMainDataComponent
+  },
+
+  async getUserOtherDataComponents () {
+    if (userOtherDataComponents === null) {
+      userOtherDataComponents = []
+      for (const module of allModules) {
+        if (_.isFunction(module.getUserOtherDataComponents)) {
+          const component = await module.getUserOtherDataComponents()
+          if (component?.default) {
+            userOtherDataComponents.push(component.default)
+          }
+        }
+      }
+    }
+    return userOtherDataComponents
   },
 
   isModuleAvailable (moduleName) {

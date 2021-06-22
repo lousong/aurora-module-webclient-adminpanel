@@ -13,6 +13,7 @@ export default {
       await import('src/../../../GMailConnector/vue/manager'),
       await import('src/../../../Google/vue/manager'),
       await import('src/../../../IframeAppWebclient/vue/manager'),
+      await import('src/../../../InvitationLinkWebclient/vue/manager'),
       await import('src/../../../LicensingWebclient/vue/manager'),
       await import('src/../../../LogsViewerWebclient/vue/manager'),
       await import('src/../../../MailChangePasswordHmailserverPlugin/vue/manager'),

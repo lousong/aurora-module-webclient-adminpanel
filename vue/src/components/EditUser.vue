@@ -22,6 +22,9 @@
                           :label="$t('ADMINPANELWEBCLIENT.LABEL_LOGGING_SEPARATE_LOG_FOR_USER')" />
             </div>
           </div>
+          <component v-for="component in otherDataComponents" :key="component.name" v-bind:is="component"
+                     ref="otherDataComponents" :currentTenantId="currentTenantId" :user="user" :createMode="createMode"
+                     @save="save" />
         </q-card-section>
       </q-card>
       <div class="q-pa-md text-right">
@@ -76,6 +79,7 @@ export default {
   data() {
     return {
       mainDataComponent: null,
+      otherDataComponents: [],
 
       currentTenantId: 0,
       user: null,
@@ -130,6 +134,8 @@ export default {
   async mounted () {
     this.currentTenantId = core.getCurrentTenantId()
     this.mainDataComponent = await modulesManager.getUserMainDataComponent()
+    this.otherDataComponents = await modulesManager.getUserOtherDataComponents()
+    console.log('this.otherDataComponents', this.otherDataComponents)
     this.loading = false
     this.saving = false
     this.parseRoute()
