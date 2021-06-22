@@ -17,6 +17,7 @@ export default {
       await import('src/../../../LogsViewerWebclient/vue/manager'),
       await import('src/../../../MailChangePasswordHmailserverPlugin/vue/manager'),
       await import('src/../../../MailChangePasswordPoppassdPlugin/vue/manager'),
+      await import('src/../../../MailDomains/vue/manager'),
       await import('src/../../../MailMasterPassword/vue/manager'),
       await import('src/../../../MailWebclient/vue/manager'),
       await import('src/../../../MobileSyncWebclient/vue/manager'),
