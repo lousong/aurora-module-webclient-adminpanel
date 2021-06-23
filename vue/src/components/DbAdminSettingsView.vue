@@ -102,12 +102,15 @@ import errors from 'src/utils/errors'
 import UnsavedChangesDialog from 'components/UnsavedChangesDialog'
 import _ from 'lodash'
 
+const FAKE_PASS = '     '
+
 export default {
   name: 'DbAdminSettingsView',
   data() {
     return {
       fakePass: '     ',
-      dbPassword: '',
+      dbPassword: FAKE_PASS,
+      savedPass: FAKE_PASS,
       dbLogin: '',
       dbName: '',
       dbHost: '',
@@ -140,14 +143,14 @@ export default {
       return this.dbLogin !== data.dbLogin ||
       this.dbName !== data.dbName ||
       this.dbHost !== data.dbHost ||
-      this.dbPassword !== this.fakePass
+      this.dbPassword !== this.savedPass
     },
     populate () {
       const data = settings.getDatabaseSettingsData()
       this.dbLogin = data.dbLogin
       this.dbName = data.dbName
       this.dbHost = data.dbHost
-      this.dbPassword = this.fakePass
+      this.dbPassword = FAKE_PASS
     },
     save() {
       if (!this.saving) {
@@ -157,7 +160,7 @@ export default {
           DbName: this.dbName,
           DbHost: this.dbHost,
         }
-        if (this.fakePass !== this.dbPassword) {
+        if (FAKE_PASS !== this.dbPassword) {
           parameters.DbPassword = this.dbPassword
         }
         webApi.sendRequest({
@@ -172,7 +175,7 @@ export default {
               dbLogin: this.dbLogin,
               dbHost: this.dbHost
             })
-            this.fakePass = this.dbPassword
+            this.savedPass = this.dbPassword
             if (this.storeAuthTokenInDB) {
               this.showDialog = true
             }
@@ -189,9 +192,11 @@ export default {
     testDbConnection() {
       const parameters = {
         DbLogin: this.dbLogin,
-        DbPassword: this.dbPassword !== '**********' && this.dbPassword !== '' ? this.dbPassword : '',
         DbName: this.dbName,
         DbHost: this.dbHost,
+      }
+      if (FAKE_PASS !== this.dbPassword) {
+        parameters.DbPassword = this.dbPassword
       }
       webApi.sendRequest({
         moduleName: 'Core',
