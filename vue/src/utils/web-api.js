@@ -7,6 +7,7 @@ import typesUtils from 'src/utils/types'
 import urlUtils from 'src/utils/url'
 
 import core from 'src/core'
+import eventBus from 'src/event-bus'
 import store from 'src/store'
 
 export default {
@@ -22,6 +23,8 @@ export default {
         apiHost = urlUtils.getAppPath().replace('/adminpanel', '')
       }
       const url = apiHost + '/?/Api/'
+
+      eventBus.$emit('webApi::Request::before', parameters)
 
       const data = new FormData()
       data.set('Module', moduleName)
@@ -44,8 +47,9 @@ export default {
         headers,
       })
         .then((response) => {
-          const isOkResponse = !!response && response.status === 200 && !!response.data
+          const isOkResponse = response?.status === 200 && !!response?.data
           if (isOkResponse) {
+            eventBus.$emit('webApi::Response', { moduleName, methodName, parameters, response: response.data })
             const result = response.data.Result
             if (!result && (response.data.ErrorCode || response.data.ErrorMessage || response.data.SubscriptionsResult)) {
               if (methodName !== 'Logout' && errors.isAuthError(response.data.ErrorCode)) {
@@ -57,16 +61,21 @@ export default {
               resolve(result)
             }
           } else {
+            eventBus.$emit('webApi::Response', { moduleName, methodName, parameters, response: unknownError })
             reject(unknownError)
           }
         }, () => {
+          eventBus.$emit('webApi::Response', { moduleName, methodName, parameters, response: unknownError })
           reject(unknownError)
         })
         .catch((error) => {
-          reject(_.extend(unknownError, { ErrorMessage: error.message }))
+          const errorResponse = _.extend(unknownError, { ErrorMessage: error.message })
+          eventBus.$emit('webApi::Response', { moduleName, methodName, parameters, response: errorResponse })
+          reject(errorResponse)
         })
     })
   },
+
   downloadExportFile: function ({ moduleName, methodName, parameters, fileName, format }) {
     const headers = {
       'Content-Type': 'multipart/form-data',

@@ -135,7 +135,6 @@ export default {
     this.currentTenantId = core.getCurrentTenantId()
     this.mainDataComponent = await modulesManager.getUserMainDataComponent()
     this.otherDataComponents = await modulesManager.getUserOtherDataComponents()
-    console.log('this.otherDataComponents', this.otherDataComponents)
     this.loading = false
     this.saving = false
     this.parseRoute()
