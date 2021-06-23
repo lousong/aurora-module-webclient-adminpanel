@@ -196,14 +196,25 @@ export default {
       const hasMainDataChanges = _.isFunction(this.$refs?.mainDataComponent?.hasChanges)
         ? this.$refs.mainDataComponent.hasChanges()
         : false
-      return hasMainDataChanges || this.isTenantAdmin !== (this.user?.role === UserRoles.TenantAdmin) ||
+      const hasOtherDataChanges = _.isFunction(this.$refs?.otherDataComponents?.some)
+        ? this.$refs.otherDataComponents.some(component => {
+          return _.isFunction(component.hasChanges) ? component.hasChanges() : false
+        })
+        : false
+      return hasMainDataChanges || hasOtherDataChanges || this.isTenantAdmin !== (this.user?.role === UserRoles.TenantAdmin) ||
         this.writeSeparateLog !== this.user?.writeSeparateLog
     },
 
     isDataValid () {
-      return _.isFunction(this.$refs?.mainDataComponent?.isDataValid)
+      const isMainDataValid = _.isFunction(this.$refs?.mainDataComponent?.isDataValid)
         ? this.$refs.mainDataComponent.isDataValid()
         : true
+      const isOtherDataValid = _.isFunction(this.$refs?.otherDataComponents?.every)
+        ? this.$refs.otherDataComponents.every(component => {
+          return _.isFunction(component.isDataValid) ? component.isDataValid() : true
+        })
+        : false
+      return isMainDataValid && isOtherDataValid
     },
 
     save () {
@@ -212,13 +223,23 @@ export default {
         const mainDataParameters = _.isFunction(this.$refs?.mainDataComponent?.getSaveParameters)
           ? this.$refs.mainDataComponent.getSaveParameters()
           : {}
-        const parameters = _.extend({
+        let parameters = _.extend({
           UserId: this.user.id,
           TenantId: this.user.tenantId,
           Role: this.isTenantAdmin ? UserRoles.TenantAdmin : UserRoles.NormalUser,
           WriteSeparateLog: this.writeSeparateLog,
           Forced: true,
         }, mainDataParameters)
+
+        if (_.isFunction(this.$refs?.otherDataComponents?.forEach)) {
+          this.$refs.otherDataComponents.forEach(component => {
+            const otherParameters = _.isFunction(component.getSaveParameters)
+              ? component.getSaveParameters()
+              : {}
+            parameters = _.extend(parameters, otherParameters)
+          })
+        }
+
         const createMode = this.createMode
         webApi.sendRequest({
           moduleName: 'Core',
