@@ -131,6 +131,14 @@ export default {
     }
   },
 
+  beforeRouteUpdate (to, from, next) {
+    if (this.hasChanges() && _.isFunction(this?.$refs?.unsavedChangesDialog?.openConfirmDiscardChangesDialog)) {
+      this.$refs.unsavedChangesDialog.openConfirmDiscardChangesDialog(next)
+    } else {
+      next()
+    }
+  },
+
   async mounted () {
     this.currentTenantId = core.getCurrentTenantId()
     this.mainDataComponent = await modulesManager.getUserMainDataComponent()
