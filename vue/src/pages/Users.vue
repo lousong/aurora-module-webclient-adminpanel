@@ -76,7 +76,7 @@ import Empty from 'src/components/Empty'
 import StandardList from 'src/components/StandardList'
 
 export default {
-  name: 'system',
+  name: 'Domains',
 
   components: {
     ConfirmDialog,

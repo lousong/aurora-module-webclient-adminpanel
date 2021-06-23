@@ -1,6 +1,7 @@
 
 const routes = [
   {
+    name: 'main',
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [

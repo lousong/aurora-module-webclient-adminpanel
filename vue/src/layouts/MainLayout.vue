@@ -23,6 +23,9 @@
         <q-route-tab to="/users" :ripple="false" class="q-px-none">
           <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_USERS_SETTINGS_TABNAME'"></div>
         </q-route-tab>
+        <q-route-tab v-for="page in pages" :key="page.pageName" :to="'/' + page.pageName" :ripple="false" class="q-px-none">
+          <div class="q-px-sm tab-label">{{ $t(page.pageTitle)}}</div>
+        </q-route-tab>
         <q-space />
         <q-tab :ripple="false" class="q-px-none" @click="proceedLogout">
           <div class="q-px-sm tab-label" v-t="'COREWEBCLIENT.ACTION_LOGOUT'"></div>
@@ -34,7 +37,12 @@
 </template>
 
 <script>
+import _ from 'lodash'
+
+import typesUtils from 'src/utils/types'
+
 import core from 'src/core'
+import modulesManager from 'src/modules-manager'
 
 export default {
   name: 'admin',
@@ -44,6 +52,7 @@ export default {
 
   data() {
     return {
+      pages: [],
       // aTenants: [
       //   { name: 'Default', id: 1 },
       //   { name: 'Business', id: 2 },
@@ -63,6 +72,16 @@ export default {
   },
 
   watch: {
+  },
+
+  mounted () {
+    const pages = modulesManager.getPages()
+    if (typesUtils.isNonEmptyArray(pages)) {
+      _.each(pages, (page) => {
+        this.$router.addRoute('main', { path: page.pageName, name: page.pageName, component: page.component })
+      })
+      this.pages = pages
+    }
   },
 
   methods: {

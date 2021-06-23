@@ -32,6 +32,9 @@
             <q-item-section>
               <q-item-label lines="1">{{ item.title }}</q-item-label>
             </q-item-section>
+            <q-item-section side v-if="item.rightText !== undefined">
+              <q-item-label lines="1">{{ item.rightText }}</q-item-label>
+            </q-item-section>
           </q-item>
           <q-separator />
         </div>

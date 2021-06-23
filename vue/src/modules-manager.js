@@ -6,6 +6,7 @@ import moduleList from 'src/modules'
 
 let allModules = null
 let allModulesNames = []
+let pages = null
 let systemTabs = null
 let userTabs = null
 let userMainDataComponent = null
@@ -62,6 +63,19 @@ export default {
         oModule.init(appData)
       }
     })
+  },
+
+  getPages () {
+    if (pages === null && allModules !== null) {
+      pages = []
+      _.each(allModules, oModule => {
+        const aPages = _.isFunction(oModule.getPages) && oModule.getPages()
+        if (_.isArray(aPages)) {
+          pages = pages.concat(aPages)
+        }
+      })
+    }
+    return pages === null ? [] : pages
   },
 
   getAdminSystemTabs () {
