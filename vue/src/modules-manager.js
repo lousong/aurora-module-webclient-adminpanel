@@ -9,6 +9,7 @@ let allModulesNames = []
 let pages = null
 let systemTabs = null
 let userTabs = null
+let tenantTabs = null
 let userMainDataComponent = null
 let userOtherDataComponents = null
 
@@ -102,6 +103,19 @@ export default {
       })
     }
     return userTabs === null ? [] : userTabs
+  },
+
+  getAdminTenantTabs () {
+    if (tenantTabs === null && allModules !== null) {
+      tenantTabs = []
+      _.each(allModules, oModule => {
+        const aModuleSystemTabs = _.isFunction(oModule.getAdminTenantTabs) && oModule.getAdminTenantTabs()
+        if (_.isArray(aModuleSystemTabs)) {
+          tenantTabs = tenantTabs.concat(aModuleSystemTabs)
+        }
+      })
+    }
+    return tenantTabs === null ? [] : tenantTabs
   },
 
   async getUserMainDataComponent () {

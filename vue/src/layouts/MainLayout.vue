@@ -5,6 +5,9 @@
         <q-route-tab to="/system" :ripple="false" class="q-px-none">
           <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_SYSTEM_SETTINGS_TABNAME'"></div>
         </q-route-tab>
+        <q-route-tab to="/tenants" :ripple="false" class="q-px-none">
+          <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_TENANTS_SETTINGS_TABNAME'"></div>
+        </q-route-tab>
 <!--        <q-tab :ripple="false" class="q-px-none">-->
 <!--          <router-link to="/tenants" class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_TENANTS_SETTINGS_TABNAME'">-->
 <!--          </router-link>-->
@@ -76,6 +79,7 @@ export default {
 
   mounted () {
     const pages = modulesManager.getPages()
+    console.log(pages, 'pages')
     if (typesUtils.isNonEmptyArray(pages)) {
       _.each(pages, (page) => {
         this.$router.addRoute('main', { path: page.pageName, name: page.pageName, component: page.component })
