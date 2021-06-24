@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import axios from 'axios'
 import { saveAs } from 'file-saver'
+import VueCookies from 'vue-cookies'
 
 import errors from 'src/utils/errors'
 import typesUtils from 'src/utils/types'
@@ -20,7 +21,7 @@ export default {
 
       let apiHost = store.getters['main/getApiHost']
       if (!typesUtils.isNonEmptyString(apiHost)) {
-        apiHost = urlUtils.getAppPath().replace('/adminpanel', '')
+        apiHost = urlUtils.getAppPath().replace(/\/$/, '')
       }
       const url = apiHost + '/?/Api/'
 
@@ -33,7 +34,8 @@ export default {
       if (format) {
         data.set('Format', format)
       }
-      const authToken = store.getters['user/getAuthToken']
+      // const authToken = store.getters['user/getAuthToken']
+      const authToken = VueCookies.get('AuthToken')
       const headers = {
         'Content-Type': 'multipart/form-data',
       }

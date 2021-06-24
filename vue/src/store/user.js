@@ -20,7 +20,11 @@ export default {
     setAuthToken (state, authToken) {
       const cookieSettings = settings.getCookieSettings()
       const expire = cookieSettings.authTokenCookieExpireTime > 0 ? cookieSettings.authTokenCookieExpireTime + 'd' : ''
-      VueCookies.set('AuthToken', authToken, expire)
+      if (_.isEmpty(authToken)) {
+        VueCookies.remove('AuthToken')
+      } else {
+        VueCookies.set('AuthToken', authToken, expire)
+      }
       state.authToken = authToken
     },
 
