@@ -119,7 +119,7 @@ export default {
     },
 
     showTabs () {
-      return this.tabs.length > 0
+      return this.tabs.length > 0 && this.selectedTenantId > 0
     },
   },
 
@@ -202,7 +202,7 @@ export default {
       })
     },
 
-    route (userId = 0, tabName = '') {
+    route (tenantId = 0, tabName = '') {
       const enteredSearch = this.$refs?.userList?.enteredSearch || ''
       const searchRoute = enteredSearch !== '' ? `/search/${enteredSearch}` : ''
 
@@ -212,7 +212,7 @@ export default {
       }
       const pageRoute = selectedPage > 1 ? `/page/${selectedPage}` : ''
 
-      const idRoute = userId > 0 ? `/id/${userId}` : ''
+      const idRoute = tenantId > 0 ? `/id/${tenantId}` : ''
       const tabRoute = tabName !== '' ? `/${tabName}` : ''
       const path = '/tenants' + searchRoute + pageRoute + idRoute + tabRoute
       if (path !== this.$route.path) {
