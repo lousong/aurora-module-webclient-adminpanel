@@ -111,7 +111,7 @@ export default {
       let tenant = tenants.find(tenant => {
         return tenant.id === tenantId
       })
-      if (tenant && tenant.completeData) {
+      if (tenant && tenant.completeData.Description !== undefined) {
         resolve({ tenant, tenantId })
       } else {
         webApi.sendRequest({
