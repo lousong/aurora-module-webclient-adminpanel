@@ -45,6 +45,9 @@ class AdminPanelSettings {
       if (this.cookiePath === '') {
         this.cookiePath = urlUtils.getAppPath()
       }
+      if (process.env.DEV) {
+        this.cookiePath = '/'
+      }
       this.cookieSecure = typesUtils.pBool(coreData.CookieSecure)
       this.version = typesUtils.pString(coreData.Version)
       this.productName = typesUtils.pString(coreData.ProductName)
