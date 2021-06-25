@@ -23,9 +23,6 @@
 <!--            </q-list>-->
 <!--          </q-btn-dropdown>-->
 <!--        </q-tab>-->
-        <q-route-tab to="/users" :ripple="false" class="q-px-none">
-          <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_USERS_SETTINGS_TABNAME'"></div>
-        </q-route-tab>
         <q-route-tab v-for="page in pages" :key="page.pageName" :to="'/' + page.pageName" :ripple="false" class="q-px-none">
           <div class="q-px-sm tab-label">{{ $t(page.pageTitle)}}</div>
         </q-route-tab>
@@ -85,13 +82,29 @@ export default {
       this.$router.addRoute('main', { path: '/tenants', name: 'tenants', component: () => import('pages/Tenants.vue') })
     }
 
-    const pages = modulesManager.getPages()
-    if (typesUtils.isNonEmptyArray(pages)) {
-      _.each(pages, (page) => {
+    let allPages = [{
+      pageName: 'users',
+      pageTitle: 'ADMINPANELWEBCLIENT.HEADING_USERS_SETTINGS_TABNAME',
+    }]
+
+    const otherPages = modulesManager.getPages()
+    if (typesUtils.isNonEmptyArray(otherPages)) {
+      _.each(otherPages, (page) => {
         this.$router.addRoute('main', { path: page.pageName, name: page.pageName, component: page.component })
+        allPages.push({
+          pageName: page.pageName,
+          pageTitle: page.pageTitle,
+        })
       })
-      this.pages = pages
     }
+
+    const pagesOrder = settings.getEntitiesOrder()
+    allPages = _.sortBy(allPages, (page) => {
+      const index = _.indexOf(pagesOrder, page.pageName)
+      return index !== -1 ? index : pagesOrder.length
+    })
+
+    this.pages = allPages
   },
 
   methods: {

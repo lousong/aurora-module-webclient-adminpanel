@@ -59,25 +59,31 @@
 </template>
 
 <script>
-import typesUtils from 'src/utils/types'
-import modulesManager from 'src/modules-manager'
 import _ from 'lodash'
-import core from 'src/core'
-import cache from 'src/cache'
-import notification from 'src/utils/notification'
-import webApi from 'src/utils/web-api'
+
 import errors from 'src/utils/errors'
+import notification from 'src/utils/notification'
+import typesUtils from 'src/utils/types'
+import webApi from 'src/utils/web-api'
+
+import cache from 'src/cache'
+import core from 'src/core'
+import modulesManager from 'src/modules-manager'
+import settings from 'src/settings'
+
 import ConfirmDialog from 'components/ConfirmDialog'
-import StandardList from 'components/StandardList'
 import EditTenant from 'components/EditTenant'
 import Empty from 'components/Empty'
+import StandardList from 'components/StandardList'
 
 export default {
   name: 'Tenants',
+
   components: {
     ConfirmDialog,
     StandardList,
   },
+
   data() {
     return {
       tenants: [],
@@ -87,7 +93,7 @@ export default {
 
       search: '',
       page: 1,
-      limit: 10,
+      limit: settings.getEntitiesPerPage(),
 
       tenantItems: [],
       checkedIds: [],

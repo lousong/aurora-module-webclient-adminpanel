@@ -15,7 +15,6 @@ class AdminPanelSettings {
   constructor(appData, settings) {
     const coreData = typesUtils.pObject(appData.Core, {})
     const coreWebclientData = typesUtils.pObject(appData.CoreWebclient, {})
-    const adminPanelWebclientData = typesUtils.pObject(appData.AdminPanelWebclient, {})
     const coreMobileWebclient = typesUtils.pObject(appData.CoreMobileWebclient, {})
     const appDataSectionLogsViewerWebclient = typesUtils.pObject(appData.LogsViewerWebclient, {})
 
@@ -89,12 +88,11 @@ class AdminPanelSettings {
       // this.hideLogout = typesUtils.pBool(coreWebclientData.HideLogout)
     }
 
-    if (!_.isEmpty(adminPanelWebclientData)) {
-      // this.entitiesOrder = typesUtils.pArray(adminPanelWebclientData.EntitiesOrder)
-      // this.entitiesPerPage = typesUtils.pInt(adminPanelWebclientData.EntitiesPerPage, -1)
-      this.tabsOrder = typesUtils.pArray(adminPanelWebclientData.TabsOrder)
-      // this.tenants = typesUtils.pObject(adminPanelWebclientData.Tenants)
-    }
+    const adminPanelWebclientData = typesUtils.pObject(appData.AdminPanelWebclient)
+    this.entitiesOrder = typesUtils.pArray(adminPanelWebclientData.EntitiesOrder)
+    this.entitiesPerPage = typesUtils.pInt(adminPanelWebclientData.EntitiesPerPage, 10)
+    this.tabsOrder = typesUtils.pArray(adminPanelWebclientData.TabsOrder)
+
     if (!_.isEmpty(coreMobileWebclient)) {
       this.mobileTheme = typesUtils.pString(coreMobileWebclient.Theme, 'Default')
       this.mobileThemeList = typesUtils.pArray(coreMobileWebclient.ThemeList, ['Default'])
@@ -215,6 +213,14 @@ export default {
 
   getTabsOrder () {
     return settings?.tabsOrder || []
+  },
+
+  getEntitiesOrder () {
+    return settings.entitiesOrder
+  },
+
+  getEntitiesPerPage () {
+    return settings.entitiesPerPage
   },
 
   getAboutSettings () {

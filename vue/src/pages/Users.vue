@@ -69,6 +69,7 @@ import webApi from 'src/utils/web-api'
 import core from 'src/core'
 import cache from 'src/cache'
 import modulesManager from 'src/modules-manager'
+import settings from 'src/settings'
 
 import ConfirmDialog from 'src/components/ConfirmDialog'
 import EditUser from 'src/components/EditUser'
@@ -92,7 +93,7 @@ export default {
 
       search: '',
       page: 1,
-      limit: 10,
+      limit: settings.getEntitiesPerPage(),
 
       userItems: [],
       checkedIds: [],
