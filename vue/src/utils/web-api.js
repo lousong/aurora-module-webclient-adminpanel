@@ -84,34 +84,41 @@ export default {
   },
 
   downloadExportFile: function ({ moduleName, methodName, parameters, fileName, format }) {
-    const headers = {
-      'Content-Type': 'multipart/form-data',
-    }
-    const authToken = store.getters['user/getAuthToken']
-    const apiHost = store.getters['main/getApiHost']
-    const url = typesUtils.isNonEmptyString(apiHost) ? apiHost + '/?/Api/' : '?/Api/'
-    const data = new FormData()
-    data.set('Module', moduleName)
-    data.set('Method', methodName)
-    data.set('Parameters', JSON.stringify(parameters))
-    if (format) {
-      data.set('Format', format)
-    }
-    if (authToken) {
-      headers.Authorization = 'Bearer ' + authToken
-    }
-    axios({
-      method: 'post',
-      url,
-      data: data,
-      headers: headers
-    })
-      .then((oResponse) => {
-        let resData = oResponse.data.split('\n')
-        resData.pop()
-        resData = resData.join('\n')
-        const oBlob = new Blob([resData])
-        saveAs(oBlob, fileName)
+    return new Promise((resolve, reject) => {
+      const headers = {
+        'Content-Type': 'multipart/form-data',
+      }
+      const authToken = store.getters['user/getAuthToken']
+      const apiHost = store.getters['main/getApiHost']
+      const url = typesUtils.isNonEmptyString(apiHost) ? apiHost + '/?/Api/' : '?/Api/'
+      const data = new FormData()
+      data.set('Module', moduleName)
+      data.set('Method', methodName)
+      data.set('Parameters', JSON.stringify(parameters))
+      if (format) {
+        data.set('Format', format)
+      }
+      if (authToken) {
+        headers.Authorization = 'Bearer ' + authToken
+      }
+      axios({
+        method: 'post',
+        url,
+        data: data,
+        headers: headers
       })
+        .then((oResponse) => {
+          if (oResponse) {
+            let resData = oResponse.data.split('\n')
+            resData.pop()
+            resData = resData.join('\n')
+            const oBlob = new Blob([resData])
+            saveAs(oBlob, fileName)
+            resolve()
+          } else {
+            reject()
+          }
+        })
+    })
   }
 }

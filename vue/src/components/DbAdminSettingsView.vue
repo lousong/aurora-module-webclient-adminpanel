@@ -116,7 +116,9 @@ export default {
       dbHost: '',
       saving: false,
       showDialog: false,
-      creatingTables: false
+      creatingTables: false,
+      testingConnection: false,
+      updatingConfiguration: false
     }
   },
   components: {
@@ -190,58 +192,70 @@ export default {
       }
     },
     testDbConnection() {
-      const parameters = {
-        DbLogin: this.dbLogin,
-        DbName: this.dbName,
-        DbHost: this.dbHost,
-      }
-      if (FAKE_PASS !== this.dbPassword) {
-        parameters.DbPassword = this.dbPassword
-      }
-      webApi.sendRequest({
-        moduleName: 'Core',
-        methodName: 'TestDbConnection',
-        parameters,
-      }).then(result => {
-        if (result === true) {
-          notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_DB_CONNECT_SUCCESSFUL'))
-        } else {
-          notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_DB_CONNECT_FAILED'))
+      if (!this.testingConnection) {
+        this.testingConnection = true
+        const parameters = {
+          DbLogin: this.dbLogin,
+          DbName: this.dbName,
+          DbHost: this.dbHost,
         }
-      }, response => {
-        notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.ERROR_DB_CONNECT_FAILED')))
-      })
+        if (FAKE_PASS !== this.dbPassword) {
+          parameters.DbPassword = this.dbPassword
+        }
+        webApi.sendRequest({
+          moduleName: 'Core',
+          methodName: 'TestDbConnection',
+          parameters,
+        }).then(result => {
+          this.testingConnection = false
+          if (result === true) {
+            notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_DB_CONNECT_SUCCESSFUL'))
+          } else {
+            notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_DB_CONNECT_FAILED'))
+          }
+        }, response => {
+          this.testingConnection = false
+          notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.ERROR_DB_CONNECT_FAILED')))
+        })
+      }
     },
     createTables() {
-      this.creatingTables = true
-      webApi.sendRequest({
-        moduleName: 'Core',
-        methodName: 'CreateTables',
-      }).then(result => {
-        this.creatingTables = false
-        if (result === true) {
-          notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_TABLES_SUCCESSFUL'))
-        } else {
-          notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_TABLES_FAILED'))
-        }
-      }, response => {
-        this.creatingTables = false
-        notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_TABLES_FAILED')))
-      })
+      if (!this.creatingTables) {
+        this.creatingTables = true
+        webApi.sendRequest({
+          moduleName: 'Core',
+          methodName: 'CreateTables',
+        }).then(result => {
+          this.creatingTables = false
+          if (result === true) {
+            notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_TABLES_SUCCESSFUL'))
+          } else {
+            notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_TABLES_FAILED'))
+          }
+        }, response => {
+          this.creatingTables = false
+          notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_TABLES_FAILED')))
+        })
+      }
     },
     updateConfig() {
-      webApi.sendRequest({
-        moduleName: 'Core',
-        methodName: 'UpdateConfig',
-      }).then(result => {
-        if (result === true) {
-          notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_CONFIG_SUCCESSFUL'))
-        } else {
-          notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_CONFIG_FAILED'))
-        }
-      }, response => {
-        notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_CONFIG_FAILED')))
-      })
+      if (!this.updatingConfiguration) {
+        this.updatingConfiguration = true
+        webApi.sendRequest({
+          moduleName: 'Core',
+          methodName: 'UpdateConfig',
+        }).then(result => {
+          this.updatingConfiguration = false
+          if (result === true) {
+            notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_CONFIG_SUCCESSFUL'))
+          } else {
+            notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_CONFIG_FAILED'))
+          }
+        }, response => {
+          this.updatingConfiguration = false
+          notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_CONFIG_FAILED')))
+        })
+      }
     }
   }
 }
