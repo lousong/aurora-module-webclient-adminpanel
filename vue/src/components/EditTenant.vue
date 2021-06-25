@@ -104,7 +104,7 @@ export default {
     this.parseRoute()
   },
   watch: {
-    $route(to, from) {
+    $route() {
       this.parseRoute()
     },
   },
@@ -131,8 +131,6 @@ export default {
           this.loading = false
           if (tenant) {
             this.fillUp(tenant)
-          } else {
-            this.$emit('no-user-found')
           }
         }
       })
@@ -170,26 +168,29 @@ export default {
           this.saving = false
         }, response => {
           this.saving = false
-          notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.')))
+          const errorConst = createMode ? 'ERROR_CREATE_ENTITY_TENANT' : 'ERROR_UPDATE_ENTITY_TENANT'
+          notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.' + errorConst)))
         })
       }
     },
     handleCreateResult (result) {
       if (_.isSafeInteger(result)) {
-        notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_ENTITY_USER'))
+        notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_ENTITY_TENANT'))
         this.loading = false
         this.$emit('tenant-created', result)
+      } else {
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UCREATE_ENTITY_TENANT'))
       }
     },
     handleUpdateResult (result, tenantsParameters) {
       if (result === true) {
-        cache.getTenant(this.tenantId).then(({ tenant, tenantId }) => {
+        cache.getTenant(this.tenantId).then(({ tenant }) => {
           tenant.update(tenantsParameters.Name, tenantsParameters.SiteName, tenantsParameters)
           this.populate()
         })
-        notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_USER'))
+        notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_TENANT'))
       } else {
-        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_ENTITY_USER'))
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_ENTITY_TENANT'))
       }
     },
     deleteTenant () {

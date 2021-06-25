@@ -17,7 +17,7 @@
                 </q-tooltip>
               </q-btn>
             </q-toolbar>
-            <StandardList class="col-grow" :items="tenantItems" :selectedItem="selectedUserId" :loading="loadingTenants"
+            <StandardList class="col-grow" :items="tenantItems" :selectedItem="selectedTenantId" :loading="loadingTenants"
                           :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
                           ref="userList" @route="route" @check="afterCheck" />
           </div>
@@ -27,7 +27,7 @@
             <template v-slot:before>
               <q-list>
                 <div>
-                  <q-item clickable @click="route(selectedUserId)" :class="selectedTab === '' ? 'bg-selected-item' : ''">
+                  <q-item clickable @click="route(selectedTenantId)" :class="selectedTab === '' ? 'bg-selected-item' : ''">
                     <q-item-section>
                       <q-item-label lines="1" v-t="'ADMINPANELWEBCLIENT.LABEL_COMMON_SETTINGS_TAB'"></q-item-label>
                     </q-item-section>
@@ -35,7 +35,7 @@
                   <q-separator />
                 </div>
                 <div v-for="tab in tabs" :key="tab.tabName">
-                  <q-item clickable @click="route(selectedUserId, tab.tabName)" :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
+                  <q-item clickable @click="route(selectedTenantId, tab.tabName)" :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
                     <q-item-section>
                       <q-item-label lines="1">{{ $t(tab.title) }}</q-item-label>
                     </q-item-section>
@@ -45,11 +45,11 @@
               </q-list>
             </template>
             <template v-slot:after>
-              <router-view @no-user-found="handleNoUserFound" @tenant-created="handleCreateTenant"
+              <router-view @tenant-created="handleCreateTenant"
                            @cancel-create="route" @delete-tenant="askDeleteTenant" :deletingIds="deletingIds"></router-view>
             </template>
           </q-splitter>
-          <router-view v-if="!showTabs" @no-user-found="handleNoUserFound" @tenant-created="handleCreateTenant"
+          <router-view v-if="!showTabs" @tenant-created="handleCreateTenant"
                        @cancel-create="route" @delete-tenant="askDeleteTenant" :deletingIds="deletingIds"></router-view>
         </template>
       </q-splitter>
@@ -81,7 +81,7 @@ export default {
   data() {
     return {
       tenants: [],
-      selectedUserId: 0,
+      selectedTenantId: 0,
       loadingTenants: false,
       totalCount: 0,
 
@@ -119,14 +119,14 @@ export default {
     },
 
     showTabs () {
-      return this.tabs.length > 0 && this.selectedUserId > 0
+      return this.tabs.length > 0
     },
   },
 
   watch: {
     $route (to, from) {
       if (this.$route.path === '/tenants/create') {
-        this.selectedUserId = 0
+        this.selectedTenantId = 0
       } else {
         const search = typesUtils.pString(this.$route?.params?.search)
         const page = typesUtils.pPositiveInt(this.$route?.params?.page)
@@ -136,9 +136,9 @@ export default {
           this.populate()
         }
 
-        const userId = typesUtils.pNonNegativeInt(this.$route?.params?.id)
-        if (this.selectedUserId !== userId) {
-          this.selectedUserId = userId
+        const tenantId = typesUtils.pNonNegativeInt(this.$route?.params?.id)
+        if (this.selectedTenantId !== tenantId) {
+          this.selectedTenantId = tenantId
         }
 
         const pathParts = this.$route.path.split('/')
@@ -172,7 +172,7 @@ export default {
   },
   methods: {
     populateTabs () {
-      this.tabs = typesUtils.pArray(modulesManager.getAdminUserTabs())
+      this.tabs = typesUtils.pArray(modulesManager.getAdminTenantTabs())
       _.each(this.tabs, (tab) => {
         if (typesUtils.isNonEmptyArray(tab.paths)) {
           tab.paths.forEach(path => {
@@ -233,12 +233,6 @@ export default {
       this.checkedIds = ids
     },
 
-    handleNoUserFound () {
-      notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_USER_NOT_FOUND'))
-      this.route()
-      this.populate()
-    },
-
     askDeleteTenant (id) {
       this.askDeleteTenants([id])
     },
@@ -281,12 +275,12 @@ export default {
         this.loadingTenants = false
         if (result === true) {
           notification.showReport(this.$tc('ADMINPANELWEBCLIENT.REPORT_DELETE_ENTITIES_USER_PLURAL', ids.length))
-          const isSelectedUserRemoved = ids.indexOf(this.selectedUserId) !== -1
+          const isSelectedTenantRemoved = ids.indexOf(this.selectedTenantId) !== -1
           const selectedPage = this.$refs?.userList?.selectedPage || 1
           const shouldChangePage = this.tenants.length === ids.length && selectedPage > 1
           if (shouldChangePage && _.isFunction(this.$refs?.userList?.decreasePage)) {
             this.$refs.userList.decreasePage()
-          } else if (isSelectedUserRemoved) {
+          } else if (isSelectedTenantRemoved) {
             this.route()
             this.populate()
           } else {
