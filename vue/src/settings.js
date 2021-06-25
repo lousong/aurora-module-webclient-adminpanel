@@ -12,7 +12,7 @@ import urlUtils from 'src/utils/url'
 import core from 'src/core'
 
 class AdminPanelSettings {
-  constructor(appData) {
+  constructor(appData, settings) {
     const coreData = typesUtils.pObject(appData.Core, {})
     const coreWebclientData = typesUtils.pObject(appData.CoreWebclient, {})
     const adminPanelWebclientData = typesUtils.pObject(appData.AdminPanelWebclient, {})
@@ -20,6 +20,7 @@ class AdminPanelSettings {
     const appDataSectionLogsViewerWebclient = typesUtils.pObject(appData.LogsViewerWebclient, {})
 
     if (!_.isEmpty(coreData)) {
+      this.enableMultiTenant = typesUtils.pBool(coreData.EnableMultiTenant)
       this.authTokenCookieExpireTime = typesUtils.pInt(coreData.AuthTokenCookieExpireTime, 30)
       this.autodetectLanguage = typesUtils.pBool(coreData.AutodetectLanguage)
       // this.userSelectsDateFormat = typesUtils.pBool(coreData.UserSelectsDateFormat)
@@ -208,21 +209,29 @@ export default {
     VueCookies.config('', settings.cookiePath, '', settings.cookieSecure)
   },
 
+  getEnableMultiTenant () {
+    return settings.enableMultiTenant
+  },
+
   getTabsOrder () {
     return settings?.tabsOrder || []
   },
+
   getAboutSettings () {
     return {
       version: settings?.version || '',
       productName: settings?.productName || ''
     }
   },
+
   getLanguageList () {
     return settings?.languageList || []
   },
+
   getThemeList () {
     return settings?.themeList || []
   },
+
   getMobileThemeList () {
     return settings?.mobileThemeList || []
   },

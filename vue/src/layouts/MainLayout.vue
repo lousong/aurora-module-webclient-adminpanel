@@ -5,7 +5,7 @@
         <q-route-tab to="/system" :ripple="false" class="q-px-none">
           <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_SYSTEM_SETTINGS_TABNAME'"></div>
         </q-route-tab>
-        <q-route-tab to="/tenants" :ripple="false" class="q-px-none">
+        <q-route-tab to="/tenants" :ripple="false" class="q-px-none" v-if="enableMultiTenant">
           <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_TENANTS_SETTINGS_TABNAME'"></div>
         </q-route-tab>
 <!--        <q-tab :ripple="false" class="q-px-none">-->
@@ -46,6 +46,7 @@ import typesUtils from 'src/utils/types'
 
 import core from 'src/core'
 import modulesManager from 'src/modules-manager'
+import settings from 'src/settings'
 
 export default {
   name: 'admin',
@@ -55,6 +56,8 @@ export default {
 
   data() {
     return {
+      enableMultiTenant: settings.getEnableMultiTenant(),
+
       pages: [],
       // aTenants: [
       //   { name: 'Default', id: 1 },
@@ -78,8 +81,11 @@ export default {
   },
 
   mounted () {
+    if (this.enableMultiTenant) {
+      this.$router.addRoute('main', { path: '/tenants', name: 'tenants', component: () => import('pages/Tenants.vue') })
+    }
+
     const pages = modulesManager.getPages()
-    console.log(pages, 'pages')
     if (typesUtils.isNonEmptyArray(pages)) {
       _.each(pages, (page) => {
         this.$router.addRoute('main', { path: page.pageName, name: page.pageName, component: page.component })

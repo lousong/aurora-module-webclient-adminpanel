@@ -9,7 +9,7 @@
         <q-card-section>
           <component v-bind:is="mainDataComponent" ref="mainDataComponent" :currentTenantId="currentTenantId"
                      :user="user" :createMode="createMode" @save="save" />
-          <div class="row q-mb-md">
+          <div class="row q-mb-md" v-if="allowMakeTenant">
             <div class="col-1"></div>
             <div class="col-5">
               <q-checkbox dense v-model="isTenantAdmin" :label="$t('ADMINPANELWEBCLIENT.LABEL_USER_IS_TENANT_ADMIN')" />
@@ -57,6 +57,7 @@ import webApi from 'src/utils/web-api'
 import cache from 'src/cache'
 import core from 'src/core'
 import modulesManager from 'src/modules-manager'
+import settings from 'src/settings'
 
 import UserModel from 'src/classes/user'
 
@@ -81,11 +82,14 @@ export default {
       mainDataComponent: null,
       otherDataComponents: [],
 
+      allowMakeTenant: settings.getEnableMultiTenant(),
+
       currentTenantId: 0,
       user: null,
       publicId: '',
       isTenantAdmin: false,
       writeSeparateLog: false,
+
       loading: false,
       saving: false,
     }
