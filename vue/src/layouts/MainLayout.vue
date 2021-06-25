@@ -1,12 +1,12 @@
 <template>
   <q-layout view="hHh LpR lfr">
     <q-header v-show="showHeader">
-      <q-tabs no-caps align="left" indicator-color="transparent">
+      <q-tabs class="q-py-sm" no-caps align="left" indicator-color="transparent">
         <q-route-tab to="/system" :ripple="false" class="q-px-none">
-          <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_SYSTEM_SETTINGS_TABNAME'"></div>
+          <div class="q-px-md tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_SYSTEM_SETTINGS_TABNAME'"></div>
         </q-route-tab>
         <q-route-tab to="/tenants" :ripple="false" class="q-px-none" v-if="enableMultiTenant">
-          <div class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_TENANTS_SETTINGS_TABNAME'"></div>
+          <div class="q-px-md tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_TENANTS_SETTINGS_TABNAME'"></div>
         </q-route-tab>
 <!--        <q-tab :ripple="false" class="q-px-none">-->
 <!--          <router-link to="/tenants" class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_TENANTS_SETTINGS_TABNAME'">-->
@@ -24,11 +24,11 @@
 <!--          </q-btn-dropdown>-->
 <!--        </q-tab>-->
         <q-route-tab v-for="page in pages" :key="page.pageName" :to="'/' + page.pageName" :ripple="false" class="q-px-none">
-          <div class="q-px-sm tab-label">{{ $t(page.pageTitle)}}</div>
+          <div class="q-px-md tab-label">{{ $t(page.pageTitle)}}</div>
         </q-route-tab>
         <q-space />
-        <q-tab :ripple="false" class="q-px-none" @click="proceedLogout">
-          <div class="q-px-sm tab-label" v-t="'COREWEBCLIENT.ACTION_LOGOUT'"></div>
+        <q-tab :ripple="false" class="q-px-none q-tab--logout" @click="proceedLogout">
+          <div class="q-px-md tab-label" v-t="'COREWEBCLIENT.ACTION_LOGOUT'"></div>
         </q-tab>
       </q-tabs>
     </q-header>

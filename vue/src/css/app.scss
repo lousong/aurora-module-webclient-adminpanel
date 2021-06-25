@@ -1,9 +1,19 @@
 body {
-  background: #1998a4 no-repeat 0 0 / cover url("https://test.afterlogic.com/static/styles/themes/Default/images/background.jpg");
+  background: #1998a4 no-repeat 0 0 / cover url("~assets/background.jpg");
 }
 
+.q-header .q-tab__content {
+  min-width: auto;
+}
 .q-tab--active .tab-label {
-  border-bottom: solid 1px;
+  font-weight: bold;
+}
+.q-tab--active.q-tab--logout .tab-label {
+  font-weight: normal;
+}
+// removes hover effect from tabs
+.q-tab .q-focus-helper {
+  display: none;
 }
 
 .q-splitter__panel {
