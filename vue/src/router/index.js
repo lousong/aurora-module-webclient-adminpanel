@@ -31,8 +31,8 @@ export default function (/* { store, ssrContext } */) {
   Router.beforeEach((to, from, next) => {
     core.init().then(() => {
       next()
-    }, () => {
-      console.log('core.init reject', arguments)
+    }, (error) => {
+      console.log('core.init reject', error)
     })
   })
 

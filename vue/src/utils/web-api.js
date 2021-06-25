@@ -21,8 +21,9 @@ export default {
 
       let apiHost = store.getters['main/getApiHost']
       if (!typesUtils.isNonEmptyString(apiHost)) {
-        apiHost = urlUtils.getAppPath().replace(/\/$/, '')
+        apiHost = urlUtils.getAppPath()
       }
+      apiHost = apiHost.replace(/\/$/, '')
       const url = apiHost + '/?/Api/'
 
       eventBus.$emit('webApi::Request::before', parameters)

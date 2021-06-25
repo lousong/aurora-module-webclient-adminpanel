@@ -20,6 +20,7 @@ if (fse.existsSync(srcDir)) {
   } else {
     console.log('Start moving app files to the adminpanel directory...')
     fse.moveSync(srcDir, destDir)
+    fse.renameSync(destDir + 'index.html', destDir + 'main.html')
     console.log('The app is now in the adminpanel directory')
 
     console.log('Start to create index.php...')
@@ -30,7 +31,7 @@ if (isset($_GET['/Api']) || isset($_GET['/Api/']))
 }
 else
 {
-\tinclude_once './index.html';
+\tinclude_once './main.html';
 }
 `
     fse.writeFileSync(destDir + 'index.php', indexPhpContent)

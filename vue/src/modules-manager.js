@@ -55,6 +55,12 @@ export default {
         allModules = []
         allModulesNames = []
       }
+      if (allModules.length === 0) {
+        throw new Error('There are no available modules')
+      }
+      if (allModulesNames.indexOf('AdminPanelWebclient') === -1) {
+        throw new Error('AdminPanelWebclient module is not available')
+      }
     }
   },
 
