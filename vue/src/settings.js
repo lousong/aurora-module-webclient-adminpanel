@@ -41,11 +41,10 @@ class AdminPanelSettings {
       // this.userId = typesUtils.pInt(coreData.UserId)
       // this.passwordMinLength = typesUtils.pNonNegativeInt(coreData.PasswordMinLength)
       // this.passwordMustBeComplex = typesUtils.pBool(coreData.PasswordMustBeComplex)
-      // this.cookiePath = typesUtils.pString(coreData.CookiePath, '/')
-      // if (this.cookiePath === '') {
-      //   this.cookiePath = '/'
-      // }
-      this.cookiePath = urlUtils.getAppPath()
+      this.cookiePath = typesUtils.pString(coreData.CookiePath)
+      if (this.cookiePath === '') {
+        this.cookiePath = urlUtils.getAppPath()
+      }
       this.cookieSecure = typesUtils.pBool(coreData.CookieSecure)
       this.version = typesUtils.pString(coreData.Version)
       this.productName = typesUtils.pString(coreData.ProductName)
