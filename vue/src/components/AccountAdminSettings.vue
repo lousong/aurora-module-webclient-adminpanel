@@ -7,34 +7,34 @@
       <q-card flat bordered class="card-edit-settings">
         <q-card-section>
           <div class="row q-mb-md">
-            <div class="col-1" v-t="'ADMINPANELWEBCLIENT.LABEL_SECURITY_LOGIN'"></div>
+            <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_SECURITY_LOGIN'"></div>
             <div class="col-5">
               <q-input outlined dense class="bg-white" v-model="login" @keyup.enter="save" />
             </div>
           </div>
           <div class="row q-mb-md">
-            <div class="col-1" v-t="'ADMINPANELWEBCLIENT.LABEL_SECURITY_PASS'"></div>
+            <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_SECURITY_PASS'"></div>
             <div class="col-5">
               <q-input outlined dense class="bg-white" ref="oldPassword" type="password" v-model="oldPassword"
                        @keyup.enter="save" />
             </div>
           </div>
           <div class="row q-mb-md">
-            <div class="col-1" v-t="'ADMINPANELWEBCLIENT.LABEL_SECURITY_NEW_PASS'"></div>
+            <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_SECURITY_NEW_PASS'"></div>
             <div class="col-5">
               <q-input outlined dense class="bg-white" ref="newPassword" v-model="newPassword" type="password"
                        @keyup.enter="save" />
             </div>
           </div>
           <div class="row q-mb-md">
-            <div class="col-1" v-t="'ADMINPANELWEBCLIENT.LABEL_SECURITY_CONFIRM_PASS'"></div>
+            <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_SECURITY_CONFIRM_PASS'"></div>
             <div class="col-5">
               <q-input outlined dense class="bg-white" v-model="confirmNewPassword" type="password"
                        @keyup.enter="save" />
             </div>
           </div>
           <div class="row">
-            <div class="col-1" v-t="'COREWEBCLIENT.LABEL_LANGUAGE'"></div>
+            <div class="col-2 q-my-sm" v-t="'COREWEBCLIENT.LABEL_LANGUAGE'"></div>
             <div class="col-5">
               <q-select outlined dense class="bg-white" v-model="language"
                         emit-value map-options :options="languageOptions" option-label="name" />
@@ -42,7 +42,7 @@
           </div>
         </q-card-section>
       </q-card>
-      <div class="q-pa-md text-right">
+      <div class="q-pt-md text-right">
         <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="save"
                :label="saving ? $t('COREWEBCLIENT.ACTION_SAVE_IN_PROGRESS') : $t('COREWEBCLIENT.ACTION_SAVE')">
         </q-btn>

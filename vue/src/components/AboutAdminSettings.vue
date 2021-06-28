@@ -7,12 +7,12 @@
       <q-card flat bordered class="card-edit-settings">
         <q-card-section>
           <div class="row">
-            <div class="col-2 q-my-sm q-ml-md grey-7" v-t="'ADMINPANELWEBCLIENT.LABEL_PRODUCT_NAME'"></div>
-            <div class="col-4 q-my-sm q-ml-sm">{{ productName }}</div>
+            <div class="col-2 q-my-sm about-caption" v-t="'ADMINPANELWEBCLIENT.LABEL_PRODUCT_NAME'"></div>
+            <div class="col-5 q-my-sm">{{ productName }}</div>
           </div>
           <div class="row">
-            <div class="col-2 q-my-sm q-ml-md grey-7" v-t="'ADMINPANELWEBCLIENT.LABEL_PRODUCT_VERSION'"></div>
-            <div class="col-4 q-my-sm q-ml-sm">{{ version }}</div>
+            <div class="col-2 q-my-sm about-caption" v-t="'ADMINPANELWEBCLIENT.LABEL_PRODUCT_VERSION'"></div>
+            <div class="col-5 q-my-sm">{{ version }}</div>
           </div>
         </q-card-section>
       </q-card>
@@ -44,6 +44,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.about-caption {
+  color: var(--q-color-secondary);
+}
 </style>
