@@ -42,6 +42,10 @@
                   </q-item>
                   <q-separator />
                 </div>
+                <q-inner-loading style="justify-content: flex-start;" :showing="deleting">
+                  <!--        <q-spinner size="50px" color="primary" />-->
+                  <q-linear-progress query class="q-mt-sm" />
+                </q-inner-loading>
               </q-list>
             </template>
             <template v-slot:after>
@@ -126,6 +130,10 @@ export default {
 
     showTabs () {
       return this.tabs.length > 0 && this.selectedUserId > 0
+    },
+
+    deleting () {
+      return this.deletingIds.indexOf(this.selectedUserId) !== -1
     },
   },
 
