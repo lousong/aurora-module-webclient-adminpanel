@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="confirm" persistent>
-    <q-card>
+    <q-card style="min-width: 300px">
       <q-card-section class="q-pb-none">
         <div class="text-h6" v-show="title">{{ title }}</div>
       </q-card-section>
