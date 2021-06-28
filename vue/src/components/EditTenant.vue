@@ -1,6 +1,6 @@
 <template>
   <q-scroll-area class="full-height full-width relative-position">
-    <div class="q-pa-lg ">
+    <div class="q-pa-lg">
       <div class="row q-mb-md">
         <div class="col text-h5" v-if="!createMode" v-t="'COREWEBCLIENT.HEADING_COMMON_SETTINGS'"></div>
         <div class="col text-h5" v-if="createMode" v-t="'ADMINPANELWEBCLIENT.HEADING_CREATE_TENANT'"></div>
@@ -9,25 +9,25 @@
         <q-card-section>
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_PRODUCT_NAME'"></div>
-            <div class="col-4">
+            <div class="col-5">
               <q-input outlined dense class="bg-white" v-model="tenantName"/>
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DESCRIPTION'"></div>
-            <div class="col-4">
+            <div class="col-5">
               <q-input outlined dense class="bg-white" v-model="description"/>
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_WEB_DOMAIN'"></div>
-            <div class="col-4">
+            <div class="col-5">
               <q-input outlined dense class="bg-white" v-model="webDomain"/>
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'COREWEBCLIENT.LABEL_SITENAME'"></div>
-            <div class="col-4">
+            <div class="col-5">
               <q-input outlined dense class="bg-white" v-model="tenantSiteName"/>
             </div>
           </div>
