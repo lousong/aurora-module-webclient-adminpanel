@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="confirm" persistent>
-    <q-card>
+    <q-card style="min-width: 300px">
       <q-card-section>
         <span v-t="'COREWEBCLIENT.CONFIRM_DISCARD_CHANGES'"></span>
       </q-card-section>
