@@ -15,8 +15,7 @@ body {
 .q-tab .q-focus-helper {
   display: none;
 }
-
-.q-splitter__panel {
+.q-splitter__before, .q-splitter__right-panel {
   background-color: white;
   border-radius: 5px;
   box-shadow: -1px 0 2px rgb(0 0 0 / 11%);
