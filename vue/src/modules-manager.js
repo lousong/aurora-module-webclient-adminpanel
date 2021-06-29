@@ -66,6 +66,11 @@ export default {
 
   initModules (appData) {
     _.each(allModules, oModule => {
+      if (_.isFunction(oModule.initSubscriptions)) {
+        oModule.initSubscriptions(appData)
+      }
+    })
+    _.each(allModules, oModule => {
       if (_.isFunction(oModule.init)) {
         oModule.init(appData)
       }
