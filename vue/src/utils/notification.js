@@ -10,7 +10,7 @@ export default {
       timeout = 10000
     }
     return Notify.create({
-      color: 'red',
+      color: 'negative',
       textColor: 'white',
       icon: null,
       message,
@@ -25,7 +25,7 @@ export default {
 
   showReport (message) {
     Notify.create({
-      color: 'green',
+      color: 'info',
       textColor: 'white',
       icon: null,
       message,
@@ -41,7 +41,7 @@ export default {
   showLoading (message) {
     this.hideLoading()
     dismissLoading = Notify.create({
-      color: 'orange',
+      color: 'warning',
       textColor: 'white',
       icon: null,
       message,

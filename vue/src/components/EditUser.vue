@@ -28,7 +28,7 @@
         </q-card-section>
       </q-card>
       <div class="q-pt-md text-right">
-        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="deleteUser"
+        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="negative" @click="deleteUser"
                :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_USER')" v-if="!createMode">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
