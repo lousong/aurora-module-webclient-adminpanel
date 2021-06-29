@@ -18,8 +18,8 @@
               </q-btn>
             </q-toolbar>
             <StandardList class="col-grow" :items="tenantItems" :selectedItem="selectedTenantId" :loading="loadingTenants"
-                          :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
-                          ref="userList" @route="route" @check="afterCheck" />
+                          :search="search" :page="page" :pagesCount="pagesCount"
+                          ref="tenantList" @route="route" @check="afterCheck" />
           </div>
         </template>
         <template v-slot:after>
@@ -120,10 +120,6 @@ export default {
       return count > 0 ? count : ''
     },
 
-    totalCountText () {
-      return this.$tc('ADMINPANELWEBCLIENT.LABEL_USERS_COUNT', this.totalCount, { COUNT: this.totalCount })
-    },
-
     showTabs () {
       return this.tabs.length > 0 && this.selectedTenantId > 0
     },
@@ -209,10 +205,10 @@ export default {
     },
 
     route (tenantId = 0, tabName = '') {
-      const enteredSearch = this.$refs?.userList?.enteredSearch || ''
+      const enteredSearch = this.$refs?.tenantList?.enteredSearch || ''
       const searchRoute = enteredSearch !== '' ? `/search/${enteredSearch}` : ''
 
-      let selectedPage = this.$refs?.userList?.selectedPage || 1
+      let selectedPage = this.$refs?.tenantList?.selectedPage || 1
       if (this.search !== enteredSearch) {
         selectedPage = 1
       }
@@ -280,12 +276,12 @@ export default {
         this.deletingIds = []
         this.loadingTenants = false
         if (result === true) {
-          notification.showReport(this.$tc('ADMINPANELWEBCLIENT.REPORT_DELETE_ENTITIES_USER_PLURAL', ids.length))
+          notification.showReport(this.$tc('ADMINPANELWEBCLIENT.REPORT_DELETE_ENTITIES_TENANT_PLURAL', ids.length))
           const isSelectedTenantRemoved = ids.indexOf(this.selectedTenantId) !== -1
-          const selectedPage = this.$refs?.userList?.selectedPage || 1
+          const selectedPage = this.$refs?.tenantList?.selectedPage || 1
           const shouldChangePage = this.tenants.length === ids.length && selectedPage > 1
-          if (shouldChangePage && _.isFunction(this.$refs?.userList?.decreasePage)) {
-            this.$refs.userList.decreasePage()
+          if (shouldChangePage && _.isFunction(this.$refs?.tenantList?.decreasePage)) {
+            this.$refs.tenantList.decreasePage()
           } else if (isSelectedTenantRemoved) {
             this.route()
             this.populate()
@@ -293,12 +289,12 @@ export default {
             this.populate()
           }
         } else {
-          notification.showError(this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_USER_PLURAL', ids.length))
+          notification.showError(this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_TENANT_PLURAL', ids.length))
         }
       }, error => {
         this.deletingIds = []
         this.loadingTenants = false
-        notification.showError(errors.getTextFromResponse(error, this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_USER_PLURAL', ids.length)))
+        notification.showError(errors.getTextFromResponse(error, this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_TENANT_PLURAL', ids.length)))
       })
     },
   },

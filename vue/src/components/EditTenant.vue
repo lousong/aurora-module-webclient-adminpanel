@@ -64,6 +64,9 @@ import cache from 'src/cache'
 
 export default {
   name: 'EditTenant',
+  props: {
+    deletingIds: Array,
+  },
   data () {
     return {
       tenant: null,
@@ -72,7 +75,6 @@ export default {
       tenantSiteName: '',
       description: '',
       webDomain: '',
-      deleting: false,
       saving: false,
       loading: false
     }
@@ -95,6 +97,9 @@ export default {
           return this.$t('COREWEBCLIENT.ACTION_SAVE')
         }
       }
+    },
+    deleting () {
+      return this.deletingIds.indexOf(this.tenant?.id) !== -1
     },
   },
   async mounted () {
