@@ -2,10 +2,10 @@ import typesUtils from 'src/utils/types'
 import _ from 'lodash'
 
 class TenantModel {
-  constructor (tenantId, name, siteName, completeData = null) {
-    this.id = typesUtils.pInt(tenantId)
-    this.name = typesUtils.pString(name)
-    this.siteName = typesUtils.pString(siteName)
+  constructor (serverData, completeData = null) {
+    this.id = typesUtils.pInt(serverData.Id)
+    this.name = typesUtils.pString(serverData.Name)
+    this.siteName = typesUtils.pString(serverData.SiteName)
     this.brandingData = {}
     this.setCompleteData(completeData)
   }

@@ -56,7 +56,6 @@ import typesUtils from 'src/utils/types'
 import webApi from 'src/utils/web-api'
 
 import cache from 'src/cache'
-import core from 'src/core'
 import modulesManager from 'src/modules-manager'
 import settings from 'src/settings'
 
@@ -85,7 +84,6 @@ export default {
 
       allowMakeTenant: settings.getEnableMultiTenant(),
 
-      currentTenantId: 0,
       user: null,
       publicId: '',
       isTenantAdmin: false,
@@ -97,6 +95,10 @@ export default {
   },
 
   computed: {
+    currentTenantId () {
+      return this.$store.getters['tenants/getCurrentTenantId']
+    },
+
     createMode () {
       return this.user?.id === 0
     },
@@ -145,7 +147,6 @@ export default {
   },
 
   async mounted () {
-    this.currentTenantId = core.getCurrentTenantId()
     this.mainDataComponent = await modulesManager.getUserMainDataComponent()
     this.otherDataComponents = await modulesManager.getUserOtherDataComponents()
     this.loading = false

@@ -19,6 +19,8 @@
             </q-toolbar>
             <StandardList class="col-grow" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
                           :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
+                          :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_USER'"
+                          :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_USER'"
                           ref="userList" @route="route" @check="afterCheck" />
           </div>
         </template>
@@ -70,7 +72,6 @@ import notification from 'src/utils/notification'
 import typesUtils from 'src/utils/types'
 import webApi from 'src/utils/web-api'
 
-import core from 'src/core'
 import cache from 'src/cache'
 import modulesManager from 'src/modules-manager'
 import settings from 'src/settings'
@@ -115,6 +116,10 @@ export default {
   },
 
   computed: {
+    currentTenantId () {
+      return this.$store.getters['tenants/getCurrentTenantId']
+    },
+
     pagesCount () {
       return Math.ceil(this.totalCount / this.limit)
     },
@@ -138,6 +143,10 @@ export default {
   },
 
   watch: {
+    currentTenantId () {
+      this.populate()
+    },
+
     $route (to, from) {
       if (this.$route.path === '/users/create') {
         this.selectedUserId = 0
@@ -202,8 +211,7 @@ export default {
 
     populate () {
       this.loadingUsers = true
-      const currentTenantId = core.getCurrentTenantId()
-      cache.getUsers(currentTenantId, this.search, this.page, this.limit).then(({ users, totalCount, tenantId, page, search }) => {
+      cache.getUsers(this.currentTenantId, this.search, this.page, this.limit).then(({ users, totalCount, tenantId, page, search }) => {
         if (page === this.page && search === this.search) {
           this.users = users
           this.totalCount = totalCount
