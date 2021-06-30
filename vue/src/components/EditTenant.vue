@@ -25,7 +25,7 @@
               <q-input outlined dense class="bg-white" v-model="webDomain"/>
             </div>
           </div>
-          <div class="row q-mb-md">
+          <div class="row">
             <div class="col-2 q-mt-sm" v-t="'COREWEBCLIENT.LABEL_SITENAME'"></div>
             <div class="col-5">
               <q-input outlined dense class="bg-white" v-model="tenantSiteName"/>
