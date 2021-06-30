@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "prepare-modules": "node build-scripts/prepare-modules.js",
+    "prepare-stores": "node build-scripts/prepare-stores.js",
     "prepare-langs": "node build-scripts/prepare-langs.js",
     "build-production": "node build-scripts/build-production.js",
     "lint": "eslint --ext .js,.vue ./",

@@ -2,6 +2,7 @@ const fse = require('fs-extra')
 
 require('./prepare-langs')
 require('./prepare-modules')
+require('./prepare-stores')
 
 console.log('Start building the app...')
 const execSync = require('child_process').execSync
