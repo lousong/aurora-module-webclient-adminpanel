@@ -25,6 +25,8 @@ export default {
       await import('src/../../../S3Filestorage/vue/manager'),
       await import('src/../../../StandardResetPassword/vue/manager'),
       await import('src/../../../StandardAuthWebclient/vue/manager'),
+      await import('src/../../../CoreUserGroupsLimits/vue/manager'),
+      await import('src/../../../TwoFactorAuth/vue/manager'),
     ]
   },
 }
