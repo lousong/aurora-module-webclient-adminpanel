@@ -61,6 +61,11 @@ button.no-hover .q-focus-helper {
   background: white;
 }
 
+//makes padding right correctly for scroll on inputs
+.q-field--outlined .q-field__control {
+  padding-right: 0;
+}
+
 $selected-item: #78b8f0;
 .bg-selected-item {
   background-color: $selected-item;
