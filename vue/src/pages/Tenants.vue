@@ -19,7 +19,7 @@
             </q-toolbar>
             <StandardList class="col-grow" :items="tenantItems" :selectedItem="selectedTenantId" :loading="loadingTenants"
                           :search="search" :page="page" :pagesCount="pagesCount"
-                          :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_TENANT'"
+                          :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_TENANT'"
                           :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_TENANT'"
                           ref="tenantList" @route="route" @check="afterCheck" />
           </div>

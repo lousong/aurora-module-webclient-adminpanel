@@ -19,7 +19,7 @@
             </q-toolbar>
             <StandardList class="col-grow" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
                           :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
-                          :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_USER'"
+                          :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_USER'"
                           :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_USER'"
                           ref="userList" @route="route" @check="afterCheck" />
           </div>
