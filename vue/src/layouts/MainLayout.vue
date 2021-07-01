@@ -5,21 +5,25 @@
         <q-route-tab to="/system" :ripple="false" class="q-px-none">
           <div class="q-px-md tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_SYSTEM_SETTINGS_TABNAME'"></div>
         </q-route-tab>
-        <q-tab :ripple="false" class="q-px-none" v-if="enableMultiTenant">
-          <router-link to="/tenants" class="q-px-sm tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_TENANTS_SETTINGS_TABNAME'">
-          </router-link>
-          <q-btn-dropdown no-icon-animation cover auto-close stretch flat :ripple="false"
-                          :label="selectedTenantName" class="text-capitalize text-weight-regular">
-            <q-list class="non-selectable" v-for="tenant in tenants" :key="tenant.id">
-              <q-item clickable @click="changeTenant(tenant.id)">
-                <q-item-section>{{tenant.name}}</q-item-section>
-                <q-item-section avatar v-show="tenant.id === 1">
-                  <q-icon name="arrow_drop_up" />
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-        </q-tab>
+        <q-route-tab to="/tenants" :ripple="false" class="q-px-none">
+          <div class="q-px-md tab-label">
+            <span v-t="'ADMINPANELWEBCLIENT.HEADING_TENANTS_SETTINGS_TABNAME'"></span>
+            <span v-if="tenants.length > 1">:</span>
+          </div>
+        </q-route-tab>
+        <q-btn-dropdown no-icon-animation cover auto-close stretch flat dense :ripple="false" @click.stop
+                        v-if="tenants.length > 1" :label="selectedTenantName"
+                        class="q-px-none text-capitalize text-weight-regular no-hover"
+                        style="margin-bottom: -1px; margin-left: -6px;">
+          <q-list class="non-selectable" v-for="tenant in tenants" :key="tenant.id">
+            <q-item clickable @click="changeTenant(tenant.id)">
+              <q-item-section>{{tenant.name}}</q-item-section>
+              <q-item-section avatar v-show="tenant.id === 1">
+                <q-icon name="arrow_drop_up" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
         <q-route-tab v-for="page in pages" :key="page.pageName" :to="'/' + page.pageName" :ripple="false" class="q-px-none">
           <div class="q-px-md tab-label">{{ $t(page.pageTitle)}}</div>
         </q-route-tab>
