@@ -23,6 +23,14 @@
       <div v-if="search" class="text-center text-h6 text-grey-5 text-weight-regular">
         {{ $tc('ADMINPANELWEBCLIENT.INFO_SEARCH_RESULT', search, { SEARCH: search }) }}
       </div>
+      <div v-if="!loading && items.length === 0 && !search"
+           class="q-ma-md text-center text-h6 text-grey-5 text-weight-regular">
+        {{ $t(noItemsText) }}
+      </div>
+      <div v-if="!loading && items.length === 0 && search"
+           class="q-ma-md text-center text-h6 text-grey-5 text-weight-regular">
+        {{ $t(noItemsFoundText) }}
+      </div>
       <q-list>
         <div v-for="item in items" :key="item.id">
           <q-item clickable @click="selectItem(item.id)" :class="getCssClass(item.id, item.checked)">
@@ -39,7 +47,7 @@
           <q-separator />
         </div>
       </q-list>
-      <q-inner-loading style="justify-content: flex-start;" :showing="loading">
+      <q-inner-loading style="justify-content: flex-start; min-height: 50px;" :showing="loading">
 <!--        <q-spinner size="50px" color="primary" />-->
         <q-linear-progress query class="q-mt-sm" />
       </q-inner-loading>
@@ -71,6 +79,9 @@ export default {
     search: String,
     page: Number,
     pagesCount: Number,
+
+    noItemsText: String,
+    noItemsFoundText: String,
   },
 
   data () {

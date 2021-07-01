@@ -137,9 +137,6 @@ export default {
   requestTenants () {
     return core.requestTenants()
   },
-  getCurrentTenantId () {
-    return (!_.isEmpty(core.tenants)) ? core.tenants[0].id : 0
-  },
   getTenantName (id) {
     const tenant = core.getTenantById(id)
     return typesUtils.pString(tenant?.name)

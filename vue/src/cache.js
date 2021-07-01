@@ -90,10 +90,7 @@ export default {
         tenants = []
         if (_.isArray(result?.Items)) {
           tenants = _.map(result.Items, function (serverData) {
-            const tenantId = serverData.Id
-            const name = serverData.Name
-            const siteName = serverData.SiteName
-            return new TenantModel(tenantId, name, siteName)
+            return new TenantModel(serverData)
           })
           const totalCount = typesUtils.pInt(result.Count)
           resolve({ tenants, totalCount, search, page, limit })

@@ -60,7 +60,6 @@ import typesUtils from 'src/utils/types'
 import webApi from 'src/utils/web-api'
 import notification from 'src/utils/notification'
 import errors from 'src/utils/errors'
-import core from 'src/core'
 import cache from 'src/cache'
 
 export default {
@@ -81,6 +80,10 @@ export default {
     }
   },
   computed: {
+    currentTenantId () {
+      return this.$store.getters['tenants/getCurrentTenantId']
+    },
+
     createMode () {
       return this.tenant?.id === 0
     },
@@ -104,7 +107,6 @@ export default {
     },
   },
   async mounted () {
-    this.currentTenantId = core.getCurrentTenantId()
     this.loading = false
     this.saving = false
     this.parseRoute()
@@ -152,9 +154,8 @@ export default {
     save () {
       if (!this.saving) {
         this.saving = true
-        const tenantId = core.getCurrentTenantId()
         const parameters = {
-          TenantId: tenantId,
+          TenantId: this.currentTenantId,
           Name: this.tenantName,
           Description: this.description,
           WebDomain: this.webDomain,

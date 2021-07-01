@@ -19,6 +19,8 @@
             </q-toolbar>
             <StandardList class="col-grow" :items="tenantItems" :selectedItem="selectedTenantId" :loading="loadingTenants"
                           :search="search" :page="page" :pagesCount="pagesCount"
+                          :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_TENANT'"
+                          :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_TENANT'"
                           ref="tenantList" @route="route" @check="afterCheck" />
           </div>
         </template>
@@ -67,7 +69,6 @@ import typesUtils from 'src/utils/types'
 import webApi from 'src/utils/web-api'
 
 import cache from 'src/cache'
-import core from 'src/core'
 import modulesManager from 'src/modules-manager'
 import settings from 'src/settings'
 
@@ -111,6 +112,10 @@ export default {
   },
 
   computed: {
+    currentTenantId () {
+      return this.$store.getters['tenants/getCurrentTenantId']
+    },
+
     pagesCount () {
       return Math.ceil(this.totalCount / this.limit)
     },
@@ -160,6 +165,7 @@ export default {
       })
     },
   },
+
   mounted () {
     this.$router.addRoute('tenants', { path: 'id/:id', component: EditTenant })
     this.$router.addRoute('tenants', { path: 'create', component: EditTenant })
@@ -172,6 +178,7 @@ export default {
     this.populateTabs()
     this.populate()
   },
+
   methods: {
     populateTabs () {
       this.tabs = typesUtils.pArray(modulesManager.getAdminTenantTabs())
@@ -188,8 +195,7 @@ export default {
 
     populate () {
       this.loadingTenants = true
-      const currentTenantId = core.getCurrentTenantId()
-      cache.getTenants(currentTenantId, 'Tenant', this.page, this.limit, this.search).then(({ tenants, totalCount, search, page, limit }) => {
+      cache.getTenants(this.currentTenantId, 'Tenant', this.page, this.limit, this.search).then(({ tenants, totalCount, search, page, limit }) => {
         if (page === this.page && search === this.search) {
           this.tenants = tenants
           this.totalCount = totalCount
@@ -229,6 +235,7 @@ export default {
     handleCreateTenant (id) {
       this.justCreatedId = id
       this.route()
+      this.$store.dispatch('tenants/requestTenants')
     },
 
     afterCheck (ids) {
@@ -260,7 +267,6 @@ export default {
     },
 
     deleteTenants (ids) {
-      const currentTenantId = core.getCurrentTenantId()
       this.deletingIds = ids
       this.loadingTenants = true
       webApi.sendRequest({
@@ -269,7 +275,7 @@ export default {
         parameters: {
           IdList: ids,
           DeletionConfirmedByAdmin: true,
-          TenantId: currentTenantId,
+          TenantId: this.currentTenantId,
           Type: 'Tenant',
         },
       }).then(result => {
@@ -291,10 +297,12 @@ export default {
         } else {
           notification.showError(this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_TENANT_PLURAL', ids.length))
         }
+        this.$store.dispatch('tenants/requestTenants')
       }, error => {
         this.deletingIds = []
         this.loadingTenants = false
         notification.showError(errors.getTextFromResponse(error, this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_TENANT_PLURAL', ids.length)))
+        this.$store.dispatch('tenants/requestTenants')
       })
     },
   },

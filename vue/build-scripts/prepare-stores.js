@@ -24,6 +24,7 @@ import Vuex from 'vuex'
 
 import user from './user'
 import main from './main'
+import tenants from './tenants'
 ${paths}
 
 Vue.use(Vuex)
@@ -32,6 +33,7 @@ export default new Vuex.Store({
   modules: {
     main,
     user,
+    tenants,
 ${names}
   },
 
