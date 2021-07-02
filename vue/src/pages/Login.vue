@@ -1,33 +1,29 @@
 <template>
-  <q-page-container style="height: 100vh">
-    <q-page class="flex flex-center login-page">
-      <div class="q-pa-md">
-        <div class="q-gutter-y-md column" style="width: 240px">
-          <q-input bg-color="white" standout="bg-yellow-2" outlined dense v-model="login"
-                   :placeholder="$t('COREWEBCLIENT.LABEL_LOGIN')" @keyup.enter="proceedLogin">
-            <template v-slot:prepend>
-              <q-icon name="person" />
-            </template>
-          </q-input>
+    <div class="q-pa-md">
+      <div class="q-gutter-y-md column" style="width: 240px">
+        <q-input bg-color="white" standout="bg-yellow-2" outlined dense v-model="login"
+                 :placeholder="$t('COREWEBCLIENT.LABEL_LOGIN')" @keyup.enter="proceedLogin">
+          <template v-slot:prepend>
+            <q-icon name="person"/>
+          </template>
+        </q-input>
 
-          <q-input class="q-mt-none" bg-color="white" standout="bg-yellow-2" outlined dense v-model="password"
-                   type="password" :placeholder="$t('COREWEBCLIENT.LABEL_PASSWORD')" @keyup.enter="proceedLogin">
-            <template v-slot:prepend>
-              <q-icon name="lock" />
-            </template>
-          </q-input>
+        <q-input class="q-mt-none" bg-color="white" standout="bg-yellow-2" outlined dense v-model="password"
+                 type="password" :placeholder="$t('COREWEBCLIENT.LABEL_PASSWORD')" @keyup.enter="proceedLogin">
+          <template v-slot:prepend>
+            <q-icon name="lock"/>
+          </template>
+        </q-input>
 
-          <q-btn unelevated no-caps outline bg-color="primary" class="q-px-sm bg-primary" :ripple="false"
-                 color="white" :loading="loading" @click="proceedLogin">
-            {{$t('COREWEBCLIENT.ACTION_SIGN_IN')}}
-            <template v-slot:loading>
-              {{$t('COREWEBCLIENT.ACTION_SIGN_IN_IN_PROGRESS')}}
-            </template>
-          </q-btn>
-        </div>
+        <q-btn unelevated no-caps outline bg-color="primary" class="q-px-sm bg-primary" :ripple="false"
+               color="white" :loading="loading" @click="proceedLogin">
+          {{ $t('COREWEBCLIENT.ACTION_SIGN_IN') }}
+          <template v-slot:loading>
+            {{ $t('COREWEBCLIENT.ACTION_SIGN_IN_IN_PROGRESS') }}
+          </template>
+        </q-btn>
       </div>
-    </q-page>
-  </q-page-container>
+    </div>
 </template>
 
 <script>

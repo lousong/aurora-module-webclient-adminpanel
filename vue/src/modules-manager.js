@@ -90,13 +90,22 @@ export default {
     return pages === null ? [] : pages
   },
 
-  getAdminSystemTabs () {
+  getAdminSystemTabs (router) {
     if (systemTabs === null && allModules !== null) {
       systemTabs = []
       _.each(allModules, oModule => {
         const aModuleSystemTabs = _.isFunction(oModule.getAdminSystemTabs) && oModule.getAdminSystemTabs()
         if (_.isArray(aModuleSystemTabs)) {
           systemTabs = systemTabs.concat(aModuleSystemTabs)
+        }
+      })
+      _.each(systemTabs, (tab) => {
+        if (typesUtils.isNonEmptyArray(tab.paths)) {
+          tab.paths.forEach(path => {
+            router.addRoute('system', { path, component: tab.component })
+          })
+        } else {
+          router.addRoute('system', { path: tab.tabName, component: tab.component })
         }
       })
     }

@@ -33,7 +33,11 @@
         </q-tab>
       </q-tabs>
     </q-header>
-    <router-view />
+    <q-page-container style="height: 100vh">
+      <q-page :class="{ 'full-height': !isLoginPage, 'login-page': isLoginPage, 'flex-stretch': !isLoginPage, 'flex-center': isLoginPage }" class="flex">
+        <router-view />
+      </q-page>
+    </q-page-container>
   </q-layout>
 </template>
 
@@ -66,7 +70,9 @@ export default {
     currentTenantId () {
       return this.$store.getters['tenants/getCurrentTenantId']
     },
-
+    isLoginPage () {
+      return this.$route.name === 'login'
+    },
     showHeader () {
       return this.$store.getters['user/isUserSuperAdmin']
     },

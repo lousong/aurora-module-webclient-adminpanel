@@ -1,67 +1,66 @@
 <template>
-  <q-page-container style="height: 100vh">
-    <q-page class="flex flex-stretch full-height">
-      <q-splitter :after-class="!showTabs ? 'q-splitter__right-panel' : ''" class="full-height full-width" v-model="listSplitterWidth" :limits="[10,30]">
+  <q-splitter :after-class="!showTabs ? 'q-splitter__right-panel' : ''" class="full-height full-width"
+              v-model="listSplitterWidth" :limits="[10,30]">
+    <template v-slot:before>
+      <div class="flex column full-height">
+        <q-toolbar class="col-auto">
+          <q-btn flat color="grey-8" size="lg" icon="delete" :label="countLabel" :disable="checkedIds.length === 0"
+                 @click="askDeleteCheckedUsers">
+            <q-tooltip>
+              {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
+            </q-tooltip>
+          </q-btn>
+          <q-btn flat color="grey-8" size="lg" icon="add" @click="routeCreateUser">
+            <q-tooltip>
+              {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
+            </q-tooltip>
+          </q-btn>
+        </q-toolbar>
+        <StandardList class="col-grow" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
+                      :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
+                      :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_USER'"
+                      :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_USER'"
+                      ref="userList" @route="route" @check="afterCheck"/>
+      </div>
+    </template>
+    <template v-slot:after>
+      <q-splitter after-class="q-splitter__right-panel" v-if="showTabs" class="full-height full-width"
+                  v-model="tabsSplitterWidth" :limits="[10,30]">
         <template v-slot:before>
-          <div class="flex column full-height">
-            <q-toolbar class="col-auto">
-              <q-btn flat color="grey-8" size="lg" icon="delete" :label="countLabel" :disable="checkedIds.length === 0"
-                     @click="askDeleteCheckedUsers">
-                <q-tooltip>
-                  {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
-                </q-tooltip>
-              </q-btn>
-              <q-btn flat color="grey-8" size="lg" icon="add" @click="routeCreateUser">
-                <q-tooltip>
-                  {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
-                </q-tooltip>
-              </q-btn>
-            </q-toolbar>
-            <StandardList class="col-grow" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
-                          :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
-                          :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_USER'"
-                          :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_USER'"
-                          ref="userList" @route="route" @check="afterCheck" />
-          </div>
+          <q-list>
+            <div>
+              <q-item clickable @click="route(selectedUserId)" :class="selectedTab === '' ? 'bg-selected-item' : ''">
+                <q-item-section>
+                  <q-item-label lines="1" v-t="'ADMINPANELWEBCLIENT.LABEL_COMMON_SETTINGS_TAB'"></q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator/>
+            </div>
+            <div v-for="tab in tabs" :key="tab.tabName">
+              <q-item clickable @click="route(selectedUserId, tab.tabName)"
+                      :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
+                <q-item-section>
+                  <q-item-label lines="1">{{ $t(tab.title) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator/>
+            </div>
+            <q-inner-loading style="justify-content: flex-start;" :showing="deleting">
+              <!--        <q-spinner size="50px" color="primary" />-->
+              <q-linear-progress query class="q-mt-sm"/>
+            </q-inner-loading>
+          </q-list>
         </template>
         <template v-slot:after>
-          <q-splitter after-class="q-splitter__right-panel" v-if="showTabs" class="full-height full-width" v-model="tabsSplitterWidth" :limits="[10,30]">
-            <template v-slot:before>
-              <q-list>
-                <div>
-                  <q-item clickable @click="route(selectedUserId)" :class="selectedTab === '' ? 'bg-selected-item' : ''">
-                    <q-item-section>
-                      <q-item-label lines="1" v-t="'ADMINPANELWEBCLIENT.LABEL_COMMON_SETTINGS_TAB'"></q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                </div>
-                <div v-for="tab in tabs" :key="tab.tabName">
-                  <q-item clickable @click="route(selectedUserId, tab.tabName)" :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
-                    <q-item-section>
-                      <q-item-label lines="1">{{ $t(tab.title) }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                </div>
-                <q-inner-loading style="justify-content: flex-start;" :showing="deleting">
-                  <!--        <q-spinner size="50px" color="primary" />-->
-                  <q-linear-progress query class="q-mt-sm" />
-                </q-inner-loading>
-              </q-list>
-            </template>
-            <template v-slot:after>
-              <router-view @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
-                           @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"></router-view>
-            </template>
-          </q-splitter>
-          <router-view v-if="!showTabs" @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
+          <router-view @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
                        @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"></router-view>
         </template>
       </q-splitter>
-    </q-page>
-    <ConfirmDialog ref="confirmDialog" />
-  </q-page-container>
+      <router-view v-if="!showTabs" @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
+                   @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"></router-view>
+    </template>
+    <ConfirmDialog ref="confirmDialog"/>
+  </q-splitter>
 </template>
 
 <script>

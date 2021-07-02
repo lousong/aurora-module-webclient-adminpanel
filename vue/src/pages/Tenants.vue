@@ -1,63 +1,62 @@
 <template>
-  <q-page-container style="height: 100vh">
-    <q-page class="flex flex-stretch full-height">
-      <q-splitter :after-class="!showTabs ? 'q-splitter__right-panel' : ''" class="full-height full-width" v-model="listSplitterWidth" :limits="[10,30]">
+  <q-splitter :after-class="!showTabs ? 'q-splitter__right-panel' : ''" class="full-height full-width"
+              v-model="listSplitterWidth" :limits="[10,30]">
+    <template v-slot:before>
+      <div class="flex column full-height">
+        <q-toolbar class="col-auto">
+          <q-btn flat color="grey-8" size="lg" icon="delete" :label="countLabel" :disable="checkedIds.length === 0"
+                 @click="askDeleteCheckedTenants">
+            <q-tooltip>
+              {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
+            </q-tooltip>
+          </q-btn>
+          <q-btn flat color="grey-8" size="lg" icon="add" @click="routeCreateTenant">
+            <q-tooltip>
+              {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_TENANT') }}
+            </q-tooltip>
+          </q-btn>
+        </q-toolbar>
+        <StandardList class="col-grow" :items="tenantItems" :selectedItem="selectedTenantId" :loading="loadingTenants"
+                      :search="search" :page="page" :pagesCount="pagesCount"
+                      :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_TENANT'"
+                      :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_TENANT'"
+                      ref="tenantList" @route="route" @check="afterCheck"/>
+      </div>
+    </template>
+    <template v-slot:after>
+      <q-splitter after-class="q-splitter__right-panel" v-if="showTabs" class="full-height full-width"
+                  v-model="tabsSplitterWidth" :limits="[10,30]">
         <template v-slot:before>
-          <div class="flex column full-height">
-            <q-toolbar class="col-auto">
-              <q-btn flat color="grey-8" size="lg" icon="delete" :label="countLabel" :disable="checkedIds.length === 0"
-                     @click="askDeleteCheckedTenants">
-                <q-tooltip>
-                  {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
-                </q-tooltip>
-              </q-btn>
-              <q-btn flat color="grey-8" size="lg" icon="add" @click="routeCreateTenant">
-                <q-tooltip>
-                  {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_TENANT') }}
-                </q-tooltip>
-              </q-btn>
-            </q-toolbar>
-            <StandardList class="col-grow" :items="tenantItems" :selectedItem="selectedTenantId" :loading="loadingTenants"
-                          :search="search" :page="page" :pagesCount="pagesCount"
-                          :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_TENANT'"
-                          :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_TENANT'"
-                          ref="tenantList" @route="route" @check="afterCheck" />
-          </div>
+          <q-list>
+            <div>
+              <q-item clickable @click="route(selectedTenantId)" :class="selectedTab === '' ? 'bg-selected-item' : ''">
+                <q-item-section>
+                  <q-item-label lines="1" v-t="'ADMINPANELWEBCLIENT.LABEL_COMMON_SETTINGS_TAB'"></q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator/>
+            </div>
+            <div v-for="tab in tabs" :key="tab.tabName">
+              <q-item clickable @click="route(selectedTenantId, tab.tabName)"
+                      :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
+                <q-item-section>
+                  <q-item-label lines="1">{{ $t(tab.title) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator/>
+            </div>
+          </q-list>
         </template>
         <template v-slot:after>
-          <q-splitter after-class="q-splitter__right-panel" v-if="showTabs" class="full-height full-width" v-model="tabsSplitterWidth" :limits="[10,30]">
-            <template v-slot:before>
-              <q-list>
-                <div>
-                  <q-item clickable @click="route(selectedTenantId)" :class="selectedTab === '' ? 'bg-selected-item' : ''">
-                    <q-item-section>
-                      <q-item-label lines="1" v-t="'ADMINPANELWEBCLIENT.LABEL_COMMON_SETTINGS_TAB'"></q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                </div>
-                <div v-for="tab in tabs" :key="tab.tabName">
-                  <q-item clickable @click="route(selectedTenantId, tab.tabName)" :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
-                    <q-item-section>
-                      <q-item-label lines="1">{{ $t(tab.title) }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                </div>
-              </q-list>
-            </template>
-            <template v-slot:after>
-              <router-view @tenant-created="handleCreateTenant"
-                           @cancel-create="route" @delete-tenant="askDeleteTenant" :deletingIds="deletingIds"></router-view>
-            </template>
-          </q-splitter>
-          <router-view v-if="!showTabs" @tenant-created="handleCreateTenant"
+          <router-view @tenant-created="handleCreateTenant"
                        @cancel-create="route" @delete-tenant="askDeleteTenant" :deletingIds="deletingIds"></router-view>
         </template>
       </q-splitter>
-    </q-page>
-    <ConfirmDialog ref="confirmDialog" />
-  </q-page-container>
+      <router-view v-if="!showTabs" @tenant-created="handleCreateTenant"
+                   @cancel-create="route" @delete-tenant="askDeleteTenant" :deletingIds="deletingIds"></router-view>
+    </template>
+    <ConfirmDialog ref="confirmDialog"/>
+  </q-splitter>
 </template>
 
 <script>

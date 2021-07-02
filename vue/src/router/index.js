@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import routes from './routes'
 
 import core from 'src/core'
+import store from 'src/store'
 
 Vue.use(VueRouter)
 
@@ -27,10 +28,13 @@ export default function (/* { store, ssrContext } */) {
     mode: process.env.VUE_ROUTER_MODE,
     base: process.env.VUE_ROUTER_BASE
   })
-
   Router.beforeEach((to, from, next) => {
     core.init().then(() => {
-      next()
+      if (to.name !== 'login' && !store.getters['user/isAuthorized']) {
+        next({ name: 'login' })
+      } else {
+        next()
+      }
     }, (error) => {
       console.log('core.init reject', error)
     })
