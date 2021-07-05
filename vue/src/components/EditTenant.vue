@@ -31,6 +31,7 @@
               <q-input outlined dense class="bg-white" v-model="tenantSiteName"/>
             </div>
           </div>
+          <component v-bind:is="otherDataComponents" />
         </q-card-section>
       </q-card>
       <div class="q-pa-md text-right">
@@ -61,6 +62,7 @@ import webApi from 'src/utils/web-api'
 import notification from 'src/utils/notification'
 import errors from 'src/utils/errors'
 import cache from 'src/cache'
+import modulesManager from 'src/modules-manager'
 
 export default {
   name: 'EditTenant',
@@ -76,7 +78,8 @@ export default {
       description: '',
       webDomain: '',
       saving: false,
-      loading: false
+      loading: false,
+      otherDataComponents: null
     }
   },
   computed: {
@@ -110,6 +113,7 @@ export default {
     this.loading = false
     this.saving = false
     this.parseRoute()
+    this.otherDataComponents = await modulesManager.getTenantOtherDataComponents()
   },
   watch: {
     $route() {
@@ -152,6 +156,7 @@ export default {
       this.webDomain = tenant.completeData?.WebDomain
     },
     save () {
+      console.log(this.otherDataComponents, 'otherDataComponents')
       if (!this.saving) {
         this.saving = true
         const parameters = {
