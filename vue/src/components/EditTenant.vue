@@ -31,7 +31,7 @@
               <q-input outlined dense class="bg-white" v-model="tenantSiteName"/>
             </div>
           </div>
-          <component v-bind:is="otherDataComponents" />
+          <component v-bind:is="otherDataComponents" @updateParent="getTenantData" />
         </q-card-section>
       </q-card>
       <div class="q-pa-md text-right">
@@ -79,7 +79,9 @@ export default {
       webDomain: '',
       saving: false,
       loading: false,
-      otherDataComponents: null
+      otherDataComponents: null,
+      enableBusinessTenant: false,
+      enableGroupWare: false
     }
   },
   computed: {
@@ -122,6 +124,10 @@ export default {
   },
 
   methods: {
+    getTenantData (val) {
+      this.enableBusinessTenant = val.enableBusinessTenant
+      this.enableGroupWare = val.enableGroupWare
+    },
     parseRoute () {
       if (this.$route.path === '/tenants/create') {
         const tenant = new TenantModel()
@@ -156,7 +162,6 @@ export default {
       this.webDomain = tenant.completeData?.WebDomain
     },
     save () {
-      console.log(this.otherDataComponents, 'otherDataComponents')
       if (!this.saving) {
         this.saving = true
         const parameters = {
@@ -164,6 +169,8 @@ export default {
           Description: this.description,
           WebDomain: this.webDomain,
           SiteName: this.tenantSiteName,
+          'CoreUserGroupsLimits::IsBusiness': this.enableBusinessTenant,
+          'CoreUserGroupsLimits::EnableGroupware': this.enableGroupWare
         }
         const createMode = this.createMode
         if (!createMode) {

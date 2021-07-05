@@ -4,13 +4,15 @@
     <template v-slot:before>
       <div class="flex column full-height">
         <q-toolbar class="col-auto">
-          <q-btn flat color="grey-8" size="lg" icon="delete" :label="countLabel" :disable="checkedIds.length === 0"
+          <q-btn flat color="grey-8" size="lg" :label="countLabel" :disable="checkedIds.length === 0"
                  @click="askDeleteCheckedTenants">
+            <Trash></Trash>
             <q-tooltip>
               {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
             </q-tooltip>
           </q-btn>
-          <q-btn flat color="grey-8" size="lg" icon="add" @click="routeCreateTenant">
+          <q-btn flat color="grey-8" size="lg" @click="routeCreateTenant">
+            <Add></Add>
             <q-tooltip>
               {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_TENANT') }}
             </q-tooltip>
@@ -75,6 +77,8 @@ import ConfirmDialog from 'components/ConfirmDialog'
 import EditTenant from 'components/EditTenant'
 import Empty from 'components/Empty'
 import StandardList from 'components/StandardList'
+import Add from 'src/assets/icons/Add'
+import Trash from 'src/assets/icons/Trash'
 
 export default {
   name: 'Tenants',
@@ -82,6 +86,8 @@ export default {
   components: {
     ConfirmDialog,
     StandardList,
+    Add,
+    Trash
   },
 
   data() {
