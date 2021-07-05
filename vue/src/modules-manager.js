@@ -4,6 +4,7 @@ import typesUtils from 'src/utils/types'
 
 import moduleList from 'src/modules'
 
+let isModulesInitialized = false
 let allModules = null
 let allModulesNames = []
 let pages = null
@@ -65,16 +66,19 @@ export default {
   },
 
   initModules (appData) {
-    _.each(allModules, oModule => {
-      if (_.isFunction(oModule.initSubscriptions)) {
-        oModule.initSubscriptions(appData)
-      }
-    })
-    _.each(allModules, oModule => {
-      if (_.isFunction(oModule.init)) {
-        oModule.init(appData)
-      }
-    })
+    if (!isModulesInitialized) {
+      _.each(allModules, oModule => {
+        if (_.isFunction(oModule.initSubscriptions)) {
+          oModule.initSubscriptions(appData)
+        }
+      })
+      _.each(allModules, oModule => {
+        if (_.isFunction(oModule.init)) {
+          oModule.init(appData)
+        }
+      })
+      isModulesInitialized = true
+    }
   },
 
   getPages () {
