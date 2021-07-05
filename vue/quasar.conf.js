@@ -7,7 +7,6 @@
 // https://v1.quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
 const ESLintPlugin = require('eslint-webpack-plugin')
-// const PrepareLangsWebpackPlugin = require('./webpack-plugins/prepare-langs-webpack-plugin/index.js')
 
 module.exports = function (ctx) {
   return {
@@ -71,9 +70,6 @@ module.exports = function (ctx) {
       // extractCSS: false,
 
       extendWebpack (cfg) {
-        // cfg.plugins.push(
-        //   new PrepareLangsWebpackPlugin()
-        // )
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
       },
@@ -205,18 +201,6 @@ module.exports = function (ctx) {
       nodeIntegration: true,
 
       extendWebpack (cfg) {
-        // console.log('*** cfg ***', cfg)
-        // cfg.plugins.push(
-        //   new MergeJsonWebpackPlugin({
-        //     files: [
-        //       'src/i18n/en-us/lang.json',
-        //       'src/../../BrandingWebclient/vue/i18n/en-us/index.json'
-        //     ],
-        //     output: {
-        //       fileName: 'src/i18n/en-us/index.json'
-        //     }
-        //   })
-        // )
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
       }
