@@ -13,6 +13,7 @@ let userTabs = null
 let tenantTabs = null
 let userMainDataComponent = null
 let userOtherDataComponents = null
+let tenantEditDataComponent = null
 
 function _checkIfModuleAvailable (module, modules, availableModules, depth = 1) {
   if (depth > 4) {
@@ -176,7 +177,19 @@ export default {
     }
     return userOtherDataComponents
   },
-
+  async getTenantOtherDataComponents () {
+    if (tenantEditDataComponent === null) {
+      for (const module of allModules) {
+        if (_.isFunction(module.getTenantOtherDataComponents)) {
+          const component = await module.getTenantOtherDataComponents()
+          if (component?.default) {
+            tenantEditDataComponent = component.default
+          }
+        }
+      }
+    }
+    return tenantEditDataComponent
+  },
   isModuleAvailable (moduleName) {
     return allModulesNames.indexOf(moduleName) !== -1
   },
