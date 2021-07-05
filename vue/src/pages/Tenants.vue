@@ -163,6 +163,18 @@ export default {
         }
       })
     },
+
+    currentTenantId () {
+      if (this.currentTenantId !== this.selectedTenantId) {
+        this.route(this.currentTenantId)
+      }
+    },
+
+    selectedTenantId () {
+      if (this.currentTenantId !== this.selectedTenantId) {
+        this.$store.commit('tenants/setCurrentTenantId', this.selectedTenantId)
+      }
+    },
   },
 
   mounted () {
@@ -204,6 +216,9 @@ export default {
           })) {
             this.route(this.justCreatedId)
             this.justCreatedId = 0
+          }
+          if (this.selectedTenantId === 0) {
+            this.route(this.currentTenantId)
           }
         }
       })

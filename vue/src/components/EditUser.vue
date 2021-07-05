@@ -272,7 +272,7 @@ export default {
         this.user.update(parameters.Role, parameters.WriteSeparateLog, parameters.PublicId)
         this.$emit('user-created', result)
       } else {
-        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UCREATE_ENTITY_USER'))
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_ENTITY_USER'))
       }
     },
 

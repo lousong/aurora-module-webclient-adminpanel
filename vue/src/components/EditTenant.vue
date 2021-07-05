@@ -155,13 +155,15 @@ export default {
       if (!this.saving) {
         this.saving = true
         const parameters = {
-          TenantId: this.currentTenantId,
           Name: this.tenantName,
           Description: this.description,
           WebDomain: this.webDomain,
           SiteName: this.tenantSiteName,
         }
         const createMode = this.createMode
+        if (!createMode) {
+          parameters.TenantId = this.currentTenantId
+        }
         webApi.sendRequest({
           moduleName: 'Core',
           methodName: createMode ? 'CreateTenant' : 'UpdateTenant',
@@ -187,7 +189,7 @@ export default {
         this.populate()
         this.$emit('tenant-created', result)
       } else {
-        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UCREATE_ENTITY_TENANT'))
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_ENTITY_TENANT'))
       }
     },
     handleUpdateResult (result, tenantsParameters) {
