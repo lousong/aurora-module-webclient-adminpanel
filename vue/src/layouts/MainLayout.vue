@@ -100,10 +100,11 @@ export default {
   },
 
   mounted () {
+    this.$store.dispatch('tenants/requestTenants')
+
     if (this.enableMultiTenant) {
       this.$router.addRoute('main', { path: '/tenants', name: 'tenants', component: () => import('pages/Tenants.vue') })
       this.selectedTenantId = this.currentTenantId
-      this.$store.dispatch('tenants/requestTenants')
     }
 
     let allPages = [{
