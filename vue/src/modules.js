@@ -5,6 +5,7 @@ export default {
       await import('src/../../../ActiveServer/vue/manager'),
       await import('src/../../../BrandingWebclient/vue/manager'),
       await import('src/../../../CalendarWebclient/vue/manager'),
+      await import('src/../../../CoreUserGroupsLimits/vue/manager'),
       await import('src/../../../CoreWebclient/vue/manager'),
       await import('src/../../../CpanelIntegrator/vue/manager'),
       await import('src/../../../Dropbox/vue/manager'),
@@ -23,10 +24,9 @@ export default {
       await import('src/../../../MailWebclient/vue/manager'),
       await import('src/../../../MobileSyncWebclient/vue/manager'),
       await import('src/../../../S3Filestorage/vue/manager'),
-      await import('src/../../../StandardResetPassword/vue/manager'),
       await import('src/../../../StandardAuthWebclient/vue/manager'),
-      await import('src/../../../CoreUserGroupsLimits/vue/manager'),
-      // await import('src/../../../TwoFactorAuth/vue/manager'),
+      await import('src/../../../StandardResetPassword/vue/manager'),
+      await import('src/../../../TwoFactorAuth/vue/manager'),
     ]
   },
 }
