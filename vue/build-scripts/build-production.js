@@ -1,4 +1,26 @@
 const fse = require('fs-extra')
+const fs = require('fs-extra')
+
+const removeDir = function(path) {
+  if (fs.existsSync(path)) {
+    const files = fs.readdirSync(path)
+
+    if (files.length > 0) {
+      files.forEach(function(filename) {
+        if (fs.statSync(path + '/' + filename).isDirectory()) {
+          removeDir(path + '/' + filename)
+        } else {
+          fs.unlinkSync(path + '/' + filename)
+        }
+      })
+      fs.rmdirSync(path)
+    } else {
+      fs.rmdirSync(path)
+    }
+  } else {
+    console.log('Directory path not found.')
+  }
+}
 
 require('./prepare-langs')
 require('./prepare-modules')
@@ -14,18 +36,16 @@ if (fse.existsSync(srcDir)) {
 
   const destDir = '../../../adminpanel/'
   if (fse.existsSync(destDir)) {
-    console.log('Please delete the adminpanel directory manually before running this script')
-    // TODO: unlink fails with error "EPERM: operation not permitted, unlink"
-    // For now, the adminpanel directory must be manually deleted before running this script.
-    // fse.unlinkSync(destDir)
-  } else {
-    console.log('Start moving app files to the adminpanel directory...')
-    fse.moveSync(srcDir, destDir)
-    fse.renameSync(destDir + 'index.html', destDir + 'main.html')
-    console.log('The app is now in the adminpanel directory')
+    removeDir(destDir)
+  }
 
-    console.log('Start to create index.php...')
-    const indexPhpContent = `<?php
+  console.log('Start moving app files to the adminpanel directory...')
+  fse.moveSync(srcDir, destDir)
+  fse.renameSync(destDir + 'index.html', destDir + 'main.html')
+  console.log('The app is now in the adminpanel directory')
+
+  console.log('Start to create index.php...')
+  const indexPhpContent = `<?php
 if (isset($_GET['/Api']) || isset($_GET['/Api/']))
 {
 \tinclude_once '../index.php';
@@ -35,9 +55,8 @@ else
 \tinclude_once './main.html';
 }
 `
-    fse.writeFileSync(destDir + 'index.php', indexPhpContent)
-    console.log('Everything is ready now')
-  }
+  fse.writeFileSync(destDir + 'index.php', indexPhpContent)
+  console.log('Everything is ready now')
 } else {
   console.log('An error occurred while building the app')
 }
