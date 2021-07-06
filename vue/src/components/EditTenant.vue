@@ -34,7 +34,7 @@
           <component v-bind:is="otherDataComponents" @updateParent="getTenantData" />
         </q-card-section>
       </q-card>
-      <div class="q-pa-md text-right">
+      <div class="q-py-md text-right">
        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="deleteTenant"
                :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_TENANT')" v-if="!createMode">
         </q-btn>

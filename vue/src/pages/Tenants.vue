@@ -2,7 +2,7 @@
   <q-splitter :after-class="!showTabs ? 'q-splitter__right-panel' : ''" class="full-height full-width"
               v-model="listSplitterWidth" :limits="[10,30]">
     <template v-slot:before>
-      <div class="flex column full-height">
+      <div class="flex column full-height ">
         <q-toolbar class="col-auto">
           <q-btn flat color="grey-8" size="lg" :label="countLabel" :disable="checkedIds.length === 0"
                  @click="askDeleteCheckedTenants">
@@ -18,7 +18,7 @@
             </q-tooltip>
           </q-btn>
         </q-toolbar>
-        <StandardList class="col-grow" :items="tenantItems" :selectedItem="selectedTenantId" :loading="loadingTenants"
+        <StandardList class="col-grow list-border" :items="tenantItems" :selectedItem="selectedTenantId" :loading="loadingTenants"
                       :search="search" :page="page" :pagesCount="pagesCount"
                       :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_TENANT'"
                       :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_TENANT'"
@@ -29,7 +29,7 @@
       <q-splitter after-class="q-splitter__right-panel" v-if="showTabs" class="full-height full-width"
                   v-model="tabsSplitterWidth" :limits="[10,30]">
         <template v-slot:before>
-          <q-list>
+          <q-list >
             <div>
               <q-item clickable @click="route(selectedTenantId)" :class="selectedTab === '' ? 'bg-selected-item' : ''">
                 <q-item-section>

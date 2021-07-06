@@ -46,6 +46,17 @@ button {
   border: 1px solid #2db3a3;
 }
 
+// corrects background for btn-search
+.q-btn-search {
+  height: 38px;
+  border-radius: 0 28px 28px 0;
+}
+
+// adds border-right for StandartList component
+.list-border {
+  border-right: 1px solid rgb(0 0 0 / 11%);
+}
+
 .q-layout__section--marginal {
   background-color: transparent;
   color: #503d68;
