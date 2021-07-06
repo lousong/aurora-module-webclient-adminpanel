@@ -31,6 +31,7 @@
               <q-input outlined dense class="bg-white" v-model="tenantSiteName"/>
             </div>
           </div>
+          <component v-bind:is="otherDataComponents" @updateParent="getTenantData" />
         </q-card-section>
       </q-card>
       <div class="q-pa-md text-right">
@@ -61,6 +62,7 @@ import webApi from 'src/utils/web-api'
 import notification from 'src/utils/notification'
 import errors from 'src/utils/errors'
 import cache from 'src/cache'
+import modulesManager from 'src/modules-manager'
 
 export default {
   name: 'EditTenant',
@@ -76,7 +78,10 @@ export default {
       description: '',
       webDomain: '',
       saving: false,
-      loading: false
+      loading: false,
+      otherDataComponents: null,
+      enableBusinessTenant: false,
+      enableGroupWare: false
     }
   },
   computed: {
@@ -110,6 +115,7 @@ export default {
     this.loading = false
     this.saving = false
     this.parseRoute()
+    this.otherDataComponents = await modulesManager.getTenantOtherDataComponents()
   },
   watch: {
     $route() {
@@ -118,6 +124,10 @@ export default {
   },
 
   methods: {
+    getTenantData (val) {
+      this.enableBusinessTenant = val.enableBusinessTenant
+      this.enableGroupWare = val.enableGroupWare
+    },
     parseRoute () {
       if (this.$route.path === '/tenants/create') {
         const tenant = new TenantModel()
@@ -159,6 +169,8 @@ export default {
           Description: this.description,
           WebDomain: this.webDomain,
           SiteName: this.tenantSiteName,
+          'CoreUserGroupsLimits::IsBusiness': this.enableBusinessTenant,
+          'CoreUserGroupsLimits::EnableGroupware': this.enableGroupWare
         }
         const createMode = this.createMode
         if (!createMode) {

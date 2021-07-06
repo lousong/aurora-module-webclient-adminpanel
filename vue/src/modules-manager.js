@@ -4,6 +4,7 @@ import typesUtils from 'src/utils/types'
 
 import moduleList from 'src/modules'
 
+let isModulesInitialized = false
 let allModules = null
 let allModulesNames = []
 let pages = null
@@ -12,6 +13,7 @@ let userTabs = null
 let tenantTabs = null
 let userMainDataComponent = null
 let userOtherDataComponents = null
+let tenantEditDataComponent = null
 
 function _checkIfModuleAvailable (module, modules, availableModules, depth = 1) {
   if (depth > 4) {
@@ -65,16 +67,19 @@ export default {
   },
 
   initModules (appData) {
-    _.each(allModules, oModule => {
-      if (_.isFunction(oModule.initSubscriptions)) {
-        oModule.initSubscriptions(appData)
-      }
-    })
-    _.each(allModules, oModule => {
-      if (_.isFunction(oModule.init)) {
-        oModule.init(appData)
-      }
-    })
+    if (!isModulesInitialized) {
+      _.each(allModules, oModule => {
+        if (_.isFunction(oModule.initSubscriptions)) {
+          oModule.initSubscriptions(appData)
+        }
+      })
+      _.each(allModules, oModule => {
+        if (_.isFunction(oModule.init)) {
+          oModule.init(appData)
+        }
+      })
+      isModulesInitialized = true
+    }
   },
 
   getPages () {
@@ -172,7 +177,19 @@ export default {
     }
     return userOtherDataComponents
   },
-
+  async getTenantOtherDataComponents () {
+    if (tenantEditDataComponent === null) {
+      for (const module of allModules) {
+        if (_.isFunction(module.getTenantOtherDataComponents)) {
+          const component = await module.getTenantOtherDataComponents()
+          if (component?.default) {
+            tenantEditDataComponent = component.default
+          }
+        }
+      }
+    }
+    return tenantEditDataComponent
+  },
   isModuleAvailable (moduleName) {
     return allModulesNames.indexOf(moduleName) !== -1
   },

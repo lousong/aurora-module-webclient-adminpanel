@@ -54,7 +54,7 @@ class AdminPanelSettings {
 
       this.enableLogging = typesUtils.pBool(coreData.EnableLogging)
       this.enableEventLogging = typesUtils.pBool(coreData.EnableEventLogging)
-      this.loggingLevel = typesUtils.pInt(coreData.LoggingLevel)
+      this.loggingLevel = typesUtils.pInt(coreData.LoggingLevel, 100)
 
       // only for admin
       this.adminHasPassword = typesUtils.pBool(coreData.AdminHasPassword)
