@@ -16,7 +16,7 @@
             <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_PASSWORD'"></div>
             <div class="col-5 ">
               <q-input outlined dense class="bg-white" ref="oldPassword" type="password" v-model="dbPassword"
-                       @keyup.enter="save" />
+                       @keyup.enter="save" autocomplete="new-password" />
             </div>
           </div>
           <div class="row q-mb-md">
@@ -51,7 +51,7 @@
             <div class="col-2 q-my-sm"></div>
             <div class="col-5">
               <q-btn v-if="!creatingTables" unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
-                     :label="$t('ADMINPANELWEBCLIENT.BUTTON_DB_CREATE_TABLES')" @click="createTables">
+                     :label="$t('ADMINPANELWEBCLIENT.BUTTON_DB_CREATE_TABLES')" @click="askCreateTables">
               </q-btn>
               <q-btn v-else unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
                      :label="$t('ADMINPANELWEBCLIENT.BUTTON_DB_CREATING_TABLES')">
@@ -90,6 +90,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <ConfirmDialog ref="confirmDialog" />
     <UnsavedChangesDialog ref="unsavedChangesDialog" />
   </q-scroll-area>
 </template>
@@ -101,14 +102,14 @@ import notification from 'src/utils/notification'
 import errors from 'src/utils/errors'
 import UnsavedChangesDialog from 'components/UnsavedChangesDialog'
 import _ from 'lodash'
+import ConfirmDialog from 'components/ConfirmDialog'
 
-const FAKE_PASS = '     '
+const FAKE_PASS = '      '
 
 export default {
   name: 'DbAdminSettingsView',
   data() {
     return {
-      fakePass: '     ',
       dbPassword: FAKE_PASS,
       savedPass: FAKE_PASS,
       dbLogin: '',
@@ -122,6 +123,7 @@ export default {
     }
   },
   components: {
+    ConfirmDialog,
     UnsavedChangesDialog,
   },
   beforeRouteLeave (to, from, next) {
@@ -154,7 +156,7 @@ export default {
       this.dbHost = data.dbHost
       this.dbPassword = FAKE_PASS
     },
-    save() {
+    save(createTablesAfterSave = false) {
       if (!this.saving) {
         this.saving = true
         const parameters = {
@@ -180,6 +182,9 @@ export default {
             this.savedPass = this.dbPassword
             if (this.storeAuthTokenInDB) {
               this.showDialog = true
+            }
+            if (createTablesAfterSave === true) {
+              this.createTables()
             }
             notification.showReport(this.$t('COREWEBCLIENT.REPORT_SETTINGS_UPDATE_SUCCESS'))
           } else {
@@ -219,12 +224,27 @@ export default {
         })
       }
     },
+    askCreateTables() {
+      if (this.hasChanges() && _.isFunction(this?.$refs?.confirmDialog?.openDialog)) {
+        this.$refs.confirmDialog.openDialog({
+          title: '',
+          message: this.$t('ADMINPANELWEBCLIENT.CONFIRM_SAVE_CHANGES_BEFORE_CREATE_TABLES'),
+          okHandler: () => {
+            this.save(true)
+          }
+        })
+      } else {
+        this.createTables()
+      }
+    },
     createTables() {
       if (!this.creatingTables) {
+        const parameters = {}
         this.creatingTables = true
         webApi.sendRequest({
           moduleName: 'Core',
           methodName: 'CreateTables',
+          parameters,
         }).then(result => {
           this.creatingTables = false
           if (result === true) {
