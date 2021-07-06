@@ -1126,6 +1126,7 @@
   },
   "LOGSVIEWERWEBCLIENT": {
     "LABEL_LOGGING_SETTINGS_TAB": "Logimine",
+    "HEADING_SETTINGS_TAB": "Logimine",
     "LABEL_LOGGING_ENABLE": "Programmi tegevuse info logitakse.",
     "LABEL_LOGGING_VERBOSITY": "Täpsusaste",
     "LABEL_LOGGING_DEBUG": "Kogu tegevus",

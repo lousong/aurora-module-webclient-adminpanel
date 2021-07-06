@@ -1127,6 +1127,7 @@
   },
   "LOGSVIEWERWEBCLIENT": {
     "LABEL_LOGGING_SETTINGS_TAB": "Enregistrement",
+    "HEADING_SETTINGS_TAB": "Enregistrement",
     "LABEL_LOGGING_ENABLE": "Activer la journalisation de débogage",
     "LABEL_LOGGING_VERBOSITY": "Verbosité",
     "LABEL_LOGGING_DEBUG": "Débogage",

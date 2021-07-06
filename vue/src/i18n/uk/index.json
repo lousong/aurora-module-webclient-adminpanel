@@ -1129,6 +1129,7 @@
   },
   "LOGSVIEWERWEBCLIENT": {
     "LABEL_LOGGING_SETTINGS_TAB": "Logging",
+    "HEADING_SETTINGS_TAB": "Logging",
     "LABEL_LOGGING_ENABLE": "Enable debug logging",
     "LABEL_LOGGING_VERBOSITY": "Verbosity",
     "LABEL_LOGGING_DEBUG": "Debug",

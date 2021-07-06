@@ -161,13 +161,17 @@ export default {
     },
 
     tenants () {
-      this.tenantItems = this.tenants.map(tenant => {
-        return {
-          id: tenant.id,
-          title: tenant.name,
-          checked: false,
-        }
-      })
+      if (this.tenants) {
+        this.tenantItems = this.tenants.map(tenant => {
+          return {
+            id: tenant.id,
+            title: tenant.name,
+            checked: false,
+          }
+        })
+      } else {
+        this.tenantItems = []
+      }
     },
 
     currentTenantId () {
