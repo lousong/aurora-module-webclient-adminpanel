@@ -53,6 +53,7 @@
       </q-inner-loading>
     </q-scroll-area>
     <q-list class="col-auto">
+      <q-separator v-if="totalCountText" />
       <q-item>
         <q-item-section>
           <span>{{ totalCountText }}</span>

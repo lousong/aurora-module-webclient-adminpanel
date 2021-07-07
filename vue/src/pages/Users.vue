@@ -3,15 +3,15 @@
               v-model="listSplitterWidth" :limits="[10,30]">
     <template v-slot:before>
       <div class="flex column full-height">
-        <q-toolbar class="col-auto">
-          <q-btn flat color="grey-8" size="lg" :label="countLabel" :disable="checkedIds.length === 0"
+        <q-toolbar class="col-auto q-my-sm">
+          <q-btn flat color="grey-8" size="mg" :label="countLabel" :disable="checkedIds.length === 0"
                  @click="askDeleteCheckedUsers">
             <Trash></Trash>
             <q-tooltip>
               {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
             </q-tooltip>
           </q-btn>
-          <q-btn flat color="grey-8" size="lg" @click="routeCreateUser">
+          <q-btn flat color="grey-8" size="mg" @click="routeCreateUser">
             <Add></Add>
             <q-tooltip>
               {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
