@@ -27,6 +27,7 @@ export default {
       await import('src/../../../StandardAuthWebclient/vue/manager'),
       await import('src/../../../StandardResetPassword/vue/manager'),
       await import('src/../../../TwoFactorAuth/vue/manager'),
+      await import('src/../../../MtaConnectorWebclient/vue/manager'),
     ]
   },
 }
