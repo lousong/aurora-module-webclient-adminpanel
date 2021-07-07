@@ -1,22 +1,23 @@
 <template>
     <div class="q-pa-md">
       <div class="q-gutter-y-md column" style="width: 240px">
-        <q-input bg-color="white" standout="bg-yellow-2" outlined dense v-model="login"
+        <Logo class="logo"/>
+        <q-input bg-color="white" standout="bg-yellow-2" outlined dense v-model="login" class="login"
                  :placeholder="$t('COREWEBCLIENT.LABEL_LOGIN')" @keyup.enter="proceedLogin">
-          <template v-slot:prepend>
+          <template v-slot:prepend class="login">
             <q-icon name="person"/>
           </template>
         </q-input>
 
-        <q-input class="q-mt-none" bg-color="white" standout="bg-yellow-2" outlined dense v-model="password"
+        <q-input class="q-mt-none"  bg-color="white" standout="bg-yellow-2" outlined dense v-model="password"
                  type="password" :placeholder="$t('COREWEBCLIENT.LABEL_PASSWORD')" @keyup.enter="proceedLogin">
           <template v-slot:prepend>
             <q-icon name="lock"/>
           </template>
         </q-input>
 
-        <q-btn unelevated no-caps outline bg-color="primary" class="q-px-sm bg-primary" :ripple="false"
-               color="white" :loading="loading" @click="proceedLogin">
+        <q-btn unelevated no-caps outline bg-color="primary" color="white" class="q-px-sm bg-primary" :ripple="false"
+                :loading="loading" @click="proceedLogin">
           {{ $t('COREWEBCLIENT.ACTION_SIGN_IN') }}
           <template v-slot:loading>
             {{ $t('COREWEBCLIENT.ACTION_SIGN_IN_IN_PROGRESS') }}
@@ -35,8 +36,13 @@ import errors from 'src/utils/errors'
 import notification from 'src/utils/notification'
 import webApi from 'src/utils/web-api'
 
+import Logo from 'assets/icons/Logo'
+
 export default {
   name: 'Login',
+  components: {
+    Logo
+  },
   data() {
     return {
       loading: false,
@@ -72,3 +78,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.logo {
+  margin: 0 auto;
+}
+
+.login {
+  margin-bottom: 4px;
+}
+</style>

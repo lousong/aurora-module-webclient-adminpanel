@@ -5,16 +5,20 @@ body {
 .q-header .q-tab__content {
   min-width: auto;
 }
+
 .q-tab--active .tab-label {
   font-weight: bold;
 }
+
 .q-tab--active.q-tab--logout .tab-label {
   font-weight: normal;
 }
+
 // removes hover effect from tabs
 .q-tab .q-focus-helper {
   display: none;
 }
+
 .q-splitter__before, .q-splitter__right-panel {
   background-color: white;
   border-radius: 5px;
@@ -70,6 +74,16 @@ button.no-hover .q-focus-helper {
 // makes background white correctly for rounded inputs
 .q-input.q-field--rounded .q-field__control {
   background: white;
+}
+
+// removes styles for Login inputs
+.q-field__control {
+  pointer-events:none;
+  color: transparent;
+}
+
+.q-btn--outline .q-btn__wrapper:before {
+  border: 0;
 }
 
 //makes padding right correctly for scroll on inputs
