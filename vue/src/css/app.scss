@@ -29,6 +29,10 @@ body {
   width: 0px !important;
 }
 
+.q-checkbox__inner--falsy .q-checkbox__bg {
+  background-color: #fff;
+}
+
 .q-scrollarea__thumb {
   right: 4px;
   border-radius: 5px;

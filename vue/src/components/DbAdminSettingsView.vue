@@ -9,27 +9,27 @@
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_LOGIN'"></div>
             <div class="col-5">
-              <q-input outlined dense class="bg-white" v-model="dbLogin" @keyup.enter="save" />
+              <q-input outlined dense class="bg-white input" border-radius v-model="dbLogin" @keyup.enter="save" />
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_PASSWORD'"></div>
             <div class="col-5 ">
-              <q-input outlined dense class="bg-white" ref="oldPassword" type="password" v-model="dbPassword"
+              <q-input outlined dense class="bg-white input" ref="oldPassword" type="password" v-model="dbPassword"
                        @keyup.enter="save" autocomplete="new-password" />
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DN_NAME'"></div>
             <div class="col-5 ">
-              <q-input outlined dense class="bg-white" ref="newPassword" v-model="dbName"
+              <q-input outlined dense class="bg-white input" ref="newPassword" v-model="dbName"
                        @keyup.enter="save" />
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_HOST'"></div>
             <div class="col-5 ">
-              <q-input outlined dense class="bg-white" ref="newPassword" v-model="dbHost"
+              <q-input outlined dense class="bg-white input" ref="newPassword" v-model="dbHost"
                        @keyup.enter="save" />
             </div>
           </div>
@@ -282,5 +282,7 @@ export default {
 </script>
 
 <style scoped>
-
+.input {
+  border-radius: 6px;
+}
 </style>
