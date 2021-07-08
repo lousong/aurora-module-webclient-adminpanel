@@ -9,7 +9,7 @@
           </template>
         </q-input>
 
-        <q-input class="q-mt-none"  bg-color="white" standout="bg-yellow-2" outlined dense v-model="password"
+        <q-input class="q-mt-none" bg-color="white" standout="bg-yellow-2" outlined dense v-model="password"
                  type="password" :placeholder="$t('COREWEBCLIENT.LABEL_PASSWORD')" @keyup.enter="proceedLogin">
           <template v-slot:prepend>
             <q-icon name="lock"/>
