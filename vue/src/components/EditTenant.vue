@@ -10,25 +10,25 @@
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_PRODUCT_NAME'"></div>
             <div class="col-5">
-              <q-input outlined dense class="bg-white" v-model="tenantName"/>
+              <q-input outlined dense bg-color="white" v-model="tenantName"/>
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DESCRIPTION'"></div>
             <div class="col-5">
-              <q-input outlined dense class="bg-white" v-model="description"/>
+              <q-input outlined dense bg-color="white" v-model="description"/>
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_WEB_DOMAIN'"></div>
             <div class="col-5">
-              <q-input outlined dense class="bg-white" v-model="webDomain"/>
+              <q-input outlined dense bg-color="white" v-model="webDomain"/>
             </div>
           </div>
           <div class="row">
             <div class="col-2 q-mt-sm" v-t="'COREWEBCLIENT.LABEL_SITENAME'"></div>
             <div class="col-5">
-              <q-input outlined dense class="bg-white" v-model="tenantSiteName"/>
+              <q-input outlined dense bg-color="white" v-model="tenantSiteName"/>
             </div>
           </div>
           <component v-bind:is="otherDataComponents" @updateParent="getTenantData" />
