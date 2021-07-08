@@ -80,19 +80,13 @@ button.no-hover .q-focus-helper {
   background: white;
 }
 
-// removes styles for Login inputs
+// removes border-color for Login inputs
 .q-field__control {
-  pointer-events:none;
   color: transparent;
 }
 
 .q-btn--outline .q-btn__wrapper:before {
   border: 0;
-}
-
-//makes padding right correctly for scroll on inputs
-.q-field--outlined .q-field__control {
-  padding-right: 0;
 }
 
 $selected-item: #78b8f0;
