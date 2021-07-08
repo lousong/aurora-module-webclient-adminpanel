@@ -2,7 +2,7 @@
   <div class="row q-mb-md">
     <div class="col-1 q-my-sm" v-t="'COREWEBCLIENT.LABEL_EMAIL'"></div>
     <div class="col-5">
-      <q-input outlined dense class="bg-white" v-model="publicId" ref="publicId" :disable="!createMode"
+      <q-input outlined dense bg-color="white" v-model="publicId" ref="publicId" :disable="!createMode"
                @keyup.enter="save" />
     </div>
   </div>
