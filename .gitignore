@@ -2,3 +2,5 @@
 /vue/.quasar
 /vue/src/i18n/**/
 /vue/src/i18n/index.js
+/vue/src/modules.js
+/vue/src/store/index.js
