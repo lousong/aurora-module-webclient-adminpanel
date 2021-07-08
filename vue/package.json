@@ -9,6 +9,7 @@
     "prepare-modules": "node build-scripts/prepare-modules.js",
     "prepare-stores": "node build-scripts/prepare-stores.js",
     "prepare-langs": "node build-scripts/prepare-langs.js",
+    "prepare-files": "node build-scripts/prepare-files.js",
     "build-production": "node build-scripts/build-production.js",
     "lint": "eslint --ext .js,.vue ./",
     "test": "echo \"No test specified\" && exit 0"

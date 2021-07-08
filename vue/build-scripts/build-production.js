@@ -22,9 +22,7 @@ const removeDir = function(path) {
   }
 }
 
-require('./prepare-langs')
-require('./prepare-modules')
-require('./prepare-stores')
+require('./prepare-files')
 
 console.log('Start building the app...')
 const execSync = require('child_process').execSync
