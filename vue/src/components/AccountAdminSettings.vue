@@ -36,7 +36,7 @@
           <div class="row">
             <div class="col-2 q-my-sm" v-t="'COREWEBCLIENT.LABEL_LANGUAGE'"></div>
             <div class="col-5">
-              <q-select outlined dense class="bg-white" bg-color="white" v-model="language"
+              <q-select outlined dense bg-color="white" v-model="language"
                         emit-value map-options :options="languageOptions" option-label="name" />
             </div>
           </div>
