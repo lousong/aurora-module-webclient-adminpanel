@@ -59,7 +59,7 @@ export default {
             eventBus.$emit('webApi::Response', { moduleName, methodName, parameters, response: response.data })
             const result = response.data.Result
             if (!result && (response.data.ErrorCode || response.data.ErrorMessage || response.data.SubscriptionsResult)) {
-              if (methodName !== 'Logout' && errors.isAuthError(response.data.ErrorCode)) {
+              if (store.getters['user/isUserSuperAdmin'] && errors.isAuthError(response.data.ErrorCode) && methodName !== 'Logout') {
                 core.logout()
               } else {
                 reject(response.data)
