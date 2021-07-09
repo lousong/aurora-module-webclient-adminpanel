@@ -54,6 +54,11 @@ button {
   border: 1px solid #2db3a3;
 }
 
+// reverts uppercase text for all buttons with dropdowns
+.q-btn-dropdown {
+  text-transform: initial;
+}
+
 // corrects background for btn-search
 .q-btn-search {
   height: 38px;

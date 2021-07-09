@@ -8,17 +8,16 @@
         <q-route-tab to="/tenants" :ripple="false" class="q-px-none" v-if="enableMultiTenant">
           <div class="q-px-md tab-label">
             <span v-t="'ADMINPANELWEBCLIENT.HEADING_TENANTS_SETTINGS_TABNAME'"></span>
-            <span v-if="tenants.length > 1">:</span>
+            <span v-if="tenantOptions.length > 1">:</span>
           </div>
         </q-route-tab>
         <q-btn-dropdown no-icon-animation cover auto-close stretch flat dense :ripple="false" @click.stop
-                        v-if="enableMultiTenant && tenants.length > 1" :label="selectedTenantName"
-                        class="q-px-none text-capitalize text-weight-regular no-hover"
-                        style="margin-bottom: -1px; margin-left: -6px;">
-          <q-list class="non-selectable" v-for="tenant in tenants" :key="tenant.id">
+                        v-if="enableMultiTenant && tenantOptions.length > 1" :label="selectedTenantName"
+                        class="q-px-none text-weight-regular no-hover tenants-dropdown">
+          <q-list class="non-selectable" v-for="tenant in tenantOptions" :key="tenant.id">
             <q-item clickable @click="changeTenant(tenant.id)">
               <q-item-section>{{tenant.name}}</q-item-section>
-              <q-item-section avatar v-show="tenant.id === 1">
+              <q-item-section avatar v-show="tenant.id === selectedTenantId">
                 <q-icon name="arrow_drop_up" />
               </q-item-section>
             </q-item>
@@ -70,25 +69,34 @@ export default {
     currentTenantId () {
       return this.$store.getters['tenants/getCurrentTenantId']
     },
+
     isLoginPage () {
       return this.$route.name === 'login'
     },
+
     showHeader () {
       return this.$store.getters['user/isUserSuperAdmin']
     },
 
-    tenants () {
+    tenantOptions () {
       const tenants = typesUtils.pArray(this.$store.getters['tenants/getTenants'])
-      return tenants.map(tenant => {
-        return {
+      const options = []
+      tenants.forEach(tenant => {
+        const option = {
           id: tenant.id,
           name: tenant.name,
         }
+        if (tenant.id === this.currentTenantId) {
+          options.unshift(option)
+        } else {
+          options.push(option)
+        }
       })
+      return options
     },
 
     selectedTenantName () {
-      const currentTenant = this.tenants.find(tenant => tenant.id === this.selectedTenantId)
+      const currentTenant = this.tenantOptions.find(tenant => tenant.id === this.selectedTenantId)
       return currentTenant ? currentTenant.name : ''
     },
   },
@@ -143,3 +151,10 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.tenants-dropdown {
+  margin-left: -6px;
+  margin-bottom: -1px;
+}
+</style>
