@@ -99,6 +99,12 @@ button.no-hover .q-focus-helper {
   border-radius: 4px 4px 0 0;
 }
 
+// makes style for scroll in Licensing textarea
+.textarea-licensing .q-field--outlined .q-field__control {
+  padding: 0 1px 0 6px;
+  margin: -1px 0;
+}
+
 $selected-item: #78b8f0;
 .bg-selected-item {
   background-color: $selected-item;
