@@ -18,7 +18,7 @@
             </q-tooltip>
           </q-btn>
         </q-toolbar>
-        <StandardList class="col-grow" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
+        <StandardList class="col-grow list-border" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
                       :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
                       :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_USER'"
                       :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_USER'"
