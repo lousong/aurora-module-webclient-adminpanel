@@ -6,7 +6,7 @@
         <q-list>
           <div v-for="item in tabs" :key="item.tabName">
             <q-item clickable @click="changeTab(item.tabName)"
-                    :class="currentRouteName === item.tabName ? 'bg-selected-item text-white' : ''"
+                    :class="currentTabName === item.tabName ? 'bg-selected-item text-white' : ''"
             >
               <q-item-section>
                 <q-item-label lines="1">{{ $t(item.title) }}</q-item-label>
@@ -40,13 +40,13 @@ export default {
 
       splitterWidth: 20,
 
-      currentRouteName: '',
+      currentTabName: '',
     }
   },
 
   watch: {
     $route(to, from) {
-      this.currentRouteName = this.getRouteName(to.fullPath)
+      this.setCurrentTabName()
     },
     tabs () {
       // executed in "watch" to avoid errors, if "mounted" an error occurs
@@ -66,8 +66,14 @@ export default {
     }
   },
   methods: {
-    getRouteName (fullPath) {
-      return fullPath.split('/')[fullPath.split('/').length - 1]
+    setCurrentTabName () {
+      const fullPath = this.$route.fullPath
+      const pathParts = fullPath.split('/')
+      this.currentTabName = pathParts.length > 2 ? pathParts[2] : ''
+      // Third element in the path represents current tab name. Paths examples:
+      // /system/licensing
+      // /system/mail-servers
+      // /system/mail-servers/id/1
     },
     changeTab (tabName) {
       const currentPath = this.$router.currentRoute && this.$router.currentRoute.path ? this.$router.currentRoute.path : ''
@@ -75,7 +81,7 @@ export default {
       if (currentPath !== newPath) {
         this.$router.push(newPath)
       } else {
-        this.currentRouteName = tabName
+        this.setCurrentTabName()
       }
     },
   },
