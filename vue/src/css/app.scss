@@ -89,6 +89,16 @@ button.no-hover .q-focus-helper {
   border: 0;
 }
 
+// makes special border-radius fo Login inputs
+.login-password.q-field--outlined .q-field__control {
+   border-radius: 0 0 4px 4px;
+}
+
+// makes special border-radius fo Login inputs
+.login-name.q-field--outlined .q-field__control {
+  border-radius: 4px 4px 0 0;
+}
+
 $selected-item: #78b8f0;
 .bg-selected-item {
   background-color: $selected-item;

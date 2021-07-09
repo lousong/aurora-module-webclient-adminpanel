@@ -2,14 +2,14 @@
     <div class="q-pa-md">
       <div class="q-gutter-y-md column" style="width: 240px">
         <Logo class="logo"/>
-        <q-input bg-color="white" standout="bg-yellow-2" outlined dense v-model="login" class="login"
+        <q-input class="login-name" bg-color="white" standout="bg-yellow-2" outlined dense v-model="login"
                  :placeholder="$t('COREWEBCLIENT.LABEL_LOGIN')" @keyup.enter="proceedLogin">
-          <template v-slot:prepend class="login">
+          <template v-slot:prepend>
             <q-icon name="person"/>
           </template>
         </q-input>
 
-        <q-input class="q-mt-none" bg-color="white" standout="bg-yellow-2" outlined dense v-model="password"
+        <q-input class="q-mt-none login-password"  bg-color="white" standout="bg-yellow-2" outlined dense v-model="password"
                  type="password" :placeholder="$t('COREWEBCLIENT.LABEL_PASSWORD')" @keyup.enter="proceedLogin">
           <template v-slot:prepend>
             <q-icon name="lock"/>
@@ -69,7 +69,6 @@ export default {
             notification.showError(this.$t('COREWEBCLIENT.ERROR_PASS_INCORRECT'))
           }
         }, response => {
-          console.log('res')
           this.loading = false
           notification.showError(errors.getTextFromResponse(response, this.$t('COREWEBCLIENT.ERROR_PASS_INCORRECT')))
         })
@@ -82,9 +81,5 @@ export default {
 <style scoped>
 .logo {
   margin: 0 auto;
-}
-
-.login {
-  margin-bottom: 2px;
 }
 </style>
