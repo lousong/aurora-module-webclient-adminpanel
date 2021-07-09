@@ -48,8 +48,7 @@
         </div>
       </q-list>
       <q-inner-loading style="justify-content: flex-start; min-height: 50px;" :showing="loading">
-<!--        <q-spinner size="50px" color="primary" />-->
-        <q-linear-progress query class="q-mt-sm" />
+        <q-linear-progress query />
       </q-inner-loading>
     </q-scroll-area>
     <q-list class="col-auto">

@@ -47,8 +47,7 @@
       </div>
     </div>
     <q-inner-loading style="justify-content: flex-start;" :showing="loading || deleting || saving">
-<!--      <q-spinner size="50px" color="primary" />-->
-      <q-linear-progress query class="q-mt-sm" />
+      <q-linear-progress query />
     </q-inner-loading>
   </q-scroll-area>
 </template>

@@ -48,8 +48,7 @@
               <q-separator/>
             </div>
             <q-inner-loading style="justify-content: flex-start;" :showing="deleting">
-              <!--        <q-spinner size="50px" color="primary" />-->
-              <q-linear-progress query class="q-mt-sm"/>
+              <q-linear-progress query/>
             </q-inner-loading>
           </q-list>
         </template>
@@ -150,6 +149,9 @@ export default {
 
   watch: {
     currentTenantId () {
+      if (this.$route.path !== '/users') {
+        this.route()
+      }
       this.populate()
     },
 
