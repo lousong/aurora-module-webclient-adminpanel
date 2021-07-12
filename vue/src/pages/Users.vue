@@ -285,7 +285,7 @@ export default {
       const filterRoutes = _.map(this.currentFiltersRoutes, (routeValue, routeName) => {
         return routeName + '/' + routeValue
       })
-      return '/' + filterRoutes.join('/')
+      return filterRoutes.length > 0 ? '/' + filterRoutes.join('/') : ''
     },
 
     routeFilter (data) {
