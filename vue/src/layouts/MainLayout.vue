@@ -131,7 +131,7 @@ export default {
       })
     }
 
-    const pagesOrder = settings.getEntitiesOrder()
+    const pagesOrder = settings.getTabsBarOrder()
     allPages = _.sortBy(allPages, (page) => {
       const index = _.indexOf(pagesOrder, page.pageName)
       return index !== -1 ? index : pagesOrder.length

@@ -218,8 +218,18 @@ export default {
     return settings?.tabsOrder || []
   },
 
-  getEntitiesOrder () {
-    return settings.entitiesOrder
+  getTabsBarOrder () {
+    const order = settings.entitiesOrder.map(entityName => {
+      switch (entityName) {
+        case 'Tenant': return 'tenants'
+        case 'User': return 'users'
+        case 'Group': return 'groups'
+        case 'Domain': return 'domains'
+        default: return entityName
+      }
+    })
+    order.unshift('system')
+    return order
   },
 
   getEntitiesPerPage () {
