@@ -7,12 +7,16 @@ import moduleList from 'src/modules'
 let allModules = null
 let allModulesNames = []
 let pages = null
+
 let systemTabs = null
-let userTabs = null
+
 let tenantTabs = null
+let tenantEditDataComponent = null
+
+let userTabs = null
 let userMainDataComponent = null
 let userOtherDataComponents = null
-let tenantEditDataComponent = null
+let userFilters = null
 
 function _checkIfModuleAvailable (module, modules, availableModules, depth = 1) {
   if (depth > 4) {
@@ -78,6 +82,10 @@ export default {
     })
   },
 
+  isModuleAvailable (moduleName) {
+    return allModulesNames.indexOf(moduleName) !== -1
+  },
+
   getPages () {
     if (pages === null && allModules !== null) {
       pages = []
@@ -113,19 +121,6 @@ export default {
     return systemTabs === null ? [] : systemTabs
   },
 
-  getAdminUserTabs () {
-    if (userTabs === null && allModules !== null) {
-      userTabs = []
-      _.each(allModules, oModule => {
-        const aModuleSystemTabs = _.isFunction(oModule.getAdminUserTabs) && oModule.getAdminUserTabs()
-        if (_.isArray(aModuleSystemTabs)) {
-          userTabs = userTabs.concat(aModuleSystemTabs)
-        }
-      })
-    }
-    return userTabs === null ? [] : userTabs
-  },
-
   getAdminTenantTabs () {
     if (tenantTabs === null && allModules !== null) {
       tenantTabs = []
@@ -137,6 +132,33 @@ export default {
       })
     }
     return tenantTabs === null ? [] : tenantTabs
+  },
+
+  async getTenantOtherDataComponents () {
+    if (tenantEditDataComponent === null) {
+      for (const module of allModules) {
+        if (_.isFunction(module.getTenantOtherDataComponents)) {
+          const component = await module.getTenantOtherDataComponents()
+          if (component?.default) {
+            tenantEditDataComponent = component.default
+          }
+        }
+      }
+    }
+    return tenantEditDataComponent
+  },
+
+  getAdminUserTabs () {
+    if (userTabs === null && allModules !== null) {
+      userTabs = []
+      _.each(allModules, oModule => {
+        const aModuleSystemTabs = _.isFunction(oModule.getAdminUserTabs) && oModule.getAdminUserTabs()
+        if (_.isArray(aModuleSystemTabs)) {
+          userTabs = userTabs.concat(aModuleSystemTabs)
+        }
+      })
+    }
+    return userTabs === null ? [] : userTabs
   },
 
   async getUserMainDataComponent () {
@@ -173,20 +195,19 @@ export default {
     }
     return userOtherDataComponents
   },
-  async getTenantOtherDataComponents () {
-    if (tenantEditDataComponent === null) {
+
+  async getFiltersForUsers () {
+    if (userFilters === null && allModules !== null) {
+      userFilters = []
       for (const module of allModules) {
-        if (_.isFunction(module.getTenantOtherDataComponents)) {
-          const component = await module.getTenantOtherDataComponents()
-          if (component?.default) {
-            tenantEditDataComponent = component.default
+        if (_.isFunction(module.getFiltersForUsers)) {
+          const filters = await module.getFiltersForUsers()
+          if (_.isArray(filters)) {
+            userFilters = userFilters.concat(filters.map(filter => filter.default))
           }
         }
       }
     }
-    return tenantEditDataComponent
-  },
-  isModuleAvailable (moduleName) {
-    return allModulesNames.indexOf(moduleName) !== -1
+    return userFilters === null ? [] : userFilters
   },
 }

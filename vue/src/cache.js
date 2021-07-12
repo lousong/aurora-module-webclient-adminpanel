@@ -12,31 +12,32 @@ let users = []
 let tenants = []
 
 export default {
-  getUsers (tenantId, search, page, limit) {
+  getUsers (tenantId, filtersGetParameters = {}, search = '', page = 1, limit = 10) {
     return new Promise((resolve, reject) => {
       users = []
+      const parameters = _.extend({
+        TenantId: tenantId,
+        Search: search,
+        Offset: limit * (page - 1),
+        Limit: limit,
+      }, filtersGetParameters)
       webApi.sendRequest({
         moduleName: 'Core',
         methodName: 'GetUsers',
-        parameters: {
-          TenantId: tenantId,
-          Search: search,
-          Offset: limit * (page - 1),
-          Limit: limit,
-        },
+        parameters,
       }).then(result => {
         if (_.isArray(result?.Items)) {
           users = _.map(result.Items, function (serverData) {
             return new UserModel(tenantId, serverData)
           })
           const totalCount = typesUtils.pInt(result.Count)
-          resolve({ users, totalCount, search, page, limit })
+          resolve({ users, totalCount, tenantId, filtersGetParameters, search, page, limit })
         } else {
-          resolve({ users, totalCount: 0, search, page, limit })
+          resolve({ users, totalCount: 0, tenantId, filtersGetParameters, search, page, limit })
         }
       }, response => {
         notification.showError(errors.getTextFromResponse(response))
-        resolve({ users, totalCount: 0, search, page, limit })
+        resolve({ users, totalCount: 0, tenantId, filtersGetParameters, search, page, limit })
       })
     })
   },
