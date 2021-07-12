@@ -17,6 +17,8 @@
               {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
             </q-tooltip>
           </q-btn>
+          <component v-for="filter in filters" :key="filter.name" v-bind:is="filter" @filter-selected="routeFilter"
+                     @filter-filled-up="populateFiltersGetParameters"/>
         </q-toolbar>
         <StandardList class="col-grow list-border" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
                       :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
@@ -117,6 +119,10 @@ export default {
 
       listSplitterWidth: 20,
       tabsSplitterWidth: 20,
+
+      filters: [],
+      currentFiltersRoutes: {},
+      filtersGetParameters: {},
     }
   },
 
@@ -190,48 +196,101 @@ export default {
     },
   },
 
-  mounted () {
-    this.$router.addRoute('users', { path: 'id/:id', component: EditUser })
-    this.$router.addRoute('users', { path: 'create', component: EditUser })
-    this.$router.addRoute('users', { path: 'search/:search', component: Empty })
-    this.$router.addRoute('users', { path: 'search/:search/id/:id', component: EditUser })
-    this.$router.addRoute('users', { path: 'page/:page', component: Empty })
-    this.$router.addRoute('users', { path: 'page/:page/id/:id', component: EditUser })
-    this.$router.addRoute('users', { path: 'search/:search/page/:page', component: Empty })
-    this.$router.addRoute('users', { path: 'search/:search/page/:page/id/:id', component: EditUser })
+  async mounted () {
+    this.addRoutes()
+    await this.populateFilters()
     this.populateTabs()
     this.populate()
   },
 
   methods: {
+    addRoutes (filterRoutePart = '') {
+      if (filterRoutePart === '') {
+        this.$router.addRoute('users', { path: 'create', component: EditUser })
+      }
+      this.$router.addRoute('users', { path: filterRoutePart + 'id/:id', component: EditUser })
+      this.$router.addRoute('users', { path: filterRoutePart + 'search/:search', component: Empty })
+      this.$router.addRoute('users', { path: filterRoutePart + 'search/:search/id/:id', component: EditUser })
+      this.$router.addRoute('users', { path: filterRoutePart + 'page/:page', component: Empty })
+      this.$router.addRoute('users', { path: filterRoutePart + 'page/:page/id/:id', component: EditUser })
+      this.$router.addRoute('users', { path: filterRoutePart + 'search/:search/page/:page', component: Empty })
+      this.$router.addRoute('users', { path: filterRoutePart + 'search/:search/page/:page/id/:id', component: EditUser })
+    },
+
+    async populateFilters () {
+      this.filters = await modulesManager.getFiltersForUsers()
+      this.filters.forEach(filterComponent => {
+        this.$router.addRoute('users', { path: filterComponent.filterRoute, component: Empty })
+        this.addRoutes(filterComponent.filterRoute + '/')
+      })
+      if (this.filters.length > 1) {
+        this.filters.forEach(filterComponent1 => {
+          this.filters.forEach(filterComponent2 => {
+            const path = filterComponent1.filterRoute + '/' + filterComponent2.filterRoute
+            this.$router.addRoute('users', { path, component: Empty })
+            this.addRoutes(path + '/')
+          })
+        })
+      }
+      // TODO: if there are more than 2 filters
+    },
+
     populateTabs () {
-      this.tabs = typesUtils.pArray(modulesManager.getAdminUserTabs())
+      const tabsRoutes = []
+      this.tabs = modulesManager.getAdminUserTabs()
       _.each(this.tabs, (tab) => {
         if (typesUtils.isNonEmptyArray(tab.paths)) {
           tab.paths.forEach(path => {
             this.$router.addRoute('users', { path, component: tab.component })
+            tabsRoutes.push({ path, component: tab.component })
           })
         } else {
           this.$router.addRoute('users', { path: tab.tabName, component: tab.component })
+          tabsRoutes.push({ path: tab.tabName, component: tab.component })
         }
       })
+      tabsRoutes.forEach(tabRoute => {
+        this.filters.forEach(filterComponent => {
+          this.$router.addRoute('users', { path: filterComponent.filterRoute + '/' + tabRoute.path, component: tabRoute.component })
+        })
+      })
+    },
+
+    populateFiltersGetParameters (filterGetParameter) {
+      this.filtersGetParameters = _.extend(this.filtersGetParameters, filterGetParameter)
+      this.populate()
     },
 
     populate () {
       this.loadingUsers = true
-      cache.getUsers(this.currentTenantId, this.search, this.page, this.limit).then(({ users, totalCount, tenantId, page, search }) => {
-        if (page === this.page && search === this.search) {
-          this.users = users
-          this.totalCount = totalCount
-          this.loadingUsers = false
-          if (this.justCreatedId && users.find(user => {
-            return user.id === this.justCreatedId
-          })) {
-            this.route(this.justCreatedId)
-            this.justCreatedId = 0
+      cache.getUsers(this.currentTenantId, this.filtersGetParameters, this.search, this.page, this.limit)
+        .then(({ users, totalCount, tenantId, filtersGetParameters = {}, page = 1, search = '' }) => {
+          if (tenantId === this.currentTenantId && _.isEqual(filtersGetParameters, this.filtersGetParameters) &&
+            page === this.page && search === this.search
+          ) {
+            this.users = users
+            this.totalCount = totalCount
+            this.loadingUsers = false
+            if (this.justCreatedId && users.find(user => {
+              return user.id === this.justCreatedId
+            })) {
+              this.route(this.justCreatedId)
+              this.justCreatedId = 0
+            }
           }
-        }
+        })
+    },
+
+    getFiltersRoute () {
+      const filterRoutes = _.map(this.currentFiltersRoutes, (routeValue, routeName) => {
+        return routeName + '/' + routeValue
       })
+      return filterRoutes.length > 0 ? '/' + filterRoutes.join('/') : ''
+    },
+
+    routeFilter (data) {
+      this.currentFiltersRoutes[data.routeName] = data.routeValue
+      this.route()
     },
 
     route (userId = 0, tabName = '') {
@@ -246,7 +305,7 @@ export default {
 
       const idRoute = userId > 0 ? `/id/${userId}` : ''
       const tabRoute = tabName !== '' ? `/${tabName}` : ''
-      const path = '/users' + searchRoute + pageRoute + idRoute + tabRoute
+      const path = '/users' + this.getFiltersRoute() + searchRoute + pageRoute + idRoute + tabRoute
       if (path !== this.$route.path) {
         this.$router.push(path)
       }
