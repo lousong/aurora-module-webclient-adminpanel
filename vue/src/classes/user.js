@@ -11,6 +11,7 @@ class UserModel {
     this.name = typesUtils.pString(serverData?.Name)
     this.publicId = typesUtils.pString(serverData?.PublicId)
     this.uuid = typesUtils.pString(serverData?.UUID)
+    this.quotaBytes = typesUtils.pInt(serverData?.QuotaBytes)
 
     this.setCompleteData(completeData)
   }

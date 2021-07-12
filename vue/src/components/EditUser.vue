@@ -126,6 +126,7 @@ export default {
   watch: {
     $route(to, from) {
       this.parseRoute()
+      this.getUserMainDataComponent()
     },
   },
 
@@ -145,15 +146,21 @@ export default {
     }
   },
 
-  async mounted () {
-    this.mainDataComponent = await modulesManager.getUserMainDataComponent()
-    this.otherDataComponents = await modulesManager.getUserOtherDataComponents()
+  mounted () {
+    this.getUserMainDataComponent()
+    this.getUserOtherDataComponents()
     this.loading = false
     this.saving = false
     this.parseRoute()
   },
 
   methods: {
+    async getUserMainDataComponent () {
+      this.mainDataComponent = await modulesManager.getUserMainDataComponent()
+    },
+    async getUserOtherDataComponents () {
+      this.otherDataComponents = await modulesManager.getUserOtherDataComponents()
+    },
     parseRoute () {
       if (this.$route.path === '/users/create') {
         const user = new UserModel(this.currentTenantId, {})
