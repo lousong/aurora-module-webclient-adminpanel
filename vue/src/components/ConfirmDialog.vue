@@ -10,7 +10,7 @@
       <q-card-actions align="right">
         <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="proceed"
                :label="$t('COREWEBCLIENT.ACTION_OK')" />
-        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="cancel"
+        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="secondary" @click="cancel"
                :label="$t('COREWEBCLIENT.ACTION_CANCEL')" />
       </q-card-actions>
     </q-card>
