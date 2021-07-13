@@ -4,22 +4,24 @@
     <template v-slot:before>
       <div class="flex column full-height">
         <q-toolbar class="col-auto q-my-sm">
-          <q-btn flat color="grey-8" size="mg" no-wrap :disable="checkedIds.length === 0"
-                 @click="askDeleteCheckedUsers">
-            <Trash></Trash>
-            <span>{{ countLabel }}</span>
-            <q-tooltip>
-              {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
-            </q-tooltip>
-          </q-btn>
-          <q-btn flat color="grey-8" size="mg" @click="routeCreateUser">
-            <Add></Add>
-            <q-tooltip>
-              {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
-            </q-tooltip>
-          </q-btn>
-          <component v-for="filter in filters" :key="filter.name" v-bind:is="filter" @filter-selected="routeFilter"
-                     @filter-filled-up="populateFiltersGetParameters"/>
+          <div class="flex">
+            <q-btn flat color="grey-8" size="mg" no-wrap :disable="checkedIds.length === 0"
+                   @click="askDeleteCheckedUsers">
+              <Trash></Trash>
+              <span>{{ countLabel }}</span>
+              <q-tooltip>
+                {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
+              </q-tooltip>
+            </q-btn>
+            <q-btn flat color="grey-8" size="mg" @click="routeCreateUser">
+              <Add></Add>
+              <q-tooltip>
+                {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
+              </q-tooltip>
+            </q-btn>
+            <component v-for="filter in filters" :key="filter.name" v-bind:is="filter" @filter-selected="routeFilter"
+                       @filter-filled-up="populateFiltersGetParameters"/>
+          </div>
         </q-toolbar>
         <StandardList class="col-grow list-border" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
                       :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
@@ -220,6 +222,7 @@ export default {
 
     async populateFilters () {
       this.filters = await modulesManager.getFiltersForUsers()
+      console.log(this.filters, 'filters')
       this.filters.forEach(filterComponent => {
         this.$router.addRoute('users', { path: filterComponent.filterRoute, component: Empty })
         this.addRoutes(filterComponent.filterRoute + '/')
