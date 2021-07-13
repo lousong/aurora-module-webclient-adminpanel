@@ -235,7 +235,6 @@ export default {
 
     async populateFilters () {
       this.filters = await modulesManager.getFiltersForUsers()
-      console.log(this.filters, 'filters')
       this.filters.forEach(filterComponent => {
         this.$router.addRoute('users', { path: filterComponent.filterRoute, component: Empty })
         this.addRoutes(filterComponent.filterRoute + '/')

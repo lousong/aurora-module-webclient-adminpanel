@@ -2,14 +2,14 @@
     <div class="q-pa-md">
       <div class="q-gutter-y-md column" style="width: 240px">
         <Logo class="logo"/>
-        <q-input class="login-name" bg-color="white" standout="bg-yellow-2" outlined dense v-model="login"
+        <q-input class="login-name login_screen" bg-color="white" standout="bg-yellow-2" outlined dense v-model="login"
                  :placeholder="$t('COREWEBCLIENT.LABEL_LOGIN')" @keyup.enter="proceedLogin">
           <template v-slot:prepend>
             <q-icon name="person"/>
           </template>
         </q-input>
 
-        <q-input class="q-mt-none login-password"  bg-color="white" standout="bg-yellow-2" outlined dense v-model="password"
+        <q-input class="q-mt-none login-password login_screen"  bg-color="white" standout="bg-yellow-2" outlined dense v-model="password"
                  type="password" :placeholder="$t('COREWEBCLIENT.LABEL_PASSWORD')" @keyup.enter="proceedLogin">
           <template v-slot:prepend>
             <q-icon name="lock"/>
