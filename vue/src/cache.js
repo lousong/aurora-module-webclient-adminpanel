@@ -124,7 +124,7 @@ export default {
             if (tenant) {
               tenant.setCompleteData(result)
             } else {
-              tenant = new UserModel(result.Id, result.Name, result.SiteName, result)
+              tenant = new TenantModel(result.Id, result.Name, result.SiteName, result)
             }
             resolve({ tenant, tenantId })
           } else {
