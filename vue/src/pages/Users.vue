@@ -227,9 +227,11 @@ export default {
       if (this.filters.length > 1) {
         this.filters.forEach(filterComponent1 => {
           this.filters.forEach(filterComponent2 => {
-            const path = filterComponent1.filterRoute + '/' + filterComponent2.filterRoute
-            this.$router.addRoute('users', { path, component: Empty })
-            this.addRoutes(path + '/')
+            if (filterComponent1.filterRoute !== filterComponent2.filterRoute) {
+              const path = filterComponent1.filterRoute + '/' + filterComponent2.filterRoute
+              this.$router.addRoute('users', { path, component: Empty })
+              this.addRoutes(path + '/')
+            }
           })
         })
       }
@@ -258,8 +260,11 @@ export default {
     },
 
     populateFiltersGetParameters (filterGetParameter) {
-      this.filtersGetParameters = _.extend(this.filtersGetParameters, filterGetParameter)
-      this.populate()
+      const newFiltersGetParameters = _.extend(_.clone(this.filtersGetParameters), filterGetParameter)
+      if (!_.isEqual(newFiltersGetParameters, this.filtersGetParameters)) {
+        this.filtersGetParameters = newFiltersGetParameters
+        this.populate()
+      }
     },
 
     populate () {
