@@ -13,14 +13,14 @@
                 {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
               </q-tooltip>
             </q-btn>
-            <q-btn flat color="grey-8" size="mg" @click="routeCreateUser">
+            <q-btn flat color="grey-8" size="mg" @click="routeCreateUser" v-if="allowCreateUser">
               <Add></Add>
               <q-tooltip>
                 {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
               </q-tooltip>
             </q-btn>
             <component v-for="filter in filters" :key="filter.name" v-bind:is="filter" @filter-selected="routeFilter"
-                       @filter-filled-up="populateFiltersGetParameters"/>
+                       @filter-filled-up="populateFiltersGetParameters" @allow-create-user="handleAllowCreateUser"/>
           </div>
         </q-toolbar>
         <StandardList class="col-grow list-border" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
@@ -113,6 +113,7 @@ export default {
       userItems: [],
       checkedIds: [],
 
+      allowCreateUser: true,
       justCreatedId: 0,
 
       deletingIds: [],
@@ -197,6 +198,12 @@ export default {
         }
       })
     },
+
+    allowCreateUser () {
+      if (!this.allowCreateUser && this.$route.path === '/users/create') {
+        this.$router.push('/users')
+      }
+    },
   },
 
   async mounted () {
@@ -207,6 +214,12 @@ export default {
   },
 
   methods: {
+    handleAllowCreateUser (data) {
+      if (data.tenantId === this.currentTenantId) {
+        this.allowCreateUser = data.allowCreateUser
+      }
+    },
+
     addRoutes (filterRoutePart = '') {
       if (filterRoutePart === '') {
         this.$router.addRoute('users', { path: 'create', component: EditUser })
