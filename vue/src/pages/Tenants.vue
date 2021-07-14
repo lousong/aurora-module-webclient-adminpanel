@@ -239,7 +239,6 @@ export default {
 
     populate () {
       const search = this.search.toLowerCase()
-      console.log(this.allTenants)
       const tenants = search === ''
         ? this.allTenants
         : this.allTenants.filter(tenant => tenant.name.toLowerCase().indexOf(search) !== -1)
