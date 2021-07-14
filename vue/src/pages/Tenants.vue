@@ -3,7 +3,7 @@
               v-model="listSplitterWidth" :limits="[10,30]">
     <template v-slot:before>
       <div class="flex column full-height ">
-        <q-toolbar class="col-auto q-my-sm">
+        <q-toolbar class="col-auto q-py-sm list-border">
           <q-btn flat color="grey-8" size="mg" no-wrap :disable="checkedIds.length === 0"
                  @click="askDeleteCheckedTenants">
             <Trash></Trash>
