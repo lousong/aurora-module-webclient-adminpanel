@@ -9,8 +9,6 @@ import notification from 'src/utils/notification'
 import typesUtils from 'src/utils/types'
 import urlUtils from 'src/utils/url'
 
-import core from 'src/core'
-
 class AdminPanelSettings {
   constructor(appData, settings) {
     const coreData = typesUtils.pObject(appData.Core, {})
@@ -182,7 +180,7 @@ class AdminPanelSettings {
       this.dismissDbError()
       this.dismissDbError = null
     }
-    core.requestTenants()
+    store.dispatch('tenants/requestTenants')
   }
 
   _getShortLanguage (coreData) {

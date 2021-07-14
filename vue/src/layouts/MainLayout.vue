@@ -79,7 +79,7 @@ export default {
     },
 
     tenantOptions () {
-      const tenants = typesUtils.pArray(this.$store.getters['tenants/getTenants'])
+      const tenants = this.$store.getters['tenants/getTenants']
       const options = []
       tenants.forEach(tenant => {
         const option = {

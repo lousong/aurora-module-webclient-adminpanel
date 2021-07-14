@@ -6,7 +6,6 @@ class TenantModel {
     this.id = typesUtils.pInt(serverData.Id)
     this.name = typesUtils.pString(serverData.Name)
     this.siteName = typesUtils.pString(serverData.SiteName)
-    this.brandingData = {}
     this.setCompleteData(completeData)
   }
 
@@ -26,12 +25,15 @@ class TenantModel {
     this.setCompleteData(completeData)
   }
 
-  setBrandingData (brandingData) {
-    this.brandingData = brandingData
-  }
-
   getData (field) {
     return this.completeData && this.completeData[field]
+  }
+
+  copy (srcTenant) {
+    this.id = srcTenant.id
+    this.name = srcTenant.name
+    this.siteName = srcTenant.siteName
+    this.completeData = srcTenant.completeData
   }
 }
 

@@ -70,7 +70,6 @@ import notification from 'src/utils/notification'
 import typesUtils from 'src/utils/types'
 import webApi from 'src/utils/web-api'
 
-import cache from 'src/cache'
 import modulesManager from 'src/modules-manager'
 import settings from 'src/settings'
 
@@ -122,6 +121,10 @@ export default {
       return this.$store.getters['tenants/getCurrentTenantId']
     },
 
+    allTenants () {
+      return this.$store.getters['tenants/getTenants']
+    },
+
     pagesCount () {
       return Math.ceil(this.totalCount / this.limit)
     },
@@ -161,6 +164,25 @@ export default {
       }
     },
 
+    allTenants () {
+      this.populate()
+      let isRouteChanged = false
+      if (this.justCreatedId && this.allTenants.find(tenant => {
+        return tenant.id === this.justCreatedId
+      })) {
+        if (this.tenants.find(tenant => {
+          return tenant.id === this.justCreatedId
+        })) {
+          this.route(this.justCreatedId)
+          isRouteChanged = true
+        }
+        this.justCreatedId = 0
+      }
+      if (this.selectedTenantId === 0 && !isRouteChanged) {
+        this.route(this.currentTenantId)
+      }
+    },
+
     tenants () {
       if (this.tenants) {
         this.tenantItems = this.tenants.map(tenant => {
@@ -182,7 +204,7 @@ export default {
     },
 
     selectedTenantId () {
-      if (this.currentTenantId !== this.selectedTenantId) {
+      if (this.currentTenantId !== this.selectedTenantId && this.selectedTenantId !== 0) {
         this.$store.commit('tenants/setCurrentTenantId', this.selectedTenantId)
       }
     },
@@ -216,23 +238,14 @@ export default {
     },
 
     populate () {
-      this.loadingTenants = true
-      cache.getTenants(this.currentTenantId, 'Tenant', this.page, this.limit, this.search).then(({ tenants, totalCount, search, page, limit }) => {
-        if (page === this.page && search === this.search) {
-          this.tenants = tenants
-          this.totalCount = totalCount
-          this.loadingTenants = false
-          if (this.justCreatedId && tenants.find(tenant => {
-            return tenant.id === this.justCreatedId
-          })) {
-            this.route(this.justCreatedId)
-            this.justCreatedId = 0
-          }
-          if (this.selectedTenantId === 0) {
-            this.route(this.currentTenantId)
-          }
-        }
-      })
+      const search = this.search.toLowerCase()
+      console.log(this.allTenants)
+      const tenants = search === ''
+        ? this.allTenants
+        : this.allTenants.filter(tenant => tenant.name.toLowerCase().indexOf(search) !== -1)
+      this.totalCount = tenants.length
+      const offset = this.limit * (this.page - 1)
+      this.tenants = tenants.slice(offset, offset + this.limit)
     },
 
     route (tenantId = 0, tabName = '') {

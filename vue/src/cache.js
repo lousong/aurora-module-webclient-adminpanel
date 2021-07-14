@@ -6,10 +6,8 @@ import typesUtils from 'src/utils/types'
 import webApi from 'src/utils/web-api'
 
 import UserModel from 'src/classes/user'
-import TenantModel from 'src/classes/tenant'
 
 let users = []
-let tenants = []
 
 export default {
   getUsers (tenantId, filtersGetParameters = {}, search = '', page = 1, limit = 10) {
@@ -71,68 +69,6 @@ export default {
         }, response => {
           notification.showError(errors.getTextFromResponse(response))
           resolve({ user: null, userId })
-        })
-      }
-    })
-  },
-  getTenants (tenantId, type, page, limit, search) {
-    return new Promise((resolve, reject) => {
-      webApi.sendRequest({
-        moduleName: 'Core',
-        methodName: 'GetTenants',
-        parameters: {
-          TenantId: tenantId,
-          Type: type,
-          Offset: limit * (page - 1),
-          Limit: limit,
-          Search: search
-        },
-      }).then(result => {
-        tenants = []
-        if (_.isArray(result?.Items)) {
-          tenants = _.map(result.Items, function (serverData) {
-            return new TenantModel(serverData)
-          })
-          const totalCount = typesUtils.pInt(result.Count)
-          resolve({ tenants, totalCount, search, page, limit })
-        } else {
-          resolve({ tenants, totalCount: 0, search, page, limit })
-        }
-      }, response => {
-        notification.showError(errors.getTextFromResponse(response))
-        resolve({ users, totalCount: 0, search, page, limit })
-      })
-    })
-  },
-  getTenant (tenantId) {
-    return new Promise((resolve, reject) => {
-      let tenant = tenants.find(tenant => {
-        return tenant.id === tenantId
-      })
-      if (tenant && tenant.completeData.Description !== undefined) {
-        resolve({ tenant, tenantId })
-      } else {
-        webApi.sendRequest({
-          moduleName: 'Core',
-          methodName: 'GetTenant',
-          parameters: {
-            Type: 'Tenant',
-            Id: tenantId,
-          },
-        }).then(result => {
-          if (_.isObject(result)) {
-            if (tenant) {
-              tenant.setCompleteData(result)
-            } else {
-              tenant = new TenantModel(result.Id, result.Name, result.SiteName, result)
-            }
-            resolve({ tenant, tenantId })
-          } else {
-            resolve({ tenant, tenantId })
-          }
-        }, response => {
-          notification.showError(errors.getTextFromResponse(response))
-          resolve()
         })
       }
     })

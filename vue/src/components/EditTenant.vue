@@ -9,9 +9,10 @@
         <q-card-section>
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_PRODUCT_NAME'"></div>
-            <div class="col-5">
+            <div class="col-5" v-if="createMode">
               <q-input outlined dense bg-color="white" v-model="tenantName"/>
             </div>
+            <div class="col-5 q-mt-sm" v-if="!createMode">{{ tenantName }}</div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DESCRIPTION'"></div>
@@ -55,19 +56,22 @@
 <script>
 import _ from 'lodash'
 
-import TenantModel from 'src/classes/tenant'
+import errors from 'src/utils/errors'
+import notification from 'src/utils/notification'
 import typesUtils from 'src/utils/types'
 import webApi from 'src/utils/web-api'
-import notification from 'src/utils/notification'
-import errors from 'src/utils/errors'
-import cache from 'src/cache'
+
+import TenantModel from 'src/classes/tenant'
+
 import modulesManager from 'src/modules-manager'
 
 export default {
   name: 'EditTenant',
+
   props: {
     deletingIds: Array,
   },
+
   data () {
     return {
       tenant: null,
@@ -83,14 +87,20 @@ export default {
       enableGroupWare: false
     }
   },
+
   computed: {
     currentTenantId () {
       return this.$store.getters['tenants/getCurrentTenantId']
     },
 
+    allTenants () {
+      return this.$store.getters['tenants/getTenants']
+    },
+
     createMode () {
       return this.tenant?.id === 0
     },
+
     saveButtonText () {
       if (this.createMode) {
         if (this.saving) {
@@ -106,19 +116,26 @@ export default {
         }
       }
     },
+
     deleting () {
       return this.deletingIds.indexOf(this.tenant?.id) !== -1
     },
   },
+
   async mounted () {
     this.loading = false
     this.saving = false
     this.parseRoute()
     this.otherDataComponents = await modulesManager.getTenantOtherDataComponents()
   },
+
   watch: {
     $route() {
       this.parseRoute()
+    },
+
+    allTenants () {
+      this.populate()
     },
   },
 
@@ -127,6 +144,7 @@ export default {
       this.enableBusinessTenant = val.enableBusinessTenant
       this.enableGroupWare = val.enableGroupWare
     },
+
     parseRoute () {
       if (this.$route.path === '/tenants/create') {
         const tenant = new TenantModel()
@@ -141,17 +159,16 @@ export default {
         }
       }
     },
+
     populate () {
-      this.loading = true
-      cache.getTenant(this.tenant.id).then(({ tenant, tenantId }) => {
-        if (tenantId === this.tenant.id) {
-          this.loading = false
-          if (tenant) {
-            this.fillUp(tenant)
-          }
-        }
-      })
+      this.$store.dispatch('tenants/completeTenantData', this.tenant.id)
+      const tenant = this.$store.getters['tenants/getTenant'](this.tenant.id)
+      if (tenant) {
+        this.fillUp(tenant)
+        this.loading = tenant.completeData.Description === undefined
+      }
     },
+
     fillUp (tenant) {
       this.tenant = tenant
       this.tenantId = tenant.id
@@ -160,6 +177,7 @@ export default {
       this.description = tenant.completeData?.Description
       this.webDomain = tenant.completeData?.WebDomain
     },
+
     save () {
       if (!this.saving) {
         this.saving = true
@@ -193,6 +211,7 @@ export default {
         })
       }
     },
+
     handleCreateResult (result) {
       if (_.isSafeInteger(result)) {
         notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_ENTITY_TENANT'))
@@ -203,17 +222,16 @@ export default {
         notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_ENTITY_TENANT'))
       }
     },
-    handleUpdateResult (result, tenantsParameters) {
+
+    handleUpdateResult (result, data) {
       if (result === true) {
-        cache.getTenant(this.tenantId).then(({ tenant }) => {
-          tenant.update(tenantsParameters.Name, tenantsParameters.SiteName, tenantsParameters)
-          this.populate()
-        })
+        this.$store.commit('tenants/updateTenant', { id: this.tenantId, data })
         notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_TENANT'))
       } else {
         notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_ENTITY_TENANT'))
       }
     },
+
     deleteTenant () {
       this.$emit('delete-tenant', this.tenant.id)
     },

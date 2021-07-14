@@ -51,8 +51,8 @@
         <q-linear-progress query />
       </q-inner-loading>
     </q-scroll-area>
-    <q-list class="col-auto">
-      <q-separator v-if="totalCountText" />
+    <q-list class="col-auto" v-if="totalCountText || pagesCount > 1">
+      <q-separator />
       <q-item>
         <q-item-section>
           <span>{{ totalCountText }}</span>
