@@ -8,7 +8,7 @@
         <q-item-section>
           <q-input rounded outlined dense v-model="enteredSearch" @keyup.enter="startSearch">
             <template v-slot:append>
-              <q-btn flat :ripple="false" class="q-btn-search"  icon="search" @click="startSearch" />
+              <q-icon flat :ripple="false" dense class="q-btn-search search"  name="search" @click="startSearch"/>
             </template>
           </q-input>
         </q-item-section>
@@ -167,5 +167,7 @@ export default {
 </script>
 
 <style scoped>
-
+.search {
+  cursor: pointer;
+}
 </style>
