@@ -55,8 +55,8 @@ export default {
       if (!this.loading) {
         this.loading = true
         webApi.sendRequest({
-          moduleName: 'Core',
-          methodName: 'Login',
+          moduleName: 'AdminAuth',
+          methodName: 'LoginAsSuperadmin',
           parameters: {
             Login: this.login,
             Password: this.password,
