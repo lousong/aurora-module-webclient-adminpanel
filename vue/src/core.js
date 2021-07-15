@@ -71,9 +71,10 @@ const core = {
       enums.init(appData)
       errors.init(appData)
       modulesManager.getModules(appData).then(() => {
-        store.commit('user/setUserData', appData.User)
-        modulesManager.initModules(appData)
-        resolve()
+        store.dispatch('user/parseAppData', appData).then(() => {
+          modulesManager.initModules(appData)
+          resolve()
+        }, reject)
       }, reject)
     })
   },

@@ -28,7 +28,11 @@ export default {
     },
   },
 
-  actions: { },
+  actions: {
+    parseAppData ({ commit }, appData) {
+      commit('setUserData', appData.User)
+    },
+  },
 
   getters: {
     getAuthToken (state) {
