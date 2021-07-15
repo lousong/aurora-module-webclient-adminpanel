@@ -1,4 +1,5 @@
 import { i18n } from 'src/boot/i18n'
+import VueCookies from 'vue-cookies'
 
 import _ from 'lodash'
 
@@ -11,13 +12,47 @@ import typesUtils from 'src/utils/types'
 import webApi from 'src/utils/web-api'
 
 import modulesManager from 'src/modules-manager'
+import settings from 'src/settings'
 
 const core = {
   appData: null,
 
-  async setAuthToken (authToken) {
-    await store.dispatch('user/setAuthToken', authToken)
-    await this.requestAppData()
+  setAuthToken (authToken) {
+    const cookieSettings = settings.getCookieSettings()
+    if (_.isEmpty(authToken)) {
+      const currentAuthToken = VueCookies.get('AuthToken')
+      VueCookies.remove('AuthToken')
+      const secondAuthToken = VueCookies.get('AuthToken')
+      if (secondAuthToken === null) {
+        this.commitAuthToken(authToken)
+      } else if (secondAuthToken === currentAuthToken) {
+        VueCookies.remove('AuthToken', cookieSettings.cookieBasePath)
+        this.commitAuthToken(authToken)
+      } else {
+        webApi.sendRequest({
+          moduleName: 'Core',
+          methodName: 'GetAppData',
+          parameters: {},
+        }).then(result => {
+          const UserRoles = enums.getUserRoles()
+          if (result?.User?.Role === UserRoles.SuperAdmin) {
+            VueCookies.remove('AuthToken', cookieSettings.cookieBasePath)
+          }
+          this.commitAuthToken(authToken)
+        }, response => {
+          this.commitAuthToken(authToken)
+        })
+      }
+    } else {
+      const expire = cookieSettings.authTokenCookieExpireTime > 0 ? cookieSettings.authTokenCookieExpireTime + 'd' : ''
+      VueCookies.set('AuthToken', authToken, expire)
+      this.commitAuthToken(authToken)
+    }
+  },
+
+  commitAuthToken (authToken) {
+    store.commit('user/setAuthToken', authToken)
+    this.requestAppData()
   },
 
   parseTenantsFromAppData () {
@@ -33,13 +68,12 @@ const core = {
   setAppData (appData) {
     return new Promise((resolve, reject) => {
       this.appData = appData
-      enums.parseAppData(appData)
+      enums.init(appData)
       errors.init(appData)
       modulesManager.getModules(appData).then(() => {
-        store.dispatch('user/parseAppData', appData).then(() => {
-          modulesManager.initModules(appData)
-          resolve()
-        }, reject)
+        store.commit('user/setUserData', appData.User)
+        modulesManager.initModules(appData)
+        resolve()
       }, reject)
     })
   },
@@ -80,6 +114,7 @@ export default {
       }
     })
   },
+
   logout () {
     webApi.sendRequest({
       moduleName: 'Core',
@@ -91,7 +126,9 @@ export default {
       core.setAuthToken('')
     })
   },
+
   setAuthToken: core.setAuthToken.bind(core),
+
   getAppData () {
     return core.appData
   },

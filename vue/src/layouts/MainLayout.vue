@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh LpR lfr">
-    <q-header v-show="showHeader">
+    <q-header v-show="!isLoginPage">
       <q-tabs class="q-py-sm" no-caps align="left" indicator-color="transparent">
         <q-route-tab to="/system" :ripple="false" class="q-px-none">
           <div class="q-px-md tab-label" v-t="'ADMINPANELWEBCLIENT.HEADING_SYSTEM_SETTINGS_TABNAME'"></div>
@@ -72,10 +72,6 @@ export default {
 
     isLoginPage () {
       return this.$route.name === 'login'
-    },
-
-    showHeader () {
-      return this.$store.getters['user/isUserSuperAdmin']
     },
 
     tenantOptions () {

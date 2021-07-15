@@ -5,7 +5,7 @@ import typesUtils from 'src/utils/types'
 const enums = {
   UserRoles: {},
 
-  parseAppData (appData) {
+  init (appData) {
     const coreData = typesUtils.pObject(appData.Core, {})
     if (!_.isEmpty(coreData)) {
       this.UserRoles = typesUtils.pObject(coreData.EUserRole)
@@ -14,7 +14,7 @@ const enums = {
 }
 
 export default {
-  parseAppData: enums.parseAppData.bind(enums),
+  init: enums.init.bind(enums),
 
   getUserRoles () {
     return enums.UserRoles

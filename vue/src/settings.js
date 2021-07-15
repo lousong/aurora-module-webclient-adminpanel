@@ -254,10 +254,17 @@ export default {
   },
 
   getCookieSettings () {
+    const pathParts = settings.cookiePath.split('/')
+    let lastPart = pathParts[pathParts.length - 1]
+    if (_.isEmpty(lastPart) && pathParts.length > 2) {
+      lastPart = pathParts[pathParts.length - 2]
+    }
+    const cookieBasePath = settings.cookiePath.replace(lastPart, '').replace('//', '/')
     return {
       authTokenCookieExpireTime: settings.authTokenCookieExpireTime,
       cookieSecure: settings.cookieSecure,
       cookiePath: settings.cookiePath,
+      cookieBasePath,
     }
   },
 

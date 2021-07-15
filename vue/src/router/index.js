@@ -30,7 +30,7 @@ export default function (/* { store, ssrContext } */) {
   })
   Router.beforeEach((to, from, next) => {
     core.init().then(() => {
-      if (to.name !== 'login' && !store.getters['user/isAuthorized']) {
+      if (to.name !== 'login' && !store.getters['user/isUserSuperAdmin']) {
         next({ name: 'login' })
       } else {
         next()

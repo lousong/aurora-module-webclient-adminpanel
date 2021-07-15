@@ -5,8 +5,6 @@ import UserModel from 'src/classes/user'
 
 import enums from 'src/enums'
 
-import settings from 'src/settings'
-
 export default {
   namespaced: true,
 
@@ -18,13 +16,6 @@ export default {
 
   mutations: {
     setAuthToken (state, authToken) {
-      const cookieSettings = settings.getCookieSettings()
-      const expire = cookieSettings.authTokenCookieExpireTime > 0 ? cookieSettings.authTokenCookieExpireTime + 'd' : ''
-      if (_.isEmpty(authToken)) {
-        VueCookies.remove('AuthToken')
-      } else {
-        VueCookies.set('AuthToken', authToken, expire)
-      }
       state.authToken = authToken
     },
 
@@ -37,37 +28,11 @@ export default {
     },
   },
 
-  actions: {
-    parseAppData ({ commit }, appData) {
-      commit('setUserData', appData.User)
-    },
-
-    setAuthToken ({ commit }, authToken) {
-      commit('setAuthToken', authToken)
-    },
-
-    logout ({ commit }) {
-      commit('setAuthToken', '')
-    },
-  },
+  actions: { },
 
   getters: {
     getAuthToken (state) {
       return state.authToken
-    },
-
-    isAuthorized (state) {
-      return state.authToken !== ''
-    },
-
-    getDataToSave (state) {
-      return {
-        authToken: state.authToken,
-      }
-    },
-
-    getUserPublicId (state) {
-      return state.userPublicId
     },
 
     isUserSuperAdmin (state) {
