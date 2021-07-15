@@ -180,7 +180,6 @@ class AdminPanelSettings {
       this.dismissDbError()
       this.dismissDbError = null
     }
-    store.dispatch('tenants/requestTenants')
   }
 
   _getShortLanguage (coreData) {

@@ -69,9 +69,13 @@ export default {
         }).then(result => {
           if (_.isArray(result?.Items)) {
             dispatch('parseTenants', result.Items)
+          } else {
+            dispatch('parseTenants', [])
           }
         }, response => {
-          notification.showError(errors.getTextFromResponse(response))
+          dispatch('parseTenants', [])
+          // Do not show error because tenants are requested after savind database settings and tables could be not created yet
+          // notification.showError(errors.getTextFromResponse(response))
         })
       }
     },

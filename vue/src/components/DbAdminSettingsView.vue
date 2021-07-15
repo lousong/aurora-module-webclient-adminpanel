@@ -185,6 +185,8 @@ export default {
             }
             if (createTablesAfterSave === true) {
               this.createTables()
+            } else {
+              this.$store.dispatch('tenants/requestTenants')
             }
             notification.showReport(this.$t('COREWEBCLIENT.REPORT_SETTINGS_UPDATE_SUCCESS'))
           } else {
@@ -237,7 +239,8 @@ export default {
         this.createTables()
       }
     },
-    createTables() {
+
+    createTables () {
       if (!this.creatingTables) {
         const parameters = {}
         this.creatingTables = true
@@ -248,6 +251,7 @@ export default {
         }).then(result => {
           this.creatingTables = false
           if (result === true) {
+            this.$store.dispatch('tenants/requestTenants')
             notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_TABLES_SUCCESSFUL'))
           } else {
             notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_TABLES_FAILED'))
@@ -258,6 +262,7 @@ export default {
         })
       }
     },
+
     updateConfig() {
       if (!this.updatingConfiguration) {
         this.updatingConfiguration = true
