@@ -59,7 +59,7 @@ const core = {
     const adminPanelWebclientData = typesUtils.pObject(this.appData?.AdminPanelWebclient)
     const tenantsData = typesUtils.pArray(adminPanelWebclientData?.Tenants?.Items)
     if (tenantsData.length > 0) {
-      store.dispatch('tenants/parseTenants')
+      store.dispatch('tenants/parseTenants', tenantsData)
     } else {
       store.dispatch('tenants/requestTenants')
     }
