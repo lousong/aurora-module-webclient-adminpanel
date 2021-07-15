@@ -34,6 +34,7 @@ export default {
   },
 
   mounted () {
+    this.publicId = this.user?.publicId
   },
 
   methods: {
