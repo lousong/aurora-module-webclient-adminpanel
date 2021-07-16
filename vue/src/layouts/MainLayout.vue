@@ -27,9 +27,9 @@
           <div class="q-px-md tab-label">{{ $t(page.pageTitle)}}</div>
         </q-route-tab>
         <q-space />
-        <q-tab :ripple="false" class="q-px-none q-tab--logout" @click="proceedLogout">
+        <q-route-tab to="/logout" :ripple="false" class="q-px-none q-tab--logout">
           <div class="q-px-md tab-label" v-t="'COREWEBCLIENT.ACTION_LOGOUT'"></div>
-        </q-tab>
+        </q-route-tab>
       </q-tabs>
     </q-header>
     <q-page-container style="height: 100vh">
@@ -45,7 +45,6 @@ import _ from 'lodash'
 
 import typesUtils from 'src/utils/types'
 
-import core from 'src/core'
 import modulesManager from 'src/modules-manager'
 import settings from 'src/settings'
 
@@ -139,10 +138,6 @@ export default {
   methods: {
     changeTenant (id) {
       this.$store.commit('tenants/setCurrentTenantId', id)
-    },
-
-    proceedLogout () {
-      core.logout()
     },
   },
 }

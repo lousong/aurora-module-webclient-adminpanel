@@ -48,7 +48,6 @@
         </q-btn>
       </div>
     </div>
-    <UnsavedChangesDialog ref="unsavedChangesDialog" />
   </q-scroll-area>
 </template>
 
@@ -61,14 +60,8 @@ import webApi from 'src/utils/web-api'
 
 import settings from 'src/settings'
 
-import UnsavedChangesDialog from 'src/components/UnsavedChangesDialog'
-
 export default {
   name: 'AdminAccount',
-
-  components: {
-    UnsavedChangesDialog,
-  },
 
   data() {
     return {
@@ -83,11 +76,7 @@ export default {
   },
 
   beforeRouteLeave (to, from, next) {
-    if (this.hasChanges() && _.isFunction(this?.$refs?.unsavedChangesDialog?.openConfirmDiscardChangesDialog)) {
-      this.$refs.unsavedChangesDialog.openConfirmDiscardChangesDialog(next)
-    } else {
-      next()
-    }
+    this.doBeforeRouteLeave(to, from, next)
   },
 
   mounted () {
@@ -106,10 +95,22 @@ export default {
       this.language = data.adminLanguage
     },
 
+    /**
+     * Method is used in doBeforeRouteLeave mixin
+     */
     hasChanges () {
       const data = settings.getAdminAccountData()
       return this.login !== data.adminLogin || this.oldPassword !== '' || this.newPassword !== '' ||
         this.confirmNewPassword !== '' || this.language !== data.adminLanguage
+    },
+
+    /**
+     * Method is used in doBeforeRouteLeave mixin,
+     * do not use async methods - just simple and plain reverting of values
+     * !! hasChanges method must return true after executing revertChanges method
+     */
+    revertChanges () {
+      this.populate()
     },
 
     isDataValid () {

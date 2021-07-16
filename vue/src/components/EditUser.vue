@@ -39,7 +39,6 @@
         </q-btn>
       </div>
     </div>
-    <UnsavedChangesDialog ref="unsavedChangesDialog" />
     <q-inner-loading style="justify-content: flex-start;" :showing="loading || deleting || saving">
       <q-linear-progress query />
     </q-inner-loading>
@@ -60,17 +59,11 @@ import settings from 'src/settings'
 
 import UserModel from 'src/classes/user'
 
-import UnsavedChangesDialog from 'src/components/UnsavedChangesDialog'
-
 import enums from 'src/enums'
 const UserRoles = enums.getUserRoles()
 
 export default {
   name: 'EditUser',
-
-  components: {
-    UnsavedChangesDialog,
-  },
 
   props: {
     deletingIds: Array,
@@ -131,19 +124,11 @@ export default {
   },
 
   beforeRouteLeave (to, from, next) {
-    if (this.hasChanges() && _.isFunction(this?.$refs?.unsavedChangesDialog?.openConfirmDiscardChangesDialog)) {
-      this.$refs.unsavedChangesDialog.openConfirmDiscardChangesDialog(next)
-    } else {
-      next()
-    }
+    this.doBeforeRouteLeave(to, from, next)
   },
 
   beforeRouteUpdate (to, from, next) {
-    if (this.hasChanges() && _.isFunction(this?.$refs?.unsavedChangesDialog?.openConfirmDiscardChangesDialog)) {
-      this.$refs.unsavedChangesDialog.openConfirmDiscardChangesDialog(next)
-    } else {
-      next()
-    }
+    this.doBeforeRouteLeave(to, from, next)
   },
 
   mounted () {
@@ -204,6 +189,9 @@ export default {
       })
     },
 
+    /**
+     * Method is used in doBeforeRouteLeave mixin
+     */
     hasChanges () {
       const hasMainDataChanges = _.isFunction(this.$refs?.mainDataComponent?.hasChanges)
         ? this.$refs.mainDataComponent.hasChanges()
@@ -215,6 +203,26 @@ export default {
         : false
       return hasMainDataChanges || hasOtherDataChanges || this.isTenantAdmin !== (this.user?.role === UserRoles.TenantAdmin) ||
         this.writeSeparateLog !== this.user?.writeSeparateLog
+    },
+
+    /**
+     * Method is used in doBeforeRouteLeave mixin,
+     * do not use async methods - just simple and plain reverting of values
+     * !! hasChanges method must return true after executing revertChanges method
+     */
+    revertChanges () {
+      if (_.isFunction(this.$refs?.mainDataComponent?.revertChanges)) {
+        this.$refs.mainDataComponent.revertChanges()
+      }
+      if (_.isFunction(this.$refs?.otherDataComponents?.forEach)) {
+        this.$refs.otherDataComponents.forEach(component => {
+          if (_.isFunction(component.revertChanges)) {
+            component.revertChanges()
+          }
+        })
+      }
+      this.isTenantAdmin = (this.user?.role === UserRoles.TenantAdmin)
+      this.writeSeparateLog = this.user?.writeSeparateLog
     },
 
     isDataValid () {

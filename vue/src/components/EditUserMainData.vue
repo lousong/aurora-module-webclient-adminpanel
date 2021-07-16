@@ -44,8 +44,20 @@ export default {
       }
     },
 
+    /**
+     * Method is used in parent component
+     */
     hasChanges () {
       return this.publicId !== this.user?.publicId
+    },
+
+    /**
+     * Method is used in parent component,
+     * do not use async methods - just simple and plain reverting of values
+     * !! hasChanges method must return true after executing revertChanges method
+     */
+    revertChanges () {
+      this.publicId = this.user?.publicId
     },
 
     isDataValid () {
