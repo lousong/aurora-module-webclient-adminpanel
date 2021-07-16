@@ -17,6 +17,12 @@ import settings from 'src/settings'
 const core = {
   appData: null,
 
+  setAuthTokenCookie (authToken) {
+    const cookieSettings = settings.getCookieSettings()
+    const expire = cookieSettings.authTokenCookieExpireTime > 0 ? cookieSettings.authTokenCookieExpireTime + 'd' : ''
+    VueCookies.set('AuthToken', authToken, expire)
+  },
+
   setAuthToken (authToken) {
     const cookieSettings = settings.getCookieSettings()
     if (_.isEmpty(authToken)) {
@@ -44,8 +50,7 @@ const core = {
         })
       }
     } else {
-      const expire = cookieSettings.authTokenCookieExpireTime > 0 ? cookieSettings.authTokenCookieExpireTime + 'd' : ''
-      VueCookies.set('AuthToken', authToken, expire)
+      this.setAuthTokenCookie(authToken)
       this.commitAuthToken(authToken)
     }
   },
@@ -90,6 +95,9 @@ const core = {
           this.setAppData(result).then(() => {
             if (store.getters['user/isUserSuperAdmin']) {
               this.parseTenantsFromAppData()
+              // Resets AuthToken cookie to continue signing in period,
+              // also to make sure that AuthToken cookie is set with the correct path
+              this.setAuthTokenCookie(store.getters['user/getAuthToken'])
             }
             resolve()
           }, reject)
