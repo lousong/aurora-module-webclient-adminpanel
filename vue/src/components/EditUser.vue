@@ -10,13 +10,13 @@
           <component v-bind:is="mainDataComponent" ref="mainDataComponent" :currentTenantId="currentTenantId"
                      :user="user" :createMode="createMode" @save="save" />
           <div class="row q-mb-md" v-if="allowMakeTenant">
-            <div class="col-1"></div>
+            <div class="col-2"></div>
             <div class="col-5">
               <q-checkbox dense v-model="isTenantAdmin" :label="$t('ADMINPANELWEBCLIENT.LABEL_USER_IS_TENANT_ADMIN')" />
             </div>
           </div>
           <div class="row" v-if="!createMode">
-            <div class="col-1"></div>
+            <div class="col-2"></div>
             <div class="col-5">
               <q-checkbox dense v-model="writeSeparateLog"
                           :label="$t('ADMINPANELWEBCLIENT.LABEL_LOGGING_SEPARATE_LOG_FOR_USER')" />
