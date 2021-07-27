@@ -283,7 +283,7 @@ export default {
     handleCreateResult (result, parameters) {
       if (_.isSafeInteger(result)) {
         notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_ENTITY_USER'))
-        this.user.update(parameters.Role, parameters.WriteSeparateLog, parameters.PublicId)
+        this.user.update(parameters)
         this.$emit('user-created', result)
       } else {
         notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_ENTITY_USER'))
@@ -293,7 +293,7 @@ export default {
     handleUpdateResult (result, parameters) {
       if (result === true) {
         cache.getUser(parameters.TenantId, parameters.UserId).then(({ user }) => {
-          user.update(parameters.Role, parameters.WriteSeparateLog)
+          user.update(parameters)
           this.populate()
         })
         notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_USER'))

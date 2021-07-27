@@ -19,15 +19,20 @@ class UserModel {
   setCompleteData (data) {
     this.completeData = data
 
-    this.update(data?.Role, data?.WriteSeparateLog)
+    this.update(data)
   }
 
-  update (role, writeSeparateLog, publicId = null) {
+  update (data) {
     const UserRoles = enums.getUserRoles()
-    this.role = typesUtils.pEnum(role, UserRoles, UserRoles.Anonymous)
-    this.writeSeparateLog = typesUtils.pBool(writeSeparateLog)
-    if (publicId !== null) {
-      this.publicId = typesUtils.pString(publicId)
+    this.role = typesUtils.pEnum(data?.Role, UserRoles, UserRoles.Anonymous)
+    this.writeSeparateLog = typesUtils.pBool(data?.WriteSeparateLog)
+
+    if (data?.PublicId) {
+      this.publicId = typesUtils.pString(data?.PublicId)
+    }
+
+    if (data?.QuotaBytes) {
+      this.quotaBytes = typesUtils.pInt(data?.QuotaBytes)
     }
   }
 
