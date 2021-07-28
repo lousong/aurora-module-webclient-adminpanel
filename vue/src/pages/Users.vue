@@ -304,9 +304,12 @@ export default {
 
     getFiltersRoute () {
       const filterRoutes = _.map(this.currentFiltersRoutes, (routeValue, routeName) => {
-        return routeName + '/' + routeValue
+        return routeValue !== undefined ? routeName + '/' + routeValue : ''
       })
-      return filterRoutes.length > 0 ? '/' + filterRoutes.join('/') : ''
+      const filterRoutesValues = _.filter(filterRoutes, routeValue => {
+        return routeValue !== undefined
+      })
+      return filterRoutesValues.length > 0 ? '/' + filterRoutesValues.join('/') : ''
     },
 
     routeFilter (data) {
