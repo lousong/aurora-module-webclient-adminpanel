@@ -67,6 +67,7 @@ export default {
 
   props: {
     deletingIds: Array,
+    createMode: Boolean,
   },
 
   data() {
@@ -89,10 +90,6 @@ export default {
   computed: {
     currentTenantId () {
       return this.$store.getters['tenants/getCurrentTenantId']
-    },
-
-    createMode () {
-      return this.user?.id === 0
     },
 
     saveButtonText () {
@@ -147,7 +144,7 @@ export default {
       this.otherDataComponents = await modulesManager.getUserOtherDataComponents()
     },
     parseRoute () {
-      if (this.$route.path === '/users/create') {
+      if (this.createMode) {
         const user = new UserModel(this.currentTenantId, {})
         this.fillUp(user)
       } else {
@@ -260,21 +257,20 @@ export default {
           })
         }
 
-        const createMode = this.createMode
         webApi.sendRequest({
           moduleName: 'Core',
-          methodName: createMode ? 'CreateUser' : 'UpdateUser',
+          methodName: this.createMode ? 'CreateUser' : 'UpdateUser',
           parameters,
         }).then(result => {
           this.saving = false
-          if (createMode) {
+          if (this.createMode) {
             this.handleCreateResult(result, parameters)
           } else {
             this.handleUpdateResult(result, parameters)
           }
         }, response => {
           this.saving = false
-          const errorConst = createMode ? 'ERROR_CREATE_ENTITY_USER' : 'ERROR_UPDATE_ENTITY_USER'
+          const errorConst = this.createMode ? 'ERROR_CREATE_ENTITY_USER' : 'ERROR_UPDATE_ENTITY_USER'
           notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.' + errorConst)))
         })
       }

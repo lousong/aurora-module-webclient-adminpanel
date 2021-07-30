@@ -59,11 +59,13 @@
         </template>
         <template v-slot:after>
           <router-view @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
-                       @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"></router-view>
+                       @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"
+                       :createMode="createMode"></router-view>
         </template>
       </q-splitter>
       <router-view v-if="!showTabs" @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
-                   @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"></router-view>
+                   @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"
+                   :createMode="createMode"></router-view>
     </template>
     <ConfirmDialog ref="confirmDialog"/>
   </q-splitter>
@@ -155,6 +157,10 @@ export default {
     deleting () {
       return this.deletingIds.indexOf(this.selectedUserId) !== -1
     },
+
+    createMode () {
+      return this.$route.path.indexOf('/create') === this.$route.path.length - 7
+    },
   },
 
   watch: {
@@ -166,7 +172,7 @@ export default {
     },
 
     $route (to, from) {
-      if (this.$route.path === '/users/create') {
+      if (this.createMode) {
         this.selectedUserId = 0
       } else {
         const search = typesUtils.pString(this.$route?.params?.search)
@@ -200,7 +206,7 @@ export default {
     },
 
     allowCreateUser () {
-      if (!this.allowCreateUser && this.$route.path === '/users/create') {
+      if (!this.allowCreateUser && this.createMode) {
         this.$router.push('/users')
       }
     },
@@ -224,6 +230,7 @@ export default {
       if (filterRoutePart === '') {
         this.$router.addRoute('users', { path: 'create', component: EditUser })
       }
+      this.$router.addRoute('users', { path: filterRoutePart + 'create', component: EditUser })
       this.$router.addRoute('users', { path: filterRoutePart + 'id/:id', component: EditUser })
       this.$router.addRoute('users', { path: filterRoutePart + 'search/:search', component: Empty })
       this.$router.addRoute('users', { path: filterRoutePart + 'search/:search/id/:id', component: EditUser })
@@ -336,7 +343,7 @@ export default {
     },
 
     routeCreateUser () {
-      this.$router.push('/users/create')
+      this.$router.push('/users' + this.getFiltersRoute() + '/create')
     },
 
     handleCreateUser (id) {
