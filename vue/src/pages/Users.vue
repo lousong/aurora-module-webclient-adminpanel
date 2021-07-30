@@ -314,7 +314,7 @@ export default {
         return routeValue !== undefined ? routeName + '/' + routeValue : ''
       })
       const filterRoutesValues = _.filter(filterRoutes, routeValue => {
-        return routeValue !== undefined
+        return routeValue !== ''
       })
       return filterRoutesValues.length > 0 ? '/' + filterRoutesValues.join('/') : ''
     },
