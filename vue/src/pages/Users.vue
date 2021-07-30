@@ -349,6 +349,7 @@ export default {
     handleCreateUser (id) {
       this.justCreatedId = id
       this.route()
+      this.populate()
     },
 
     afterCheck (ids) {
