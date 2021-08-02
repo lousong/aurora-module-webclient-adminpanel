@@ -35,10 +35,6 @@ export default {
     publicId () {
       this.changeStatusRequiredFields()
     },
-
-    password () {
-      this.changeStatusRequiredFields()
-    },
   },
 
   mounted () {
@@ -83,7 +79,7 @@ export default {
     },
 
     changeStatusRequiredFields () {
-      this.publicId.length && this.password.length
+      this.publicId.length
         ? this.$emit('changeStatusRequiredFields', true)
         : this.$emit('changeStatusRequiredFields', false)
     },
