@@ -8,7 +8,7 @@
       <q-card flat bordered class="card-edit-settings">
         <q-card-section>
           <component v-bind:is="mainDataComponent" ref="mainDataComponent" :currentTenantId="currentTenantId"
-                     :user="user" :createMode="createMode" @save="handleSave" />
+                     :user="user" :createMode="createMode" @changeStatusRequiredFields="changeStatusRequiredFields" @save="handleSave" />
           <div class="row q-mb-md" v-if="allowMakeTenant">
             <div class="col-2"></div>
             <div class="col-5">
@@ -32,7 +32,7 @@
                :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_USER')" v-if="!createMode">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="handleSave"
-               :label="saveButtonText">
+               :label="saveButtonText" :disable="!isRequiredFieldsAreFilled">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="secondary" @click="cancel"
                :label="$t('COREWEBCLIENT.ACTION_CANCEL')" v-if="createMode" >
@@ -81,6 +81,8 @@ export default {
       publicId: '',
       isTenantAdmin: false,
       writeSeparateLog: false,
+
+      isRequiredFieldsAreFilled: true,
 
       loading: false,
       saving: false,
@@ -162,6 +164,10 @@ export default {
       this.publicId = ''
       this.isTenantAdmin = false
       this.writeSeparateLog = false
+    },
+
+    changeStatusRequiredFields (isFilled) {
+      this.isRequiredFieldsAreFilled = isFilled
     },
 
     fillUp (user) {
