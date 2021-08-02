@@ -31,6 +31,14 @@ export default {
     user () {
       this.publicId = this.user?.publicId
     },
+
+    publicId () {
+      this.changeStatusRequiredFields()
+    },
+
+    password () {
+      this.changeStatusRequiredFields()
+    },
   },
 
   mounted () {
@@ -72,6 +80,12 @@ export default {
 
     save () {
       this.$emit('save')
+    },
+
+    changeStatusRequiredFields () {
+      this.publicId.length && this.password.length
+        ? this.$emit('changeStatusRequiredFields', true)
+        : this.$emit('changeStatusRequiredFields', false)
     },
   },
 }
