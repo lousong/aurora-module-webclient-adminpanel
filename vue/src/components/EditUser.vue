@@ -8,7 +8,7 @@
       <q-card flat bordered class="card-edit-settings">
         <q-card-section>
           <component v-bind:is="mainDataComponent" ref="mainDataComponent" :currentTenantId="currentTenantId"
-                     :user="user" :createMode="createMode" @save="save" />
+                     :user="user" :createMode="createMode" @save="handleSave" />
           <div class="row q-mb-md" v-if="allowMakeTenant">
             <div class="col-2"></div>
             <div class="col-5">
@@ -24,14 +24,14 @@
           </div>
           <component v-for="component in otherDataComponents" :key="component.name" v-bind:is="component"
                      ref="otherDataComponents" :currentTenantId="currentTenantId" :user="user" :createMode="createMode"
-                     @save="save" />
+                     @save="handleSave" />
         </q-card-section>
       </q-card>
       <div class="q-pt-md text-right">
         <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="negative" @click="deleteUser"
                :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_USER')" v-if="!createMode">
         </q-btn>
-        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="handleSave"
                :label="saveButtonText">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="secondary" @click="cancel"
@@ -232,6 +232,20 @@ export default {
         })
         : true
       return isMainDataValid && isOtherDataValid
+    },
+
+    isUserEmailValid () {
+      const userData = this.$refs.mainDataComponent.getSaveParameters()
+      const userEmail = userData.PublicId
+      const userNamePart = userEmail.slice(0, userEmail.lastIndexOf('@'))
+      const invalidCharactersRegex = /[@\s]/
+      return !invalidCharactersRegex.test(userNamePart) && userNamePart.length
+    },
+
+    handleSave () {
+      this.isUserEmailValid()
+        ? this.save()
+        : notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_INVALID_EMAIL_USERNAME_PART'))
     },
 
     save () {
