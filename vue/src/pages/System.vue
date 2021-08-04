@@ -38,7 +38,7 @@ export default {
     return {
       tabs: [],
 
-      splitterWidth: 20,
+      splitterWidth: localStorage.getItem('system-splitter-width') || 20,
 
       currentTabName: '',
     }
@@ -51,6 +51,9 @@ export default {
     tabs () {
       // executed in "watch" to avoid errors, if "mounted" an error occurs
       this.changeTab(this.tabs[0].tabName)
+    },
+    splitterWidth () {
+      localStorage.setItem('system-splitter-width', this.splitterWidth)
     }
   },
 

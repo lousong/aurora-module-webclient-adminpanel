@@ -123,8 +123,8 @@ export default {
       tabs: [],
       selectedTab: '',
 
-      listSplitterWidth: 20,
-      tabsSplitterWidth: 20,
+      listSplitterWidth: localStorage.getItem('users-list-splitter-width') || 20,
+      tabsSplitterWidth: localStorage.getItem('users-tabs-splitter-width') || 20,
 
       filters: [],
       currentFiltersRoutes: {},
@@ -210,6 +210,14 @@ export default {
         this.$router.push('/users')
       }
     },
+
+    listSplitterWidth () {
+      localStorage.setItem('users-list-splitter-width', this.listSplitterWidth)
+    },
+
+    tabsSplitterWidth () {
+      localStorage.setItem('users-tabs-splitter-width', this.tabsSplitterWidth)
+    }
   },
 
   async mounted () {

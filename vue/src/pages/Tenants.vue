@@ -111,8 +111,8 @@ export default {
       tabs: [],
       selectedTab: '',
 
-      listSplitterWidth: 20,
-      tabsSplitterWidth: 20,
+      listSplitterWidth: localStorage.getItem('tenants-list-splitter-width') || 20,
+      tabsSplitterWidth: localStorage.getItem('tenants-tabs-splitter-width') || 20,
     }
   },
 
@@ -208,6 +208,14 @@ export default {
         this.$store.commit('tenants/setCurrentTenantId', this.selectedTenantId)
       }
     },
+
+    listSplitterWidth () {
+      localStorage.setItem('tenants-list-splitter-width', this.listSplitterWidth)
+    },
+
+    tabsSplitterWidth () {
+      localStorage.setItem('tenants-tabs-splitter-width', this.tabsSplitterWidth)
+    }
   },
 
   mounted () {
