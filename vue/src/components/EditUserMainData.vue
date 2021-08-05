@@ -12,9 +12,10 @@
 import _ from 'lodash'
 
 import notification from 'src/utils/notification'
+import typesUtils from 'src/utils/types'
 
 export default {
-  name: 'EditUserPublicId',
+  name: 'EditUserMainData',
 
   props: {
     user: Object,
@@ -29,7 +30,7 @@ export default {
 
   watch: {
     user () {
-      this.publicId = this.user?.publicId
+      this.populate()
     },
 
     publicId () {
@@ -38,7 +39,7 @@ export default {
   },
 
   mounted () {
-    this.publicId = this.user?.publicId
+    this.populate()
   },
 
   methods: {
@@ -61,7 +62,11 @@ export default {
      * !! hasChanges method must return true after executing revertChanges method
      */
     revertChanges () {
-      this.publicId = this.user?.publicId
+      this.populate()
+    },
+
+    populate () {
+      this.publicId = typesUtils.pString(this.user?.publicId)
     },
 
     isDataValid () {
