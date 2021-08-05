@@ -6,10 +6,20 @@ export default {
    *
    * @return {string}
    */
-  getAppPath () {
+  getAdminAppPath () {
     const appOrigin = window.location.origin || window.location.protocol + '//' + window.location.host
 
     return appOrigin + window.location.pathname
+  },
+
+  /**
+   * Obtains user application path from location object.
+   * @returns {string}
+   */
+  getMainAppPath () {
+    const appOrigin = window.location.origin || window.location.protocol + '//' + window.location.host
+
+    return appOrigin + window.location.pathname.replace('/adminpanel', '')
   },
 
   /**

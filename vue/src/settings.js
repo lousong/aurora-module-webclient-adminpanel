@@ -41,7 +41,7 @@ class AdminPanelSettings {
       // this.passwordMustBeComplex = typesUtils.pBool(coreData.PasswordMustBeComplex)
       this.cookiePath = typesUtils.pString(coreData.CookiePath)
       if (this.cookiePath === '') {
-        this.cookiePath = urlUtils.getAppPath()
+        this.cookiePath = urlUtils.getAdminAppPath()
       }
       if (process.env.DEV) {
         this.cookiePath = '/'

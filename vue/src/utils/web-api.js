@@ -21,7 +21,7 @@ export default {
 
       let apiHost = store.getters['main/getApiHost']
       if (!typesUtils.isNonEmptyString(apiHost)) {
-        apiHost = urlUtils.getAppPath()
+        apiHost = urlUtils.getAdminAppPath()
       }
       apiHost = apiHost.replace(/\/$/, '')
       const url = apiHost + '/?/Api/'
