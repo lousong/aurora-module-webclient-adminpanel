@@ -13,6 +13,7 @@ class AdminPanelSettings {
   constructor(appData, settings) {
     const coreData = typesUtils.pObject(appData.Core, {})
     const coreWebclientData = typesUtils.pObject(appData.CoreWebclient, {})
+    const licensingData = typesUtils.pObject(appData.Licensing, {})
     const coreMobileWebclient = typesUtils.pObject(appData.CoreMobileWebclient, {})
     const appDataSectionLogsViewerWebclient = typesUtils.pObject(appData.LogsViewerWebclient, {})
 
@@ -89,6 +90,10 @@ class AdminPanelSettings {
       // this.hideLogout = typesUtils.pBool(coreWebclientData.HideLogout)
     }
 
+    if (!_.isEmpty(licensingData)) {
+      this.licenseKey = typesUtils.pString(licensingData.LicenseKey)
+    }
+
     const adminPanelWebclientData = typesUtils.pObject(appData.AdminPanelWebclient)
     this.entitiesOrder = typesUtils.pArray(adminPanelWebclientData.EntitiesOrder)
     this.entitiesPerPage = typesUtils.pInt(adminPanelWebclientData.EntitiesPerPage, 10)
@@ -118,6 +123,9 @@ class AdminPanelSettings {
       if (this.dbLogin === '' || this.dbHost === '' || this.dbName === '') {
         this.dismissDbError = notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_DB_ACCESS'), 0)
       }
+    }
+    if (this.licenseKey === '') {
+      notification.showError(i18n.tc('COREWEBCLIENT.ERROR_LICENSE_ABSENCE'), 0)
     }
   }
 
