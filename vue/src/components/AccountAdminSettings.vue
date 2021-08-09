@@ -133,7 +133,7 @@ export default {
           return false
         }
         if (!this.adminHasPassword && oldPassword !== '') {
-          notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CURRENT_PASSWORD_IS_NOT_VALID'))
+          notification.showError(this.$t('COREWEBCLIENT.ERROR_CURRENT_PASSWORD_NOT_CORRECT'))
           this.$refs.oldPassword.$el.focus()
           return false
         }
