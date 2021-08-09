@@ -40,6 +40,7 @@ export default {
 
   mounted () {
     this.populate()
+    this.changeStatusRequiredFields()
   },
 
   methods: {
