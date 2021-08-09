@@ -75,6 +75,7 @@ export default {
       language: '',
       languageOptions: [],
       saving: false,
+      adminHasPassword: false,
     }
   },
 
@@ -96,6 +97,7 @@ export default {
       this.newPassword = ''
       this.confirmNewPassword = ''
       this.language = data.adminLanguage
+      this.adminHasPassword = data.adminHasPassword
     },
 
     /**
@@ -117,24 +119,34 @@ export default {
     },
 
     isDataValid () {
-      const data = settings.getAdminAccountData()
       const oldPassword = _.trim(this.oldPassword)
       const newPassword = _.trim(this.newPassword)
       const confirmNewPassword = _.trim(this.confirmNewPassword)
-      if (data.adminHasPassword && oldPassword === '' && newPassword !== '') {
-        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CURRENT_PASSWORD_EMPTY'))
-        this.$refs.oldPassword.$el.focus()
-        return false
-      }
-      if (oldPassword !== '' && newPassword === '') {
-        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_NEW_PASSWORD_EMPTY'))
-        this.$refs.newPassword.$el.focus()
-        return false
-      }
-      if (oldPassword !== '' && newPassword !== confirmNewPassword) {
-        notification.showError(this.$t('COREWEBCLIENT.ERROR_PASSWORDS_DO_NOT_MATCH'))
-        this.$refs.newPassword.$el.focus()
-        return false
+      console.log(this.adminHasPassword)
+
+      if (oldPassword === '' && newPassword === '' && confirmNewPassword === '') {
+        return true
+      } else {
+        if (this.adminHasPassword && oldPassword === '') {
+          notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CURRENT_PASSWORD_EMPTY'))
+          this.$refs.oldPassword.$el.focus()
+          return false
+        }
+        if (!this.adminHasPassword && oldPassword !== '') {
+          notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CURRENT_PASSWORD_IS_NOT_VALID'))
+          this.$refs.oldPassword.$el.focus()
+          return false
+        }
+        if (newPassword === '') {
+          notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_NEW_PASSWORD_EMPTY'))
+          this.$refs.newPassword.$el.focus()
+          return false
+        }
+        if (newPassword !== confirmNewPassword) {
+          notification.showError(this.$t('COREWEBCLIENT.ERROR_PASSWORDS_DO_NOT_MATCH'))
+          this.$refs.newPassword.$el.focus()
+          return false
+        }
       }
       return true
     },
@@ -144,9 +156,11 @@ export default {
         this.saving = true
         const parameters = {
           AdminLogin: this.login,
-          Password: this.oldPassword,
-          NewPassword: this.newPassword,
           AdminLanguage: this.language
+        }
+        if (!_.isEmpty(this.newPassword)) {
+          parameters.Password = this.oldPassword
+          parameters.NewPassword = this.newPassword
         }
         webApi.sendRequest({
           moduleName: 'Core',
@@ -157,7 +171,7 @@ export default {
           if (result === true) {
             settings.saveAdminAccountData({
               login: parameters.AdminLogin,
-              password: parameters.NewPassword,
+              hasPassword: !_.isEmpty(parameters.NewPassword) || this.adminHasPassword,
               language: parameters.AdminLanguage,
             })
             this.populate()
