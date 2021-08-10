@@ -44,14 +44,18 @@ if (fse.existsSync(srcDir)) {
 
   console.log('Start to create index.php...')
   const indexPhpContent = `<?php
-if (isset($_GET['/Api']) || isset($_GET['/Api/']))
-{
-\tinclude_once '../index.php';
-}
-else
-{
-\tinclude_once './main.html';
-}
+  include_once '../system/autoload.php';
+  
+  use Aurora\\System\\Api;
+  use Aurora\\System\\Application;
+  
+  if (is_array($_REQUEST) && count($_REQUEST) > 0) {
+  \tApi::Init();
+  \tApplication::setBaseUrl(\\substr(Application::getBaseUrl(), 0, -strlen(basename(__DIR__))-1));
+  \tApplication::Start();
+  } else {
+  \tinclude_once './main.html';
+  }
 `
   fse.writeFileSync(destDir + 'index.php', indexPhpContent)
   console.log('Everything is ready now')
