@@ -49,9 +49,6 @@ class AdminPanelSettings {
     this.theme = typesUtils.pString(coreWebclientData.Theme, 'Default')
     this.themeList = typesUtils.pArray(coreWebclientData.ThemeList, ['Default'])
 
-    const licensingData = typesUtils.pObject(appData.Licensing)
-    this.licenseKey = typesUtils.pString(licensingData.LicenseKey)
-
     const adminPanelWebclientData = typesUtils.pObject(appData.AdminPanelWebclient)
     this.entitiesOrder = typesUtils.pArray(adminPanelWebclientData.EntitiesOrder)
     this.entitiesPerPage = typesUtils.pInt(adminPanelWebclientData.EntitiesPerPage, 10)
@@ -80,9 +77,6 @@ class AdminPanelSettings {
       if (this.dbLogin === '' || this.dbHost === '' || this.dbName === '') {
         this.dismissDbError = notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_DB_ACCESS'), 0)
       }
-    }
-    if (this.licenseKey === '') {
-      notification.showError(i18n.tc('COREWEBCLIENT.ERROR_LICENSE_ABSENCE'), 0)
     }
   }
 
