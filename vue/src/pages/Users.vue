@@ -159,7 +159,8 @@ export default {
     },
 
     createMode () {
-      return this.$route.path.indexOf('/create') === this.$route.path.length - 7
+      const createIndex = this.$route.path.indexOf('/create')
+      return createIndex !== -1 && createIndex === (this.$route.path.length - 7)
     },
   },
 
