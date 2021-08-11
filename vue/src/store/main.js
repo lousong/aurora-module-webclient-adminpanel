@@ -14,10 +14,6 @@ export default {
   actions: { },
 
   getters: {
-    getApiHost (state) {
-      return process.env.API || ''
-    },
-
     getSiteName (state) {
       return state.siteName
     },

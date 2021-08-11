@@ -11,101 +11,58 @@ import urlUtils from 'src/utils/url'
 
 class AdminPanelSettings {
   constructor(appData, settings) {
-    const coreData = typesUtils.pObject(appData.Core, {})
-    const coreWebclientData = typesUtils.pObject(appData.CoreWebclient, {})
-    const licensingData = typesUtils.pObject(appData.Licensing, {})
-    const coreMobileWebclient = typesUtils.pObject(appData.CoreMobileWebclient, {})
-    const appDataSectionLogsViewerWebclient = typesUtils.pObject(appData.LogsViewerWebclient, {})
-
-    if (!_.isEmpty(coreData)) {
-      this.enableMultiTenant = typesUtils.pBool(coreData.EnableMultiTenant)
-      this.authTokenCookieExpireTime = typesUtils.pInt(coreData.AuthTokenCookieExpireTime, 30)
-      this.autodetectLanguage = typesUtils.pBool(coreData.AutodetectLanguage)
-      // this.userSelectsDateFormat = typesUtils.pBool(coreData.UserSelectsDateFormat)
-      // this.dateFormat = typesUtils.pString(coreData.DateFormat, 'DD/MM/YYYY')
-      // this.dateFormatList = typesUtils.pArray(coreData.DateFormatList, ['DD/MM/YYYY'])
-      // if (_.indexOf(this.dateFormatList, this.dateFormat) === -1) {
-      //   this.dateFormatList.unshift(this.dateFormat)
-      // }
-      this.isSystemConfigured = typesUtils.pBool(coreData.IsSystemConfigured)
-      this.language = typesUtils.pString(coreData.CommonLanguage, 'English')
-      // this.lastErrorCode = typesUtils.pInt(coreData.LastErrorCode)
-      this.shortLanguage = this._getShortLanguage(coreData)
-      this.setSiteName(coreData.SiteName)
-      // this.socialName = typesUtils.pString(coreData.SocialName)
-      this.storeAuthTokenInDB = typesUtils.pBool(coreData.StoreAuthTokenInDB)
-      // this.tenantName = typesUtils.pString(coreData.TenantName || urlUtils.getRequestParam('tenant'))
-      this.timeFormat = typesUtils.pString(coreData.TimeFormat) // 0 - 24, 1 - 12
-      // this.timezone = typesUtils.pString(coreData.Timezone)
-      // this.userId = typesUtils.pInt(coreData.UserId)
-      // this.passwordMinLength = typesUtils.pNonNegativeInt(coreData.PasswordMinLength)
-      // this.passwordMustBeComplex = typesUtils.pBool(coreData.PasswordMustBeComplex)
-      this.cookiePath = typesUtils.pString(coreData.CookiePath)
-      if (this.cookiePath === '') {
-        this.cookiePath = urlUtils.getAdminAppPath()
-      }
-      if (process.env.DEV) {
-        this.cookiePath = '/'
-      }
-      this.cookieSecure = typesUtils.pBool(coreData.CookieSecure)
-      this.version = typesUtils.pString(coreData.Version)
-      this.productName = typesUtils.pString(coreData.ProductName)
-
-      this.enableLogging = typesUtils.pBool(coreData.EnableLogging)
-      this.enableEventLogging = typesUtils.pBool(coreData.EnableEventLogging)
-      this.loggingLevel = typesUtils.pInt(coreData.LoggingLevel, 100)
-
-      // only for admin
-      this.adminHasPassword = typesUtils.pBool(coreData.AdminHasPassword)
-      this.adminLanguage = typesUtils.pString(coreData.AdminLanguage)
-      this.adminLogin = typesUtils.pString(coreData.AdminLogin)
-      // this.commonLanguage = typesUtils.pString(coreData.CommonLanguage)
-      this.dbHost = typesUtils.pString(coreData.DBHost)
-      this.dbLogin = typesUtils.pString(coreData.DBLogin)
-      this.dbName = typesUtils.pString(coreData.DBName)
-      this.saltNotEmpty = typesUtils.pBool(coreData.SaltNotEmpty)
+    const coreData = typesUtils.pObject(appData.Core)
+    this.enableMultiTenant = typesUtils.pBool(coreData.EnableMultiTenant)
+    this.authTokenCookieExpireTime = typesUtils.pInt(coreData.AuthTokenCookieExpireTime, 30)
+    this.autodetectLanguage = typesUtils.pBool(coreData.AutodetectLanguage)
+    this.isSystemConfigured = typesUtils.pBool(coreData.IsSystemConfigured)
+    this.language = typesUtils.pString(coreData.CommonLanguage, 'English')
+    this.shortLanguage = this._getShortLanguage(coreData)
+    this.setSiteName(coreData.SiteName)
+    this.storeAuthTokenInDB = typesUtils.pBool(coreData.StoreAuthTokenInDB)
+    this.timeFormat = typesUtils.pString(coreData.TimeFormat) // 0 - 24, 1 - 12
+    this.cookiePath = typesUtils.pString(coreData.CookiePath)
+    if (this.cookiePath === '') {
+      this.cookiePath = urlUtils.getAdminAppPath()
     }
-
-    if (!_.isEmpty(coreWebclientData)) {
-      // this.allowChangeSettings = typesUtils.pBool(coreWebclientData.AllowChangeSettings)
-      // this.allowClientDebug = typesUtils.pBool(coreWebclientData.AllowClientDebug)
-      // this.allowDesktopNotifications = typesUtils.pBool(coreWebclientData.AllowDesktopNotifications)
-      // this.allowMobile = typesUtils.pBool(coreWebclientData.AllowMobile)
-      // this.allowPrefetch = typesUtils.pBool(coreWebclientData.AllowPrefetch, true)
-      // this.attachmentSizeLimit = typesUtils.pNonNegativeInt(coreWebclientData.AttachmentSizeLimit)
-      // this.autoRefreshIntervalMinutes = typesUtils.pNonNegativeInt(coreWebclientData.AutoRefreshIntervalMinutes)
-      // this.customLogoutUrl = typesUtils.pString(coreWebclientData.CustomLogoutUrl)
-      // this.defaultAnonymScreenHash = typesUtils.pString(coreWebclientData.DefaultAnonymScreenHash)
-      // this.defaultUserScreenHash = typesUtils.pString(coreWebclientData.DefaultUserScreenHash)
-      // this.googleAnalyticsAccount = typesUtils.pString(coreWebclientData.GoogleAnalyticsAccount)
-      // this.headerModulesOrder = typesUtils.pArray(coreWebclientData.HeaderModulesOrder)
-      // this.isDemo = typesUtils.pBool(coreWebclientData.IsDemo)
-      // this.isMobile = typesUtils.pInt(coreWebclientData.IsMobile, -1)
-      this.languageList = typesUtils.pArray(coreWebclientData.LanguageListWithNames, { name: 'English', text: 'English' })
-      // this.multipleFilesUploadLimit = typesUtils.pNonNegativeInt(coreWebclientData.MultipleFilesUploadLimit, 50)
-      // this.showQuotaBar = typesUtils.pBool(coreWebclientData.ShowQuotaBar)
-      // this.quotaWarningPerc = typesUtils.pInt(coreWebclientData.QuotaWarningPerc)
-      this.theme = typesUtils.pString(coreWebclientData.Theme, 'Default')
-      this.themeList = typesUtils.pArray(coreWebclientData.ThemeList, ['Default'])
-      // this.hideLogout = typesUtils.pBool(coreWebclientData.HideLogout)
+    if (process.env.DEV) {
+      this.cookiePath = '/'
     }
+    this.cookieSecure = typesUtils.pBool(coreData.CookieSecure)
+    this.version = typesUtils.pString(coreData.Version)
+    this.productName = typesUtils.pString(coreData.ProductName)
+    this.enableLogging = typesUtils.pBool(coreData.EnableLogging)
+    this.enableEventLogging = typesUtils.pBool(coreData.EnableEventLogging)
+    this.loggingLevel = typesUtils.pInt(coreData.LoggingLevel, 100)
+    // only for admin
+    this.adminHasPassword = typesUtils.pBool(coreData.AdminHasPassword)
+    this.adminLanguage = typesUtils.pString(coreData.AdminLanguage)
+    this.adminLogin = typesUtils.pString(coreData.AdminLogin)
+    this.dbHost = typesUtils.pString(coreData.DBHost)
+    this.dbLogin = typesUtils.pString(coreData.DBLogin)
+    this.dbName = typesUtils.pString(coreData.DBName)
+    this.saltNotEmpty = typesUtils.pBool(coreData.SaltNotEmpty)
 
-    if (!_.isEmpty(licensingData)) {
-      this.licenseKey = typesUtils.pString(licensingData.LicenseKey)
-    }
+    const coreWebclientData = typesUtils.pObject(appData.CoreWebclient)
+    this.baseUrl = typesUtils.pString(coreWebclientData.BaseUrl)
+    this.languageList = typesUtils.pArray(coreWebclientData.LanguageListWithNames, { name: 'English', text: 'English' })
+    this.theme = typesUtils.pString(coreWebclientData.Theme, 'Default')
+    this.themeList = typesUtils.pArray(coreWebclientData.ThemeList, ['Default'])
+
+    const licensingData = typesUtils.pObject(appData.Licensing)
+    this.licenseKey = typesUtils.pString(licensingData.LicenseKey)
 
     const adminPanelWebclientData = typesUtils.pObject(appData.AdminPanelWebclient)
     this.entitiesOrder = typesUtils.pArray(adminPanelWebclientData.EntitiesOrder)
     this.entitiesPerPage = typesUtils.pInt(adminPanelWebclientData.EntitiesPerPage, 10)
     this.tabsOrder = typesUtils.pArray(adminPanelWebclientData.TabsOrder)
 
-    if (!_.isEmpty(coreMobileWebclient)) {
-      this.mobileTheme = typesUtils.pString(coreMobileWebclient.Theme, 'Default')
-      this.mobileThemeList = typesUtils.pArray(coreMobileWebclient.ThemeList, ['Default'])
-    }
-    if (!_.isEmpty(appDataSectionLogsViewerWebclient)) {
-      this.viewLastLogSize = typesUtils.pInt(appDataSectionLogsViewerWebclient.ViewLastLogSize)
-    }
+    const coreMobileWebclient = typesUtils.pObject(appData.CoreMobileWebclient)
+    this.mobileTheme = typesUtils.pString(coreMobileWebclient.Theme, 'Default')
+    this.mobileThemeList = typesUtils.pArray(coreMobileWebclient.ThemeList, ['Default'])
+
+    const appDataSectionLogsViewerWebclient = typesUtils.pObject(appData.LogsViewerWebclient)
+    this.viewLastLogSize = typesUtils.pInt(appDataSectionLogsViewerWebclient.ViewLastLogSize)
   }
 
   showErrorsIfSystemNotConfigured () {
@@ -130,11 +87,9 @@ class AdminPanelSettings {
   }
 
   showErrorIfConfigIsAccessible () {
-    const apiHost = store.getters['main/getApiHost']
-    const url = typesUtils.isNonEmptyString(apiHost) ? apiHost + '/data/settings/config.json' : 'data/settings/config.json'
     axios({
       method: 'get',
-      url,
+      url: urlUtils.getApiHost() + 'data/settings/config.json',
     })
       .then((response) => {
         const isOkResponse = !!response && response.status === 200 && !!response.data
@@ -311,6 +266,14 @@ export default {
       loggingLevel: settings.loggingLevel,
       viewLastLogSize: settings.viewLastLogSize
     }
+  },
+
+  getBaseUrl () {
+    let baseUrl = settings.baseUrl
+    if (_.isEmpty(baseUrl)) {
+      baseUrl = urlUtils.getAdminAppPath()
+    }
+    return baseUrl
   },
 
   saveAdminAccountData (data) {

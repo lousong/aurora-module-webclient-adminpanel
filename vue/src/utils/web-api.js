@@ -4,7 +4,6 @@ import { saveAs } from 'file-saver'
 import VueCookies from 'vue-cookies'
 
 import errors from 'src/utils/errors'
-import typesUtils from 'src/utils/types'
 import urlUtils from 'src/utils/url'
 
 import core from 'src/core'
@@ -18,13 +17,6 @@ export default {
         ErrorCode: 0,
         Module: moduleName,
       }
-
-      let apiHost = store.getters['main/getApiHost']
-      if (!typesUtils.isNonEmptyString(apiHost)) {
-        apiHost = urlUtils.getAdminAppPath()
-      }
-      apiHost = apiHost.replace(/\/$/, '')
-      const url = apiHost + '/?/Api/'
 
       eventBus.$emit('webApi::Request::before', parameters)
 
@@ -49,7 +41,7 @@ export default {
 
       axios({
         method: 'post',
-        url,
+        url: urlUtils.getApiHost() + '?/Api/',
         data,
         headers,
       })
@@ -89,8 +81,10 @@ export default {
         'Content-Type': 'multipart/form-data',
       }
       const authToken = store.getters['user/getAuthToken']
-      const apiHost = store.getters['main/getApiHost']
-      const url = typesUtils.isNonEmptyString(apiHost) ? apiHost + '/?/Api/' : '?/Api/'
+      if (authToken) {
+        headers.Authorization = 'Bearer ' + authToken
+      }
+
       const data = new FormData()
       data.set('Module', moduleName)
       data.set('Method', methodName)
@@ -98,12 +92,10 @@ export default {
       if (format) {
         data.set('Format', format)
       }
-      if (authToken) {
-        headers.Authorization = 'Bearer ' + authToken
-      }
+
       axios({
         method: 'post',
-        url,
+        url: urlUtils.getApiHost() + '?/Api/',
         data: data,
         headers: headers
       })

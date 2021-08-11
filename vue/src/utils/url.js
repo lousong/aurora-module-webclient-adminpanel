@@ -1,5 +1,7 @@
 import _ from 'lodash'
 
+import typesUtils from 'src/utils/types'
+
 export default {
   /**
    * Obtains application path from location object.
@@ -13,13 +15,14 @@ export default {
   },
 
   /**
-   * Obtains user application path from location object.
    * @returns {string}
    */
-  getMainAppPath () {
-    const appOrigin = window.location.origin || window.location.protocol + '//' + window.location.host
-
-    return appOrigin + window.location.pathname.replace('/adminpanel', '')
+  getApiHost () {
+    let apiHost = process.env.API
+    if (typesUtils.isNonEmptyString(apiHost) && apiHost.lastIndexOf('/') !== (apiHost.length - 1)) {
+      apiHost += '/'
+    }
+    return apiHost
   },
 
   /**
