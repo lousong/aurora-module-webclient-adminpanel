@@ -15,25 +15,20 @@
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_PASSWORD'"></div>
             <div class="col-5 ">
-              <!-- fake fields are a workaround to prevent auto-filling and saving passwords in Firefox -->
-              <input style="display:none" type="text" name="fakeusernameremembered"/>
-              <input style="display:none" type="password" name="fakepasswordremembered"/>
-              <q-input outlined dense bg-color="white" type="password" v-model="dbPassword"
-                       @keyup.enter="save" autocomplete="off" />
+              <q-input outlined dense bg-color="white" type="password" autocomplete="new-password" v-model="dbPassword"
+                       @keyup.enter="save" />
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DN_NAME'"></div>
             <div class="col-5 ">
-              <q-input outlined dense bg-color="white" ref="newPassword" v-model="dbName"
-                       @keyup.enter="save" />
+              <q-input outlined dense bg-color="white" v-model="dbName" @keyup.enter="save" />
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_HOST'"></div>
             <div class="col-5 ">
-              <q-input outlined dense bg-color="white" ref="newPassword" v-model="dbHost"
-                       @keyup.enter="save" />
+              <q-input outlined dense bg-color="white" v-model="dbHost" @keyup.enter="save" />
             </div>
           </div>
           <div class="row q-mb-xl">
