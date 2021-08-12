@@ -6,7 +6,7 @@
           <q-checkbox dense v-model="hasCheckedItems" />
         </q-item-section>
         <q-item-section>
-          <q-input rounded outlined dense v-model="enteredSearch" @keyup.enter="startSearch">
+          <q-input rounded outlined dense v-model="enteredSearch" @keyup.enter="startSearch" autocomplete="off">
             <template v-slot:append>
               <q-icon flat :ripple="false" dense class="q-btn-search search"  name="search" @click="startSearch"/>
             </template>
