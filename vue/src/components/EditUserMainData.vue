@@ -32,15 +32,10 @@ export default {
     user () {
       this.populate()
     },
-
-    publicId () {
-      this.changeStatusRequiredFields()
-    },
   },
 
   mounted () {
     this.populate()
-    this.changeStatusRequiredFields()
   },
 
   methods: {
@@ -82,12 +77,6 @@ export default {
 
     save () {
       this.$emit('save')
-    },
-
-    changeStatusRequiredFields () {
-      this.publicId.length
-        ? this.$emit('changeStatusRequiredFields', true)
-        : this.$emit('changeStatusRequiredFields', false)
     },
   },
 }
