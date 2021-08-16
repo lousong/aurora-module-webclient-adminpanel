@@ -49,7 +49,7 @@ if (fse.existsSync(srcDir)) {
   use Aurora\\System\\Api;
   use Aurora\\System\\Application;
   
-  if (is_array($_REQUEST) && count($_REQUEST) > 0) {
+  if (is_array($_GET) && count($_GET) > 0) {
   \tApi::Init();
   \tApplication::setBaseUrl(\\substr(Application::getBaseUrl(), 0, -strlen(basename(__DIR__))-1));
   \tApplication::Start();
