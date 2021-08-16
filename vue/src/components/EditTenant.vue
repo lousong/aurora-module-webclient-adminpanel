@@ -40,7 +40,10 @@
                :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_TENANT')" v-if="!createMode">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
-               :label="saveButtonText">
+               :label="$t('COREWEBCLIENT.ACTION_SAVE')" v-if="!createMode">
+        </q-btn>
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
+               :label="$t('COREWEBCLIENT.ACTION_CREATE')" v-if="createMode">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="secondary" @click="save"
                :label="$t('COREWEBCLIENT.ACTION_CANCEL')" v-if="createMode" >
@@ -99,22 +102,6 @@ export default {
 
     createMode () {
       return this.tenant?.id === 0
-    },
-
-    saveButtonText () {
-      if (this.createMode) {
-        if (this.saving) {
-          return this.$t('COREWEBCLIENT.ACTION_CREATE_IN_PROGRESS')
-        } else {
-          return this.$t('COREWEBCLIENT.ACTION_CREATE')
-        }
-      } else {
-        if (this.saving) {
-          return this.$t('COREWEBCLIENT.ACTION_SAVE_IN_PROGRESS')
-        } else {
-          return this.$t('COREWEBCLIENT.ACTION_SAVE')
-        }
-      }
     },
 
     deleting () {

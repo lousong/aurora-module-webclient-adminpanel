@@ -33,7 +33,10 @@
                :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_USER')" v-if="!createMode">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="handleSave"
-               :label="saveButtonText" :disable="!isRequiredFieldsAreFilled">
+               :label="$t('COREWEBCLIENT.ACTION_SAVE')" v-if="!createMode" :disable="!isRequiredFieldsAreFilled">
+        </q-btn>
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="handleSave"
+               :label="$t('COREWEBCLIENT.ACTION_CREATE')" v-if="createMode" :disable="!isRequiredFieldsAreFilled">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="secondary" @click="cancel"
                :label="$t('COREWEBCLIENT.ACTION_CANCEL')" v-if="createMode" >
@@ -93,22 +96,6 @@ export default {
   computed: {
     currentTenantId () {
       return this.$store.getters['tenants/getCurrentTenantId']
-    },
-
-    saveButtonText () {
-      if (this.createMode) {
-        if (this.saving) {
-          return this.$t('COREWEBCLIENT.ACTION_CREATE_IN_PROGRESS')
-        } else {
-          return this.$t('COREWEBCLIENT.ACTION_CREATE')
-        }
-      } else {
-        if (this.saving) {
-          return this.$t('COREWEBCLIENT.ACTION_SAVE_IN_PROGRESS')
-        } else {
-          return this.$t('COREWEBCLIENT.ACTION_SAVE')
-        }
-      }
     },
 
     deleting () {

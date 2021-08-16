@@ -1,95 +1,99 @@
 <template>
-  <q-scroll-area class="full-height full-width">
-    <div class="q-pa-lg ">
-      <div class="row q-mb-md">
-        <div class="col text-h5" v-t="'ADMINPANELWEBCLIENT.HEADING_DB_SETTINGS'"></div>
-      </div>
-      <q-card flat bordered class="card-edit-settings">
-        <q-card-section>
-          <div class="row q-mb-md">
-            <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_LOGIN'"></div>
-            <div class="col-5">
-              <q-input outlined dense bg-color="white" border-radius v-model="dbLogin" @keyup.enter="save" />
+  <div class="full-height full-width">
+    <q-scroll-area class="full-height full-width">
+      <div class="q-pa-lg ">
+        <div class="row q-mb-md">
+          <div class="col text-h5" v-t="'ADMINPANELWEBCLIENT.HEADING_DB_SETTINGS'"></div>
+        </div>
+        <q-card flat bordered class="card-edit-settings">
+          <q-card-section>
+            <div class="row q-mb-md">
+              <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_LOGIN'"></div>
+              <div class="col-5">
+                <q-input outlined dense bg-color="white" border-radius v-model="dbLogin" @keyup.enter="save" />
+              </div>
             </div>
-          </div>
-          <div class="row q-mb-md">
-            <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_PASSWORD'"></div>
-            <div class="col-5 ">
-              <q-input outlined dense bg-color="white" type="password" autocomplete="new-password" v-model="dbPassword"
-                       @keyup.enter="save" />
+            <div class="row q-mb-md">
+              <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_PASSWORD'"></div>
+              <div class="col-5 ">
+                <q-input outlined dense bg-color="white" type="password" autocomplete="new-password" v-model="dbPassword"
+                         @keyup.enter="save" />
+              </div>
             </div>
-          </div>
-          <div class="row q-mb-md">
-            <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DN_NAME'"></div>
-            <div class="col-5 ">
-              <q-input outlined dense bg-color="white" v-model="dbName" @keyup.enter="save" />
+            <div class="row q-mb-md">
+              <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DN_NAME'"></div>
+              <div class="col-5 ">
+                <q-input outlined dense bg-color="white" v-model="dbName" @keyup.enter="save" />
+              </div>
             </div>
-          </div>
-          <div class="row q-mb-md">
-            <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_HOST'"></div>
-            <div class="col-5 ">
-              <q-input outlined dense bg-color="white" v-model="dbHost" @keyup.enter="save" />
+            <div class="row q-mb-md">
+              <div class="col-2 q-my-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_DB_HOST'"></div>
+              <div class="col-5 ">
+                <q-input outlined dense bg-color="white" v-model="dbHost" @keyup.enter="save" />
+              </div>
             </div>
-          </div>
-          <div class="row q-mb-xl">
-            <div class="col-2 q-my-sm"></div>
-            <div class="col-5">
-              <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
-                     :label="$t('ADMINPANELWEBCLIENT.BUTTON_DB_TEST_CONNECTION')" @click="testDbConnection">
-              </q-btn>
+            <div class="row q-mb-xl">
+              <div class="col-2 q-my-sm"></div>
+              <div class="col-5">
+                <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
+                       :label="$t('ADMINPANELWEBCLIENT.BUTTON_DB_TEST_CONNECTION')" @click="testDbConnection">
+                </q-btn>
+              </div>
             </div>
-          </div>
-          <div class="row q-mb-md">
+            <div class="row q-mb-md">
+                <div class="col-2 q-my-sm"></div>
+                <div class="col-10">
+                  <q-item-label caption v-t="'ADMINPANELWEBCLIENT.HINT_DB_CREATE_TABLES'" />
+                </div>
+            </div>
+            <div class="row q-mb-md">
+              <div class="col-2 q-my-sm"></div>
+              <div class="col-5">
+                <q-btn v-if="!creatingTables" unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
+                       :label="$t('ADMINPANELWEBCLIENT.BUTTON_DB_CREATE_TABLES')" @click="askCreateTables">
+                </q-btn>
+                <q-btn v-else unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
+                       :label="$t('ADMINPANELWEBCLIENT.BUTTON_DB_CREATING_TABLES')">
+                </q-btn>
+              </div>
+            </div>
+            <div class="row q-mb-md">
               <div class="col-2 q-my-sm"></div>
               <div class="col-10">
-                <q-item-label caption v-t="'ADMINPANELWEBCLIENT.HINT_DB_CREATE_TABLES'" />
+                <q-item-label caption v-t="'ADMINPANELWEBCLIENT.HINT_UPDATE_CONFIG'"/>
               </div>
-          </div>
-          <div class="row q-mb-md">
-            <div class="col-2 q-my-sm"></div>
-            <div class="col-5">
-              <q-btn v-if="!creatingTables" unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
-                     :label="$t('ADMINPANELWEBCLIENT.BUTTON_DB_CREATE_TABLES')" @click="askCreateTables">
-              </q-btn>
-              <q-btn v-else unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
-                     :label="$t('ADMINPANELWEBCLIENT.BUTTON_DB_CREATING_TABLES')">
-              </q-btn>
             </div>
-          </div>
-          <div class="row q-mb-md">
-            <div class="col-2 q-my-sm"></div>
-            <div class="col-10">
-              <q-item-label caption v-t="'ADMINPANELWEBCLIENT.HINT_UPDATE_CONFIG'"/>
+            <div class="row q-mb-md">
+              <div class="col-2 q-my-sm"></div>
+              <div class="col-5">
+                <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
+                       :label=" $t('ADMINPANELWEBCLIENT.BUTTON_UPDATE_CONFIG') " @click="updateConfig">
+                </q-btn>
+              </div>
             </div>
-          </div>
-          <div class="row q-mb-md">
-            <div class="col-2 q-my-sm"></div>
-            <div class="col-5">
-              <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
-                     :label=" $t('ADMINPANELWEBCLIENT.BUTTON_UPDATE_CONFIG') " @click="updateConfig">
-              </q-btn>
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
-      <div class="q-mt-md text-right">
-        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
-               :label="saving ? $t('COREWEBCLIENT.ACTION_SAVE_IN_PROGRESS') : $t('COREWEBCLIENT.ACTION_SAVE')" @click="save"/>
+          </q-card-section>
+        </q-card>
+        <div class="q-mt-md text-right">
+          <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
+                 :label="$t('COREWEBCLIENT.ACTION_SAVE')" @click="save"/>
+        </div>
       </div>
-    </div>
+    </q-scroll-area>
     <q-dialog v-model="showDialog">
       <q-card>
         <q-card-section >
           {{$t('ADMINPANELWEBCLIENT.INFO_AUTHTOKEN_DB_STORED')}}
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat  :label="$t('COREWEBCLIENT.ACTION_OK')" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
     <ConfirmDialog ref="confirmDialog" />
-  </q-scroll-area>
+    <q-inner-loading style="justify-content: flex-start;" :showing="saving">
+      <q-linear-progress query />
+    </q-inner-loading>
+  </div>
 </template>
 
 <script>
