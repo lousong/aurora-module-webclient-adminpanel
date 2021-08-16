@@ -177,6 +177,10 @@ export default {
      * Method is used in doBeforeRouteLeave mixin
      */
     hasChanges () {
+      if (this.loading) {
+        return false
+      }
+
       const hasMainDataChanges = _.isFunction(this.$refs?.mainDataComponent?.hasChanges)
         ? this.$refs.mainDataComponent.hasChanges()
         : false
