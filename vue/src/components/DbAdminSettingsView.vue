@@ -40,7 +40,7 @@
                 </q-btn>
               </div>
             </div>
-            <div class="row q-mb-md">
+            <div class="row q-mb-sm">
                 <div class="col-2 q-my-sm"></div>
                 <div class="col-10">
                   <q-item-label caption v-t="'ADMINPANELWEBCLIENT.HINT_DB_CREATE_TABLES'" />
@@ -57,13 +57,13 @@
                 </q-btn>
               </div>
             </div>
-            <div class="row q-mb-md">
+            <div class="row q-mb-sm">
               <div class="col-2 q-my-sm"></div>
               <div class="col-10">
                 <q-item-label caption v-t="'ADMINPANELWEBCLIENT.HINT_UPDATE_CONFIG'"/>
               </div>
             </div>
-            <div class="row q-mb-md">
+            <div class="row">
               <div class="col-2 q-my-sm"></div>
               <div class="col-5">
                 <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary"
