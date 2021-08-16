@@ -2,6 +2,7 @@ import _ from 'lodash'
 import axios from 'axios'
 import { saveAs } from 'file-saver'
 import VueCookies from 'vue-cookies'
+import querystring from 'querystring'
 
 import errors from 'src/utils/errors'
 import urlUtils from 'src/utils/url'
@@ -11,7 +12,7 @@ import eventBus from 'src/event-bus'
 import store from 'src/store'
 
 export default {
-  sendRequest: function ({ moduleName, methodName, parameters, format }) {
+  sendRequest: function ({ moduleName, methodName, parameters }) {
     return new Promise((resolve, reject) => {
       const unknownError = {
         ErrorCode: 0,
@@ -20,21 +21,19 @@ export default {
 
       eventBus.$emit('webApi::Request::before', parameters)
 
-      const data = new FormData()
-      data.set('Module', moduleName)
-      data.set('Method', methodName)
-      data.set('Parameters', JSON.stringify(parameters))
-      if (format) {
-        data.set('Format', format)
+      const postData = {
+        Module: moduleName,
+        Method: methodName,
+      }
+      if (!_.isEmpty(parameters)) {
+        postData.Parameters = JSON.stringify(parameters)
       }
 
       // The AutnToken needs to be read from the cookie (тще акщь store) to always match the cookies sent to the server.
       // If a user is also logged in the browser, then his AppData will be received and the login screen will be displayed,
       // because the user is not a superadmin.
       const authToken = VueCookies.get('AuthToken')
-      const headers = {
-        'Content-Type': 'multipart/form-data',
-      }
+      const headers = {}
       if (authToken) {
         headers.Authorization = 'Bearer ' + authToken
       }
@@ -42,7 +41,7 @@ export default {
       axios({
         method: 'post',
         url: urlUtils.getApiHost() + '?/Api/',
-        data,
+        data: querystring.stringify(postData),
         headers,
       })
         .then((response) => {
