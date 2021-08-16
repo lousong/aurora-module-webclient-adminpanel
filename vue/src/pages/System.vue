@@ -38,7 +38,7 @@ export default {
     return {
       tabs: [],
 
-      splitterWidth: localStorage.getItem('system-splitter-width') || 20,
+      splitterWidth: typesUtils.pInt(localStorage.getItem('system-splitter-width'), 20),
 
       currentTabName: '',
     }
