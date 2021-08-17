@@ -84,8 +84,6 @@ import modulesManager from 'src/modules-manager'
 import settings from 'src/settings'
 
 import ConfirmDialog from 'src/components/ConfirmDialog'
-import EditUser from 'src/components/EditUser'
-import Empty from 'src/components/Empty'
 import StandardList from 'src/components/StandardList'
 
 import Add from 'src/assets/icons/Add'
@@ -222,7 +220,6 @@ export default {
   },
 
   async mounted () {
-    this.addRoutes()
     await this.populateFilters()
     this.populateTabs()
     this.populate()
@@ -235,38 +232,8 @@ export default {
       }
     },
 
-    addRoutes (filterRoutePart = '') {
-      if (filterRoutePart === '') {
-        this.$router.addRoute('users', { path: 'create', component: EditUser })
-      }
-      this.$router.addRoute('users', { path: filterRoutePart + 'create', component: EditUser })
-      this.$router.addRoute('users', { path: filterRoutePart + 'id/:id', component: EditUser })
-      this.$router.addRoute('users', { path: filterRoutePart + 'search/:search', component: Empty })
-      this.$router.addRoute('users', { path: filterRoutePart + 'search/:search/id/:id', component: EditUser })
-      this.$router.addRoute('users', { path: filterRoutePart + 'page/:page', component: Empty })
-      this.$router.addRoute('users', { path: filterRoutePart + 'page/:page/id/:id', component: EditUser })
-      this.$router.addRoute('users', { path: filterRoutePart + 'search/:search/page/:page', component: Empty })
-      this.$router.addRoute('users', { path: filterRoutePart + 'search/:search/page/:page/id/:id', component: EditUser })
-    },
-
     async populateFilters () {
       this.filters = await modulesManager.getFiltersForUsers()
-      this.filters.forEach(filterComponent => {
-        this.$router.addRoute('users', { path: filterComponent.filterRoute, component: Empty })
-        this.addRoutes(filterComponent.filterRoute + '/')
-      })
-      if (this.filters.length > 1) {
-        this.filters.forEach(filterComponent1 => {
-          this.filters.forEach(filterComponent2 => {
-            if (filterComponent1.filterRoute !== filterComponent2.filterRoute) {
-              const path = filterComponent1.filterRoute + '/' + filterComponent2.filterRoute
-              this.$router.addRoute('users', { path, component: Empty })
-              this.addRoutes(path + '/')
-            }
-          })
-        })
-      }
-      // TODO: if there are more than 2 filters
     },
 
     populateTabs () {
