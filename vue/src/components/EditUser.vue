@@ -63,7 +63,7 @@ import settings from 'src/settings'
 import UserModel from 'src/classes/user'
 
 import enums from 'src/enums'
-const UserRoles = enums.getUserRoles()
+let UserRoles = {}
 
 export default {
   name: 'EditUser',
@@ -116,6 +116,7 @@ export default {
   },
 
   mounted () {
+    UserRoles = enums.getUserRoles()
     this.getUserMainDataComponent()
     this.getUserOtherDataComponents()
     this.loading = false
@@ -252,7 +253,7 @@ export default {
           WriteSeparateLog: this.writeSeparateLog,
           Forced: true,
         }, mainDataParameters)
-
+        console.log('parameters', parameters)
         if (_.isFunction(this.$refs?.otherDataComponents?.forEach)) {
           this.$refs.otherDataComponents.forEach(component => {
             const otherParameters = _.isFunction(component.getSaveParameters)
