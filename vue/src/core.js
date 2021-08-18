@@ -12,7 +12,6 @@ import typesUtils from 'src/utils/types'
 import webApi from 'src/utils/web-api'
 
 import modulesManager from 'src/modules-manager'
-import routesManager from 'src/router/routes-manager'
 import settings from 'src/settings'
 
 const core = {
@@ -79,7 +78,6 @@ const core = {
       modulesManager.getModules(appData).then(() => {
         store.dispatch('user/parseAppData', appData).then(() => {
           modulesManager.initModules(appData)
-          routesManager.initRoutes()
           resolve()
         }, reject)
       }, reject)

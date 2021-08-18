@@ -5,32 +5,45 @@ import routes from './routes'
 
 import core from 'src/core'
 import store from 'src/store'
+import routesManager from 'src/router/routes-manager'
 
 Vue.use(VueRouter)
 
-const Router = new VueRouter({
-  scrollBehavior: () => ({ x: 0, y: 0 }),
-  routes,
+/*
+ * If not building with SSR mode, you can
+ * directly export the Router instantiation;
+ *
+ * The function below can be async too; either use
+ * async/await or return a Promise which resolves
+ * with the Router instance.
+ */
 
-  // Leave these as they are and change in quasar.conf.js instead!
-  // quasar.conf.js -> build -> vueRouterMode
-  // quasar.conf.js -> build -> publicPath
-  mode: process.env.VUE_ROUTER_MODE,
-  base: process.env.VUE_ROUTER_BASE
-})
+export default function (/* { store, ssrContext } */) {
+  const Router = new VueRouter({
+    scrollBehavior: () => ({ x: 0, y: 0 }),
+    routes,
 
-Router.beforeEach((to, from, next) => {
-  core.init().then(() => {
-    if (to.name === 'logout') {
-      core.logout()
-    } else if (to.name !== 'login' && !store.getters['user/isUserSuperAdmin']) {
-      next({ name: 'login' })
-    } else {
-      next()
-    }
-  }, (error) => {
-    console.log('core.init reject', error)
+    // Leave these as they are and change in quasar.conf.js instead!
+    // quasar.conf.js -> build -> vueRouterMode
+    // quasar.conf.js -> build -> publicPath
+    mode: process.env.VUE_ROUTER_MODE,
+    base: process.env.VUE_ROUTER_BASE
   })
-})
+  Router.beforeEach((to, from, next) => {
+    core.init().then(() => {
+      routesManager.initRoutes(Router)
 
-export default Router
+      if (to.name === 'logout') {
+        core.logout()
+      } else if (to.name !== 'login' && !store.getters['user/isUserSuperAdmin']) {
+        next({ name: 'login' })
+      } else {
+        next()
+      }
+    }, (error) => {
+      console.log('core.init reject', error)
+    })
+  })
+
+  return Router
+}
