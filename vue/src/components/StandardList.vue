@@ -58,7 +58,9 @@
           <span>{{ totalCountText }}</span>
         </q-item-section>
         <q-item-section side v-if="pagesCount > 1">
-          <q-pagination flat active-color="primary" color="grey-6" v-model="selectedPage" :max="pagesCount" />
+          <q-pagination flat :boundary-links="pagesCount > 5" :max-pages="5" :boundary-numbers="false"
+                        active-color="primary" color="grey-6"
+                        v-model="selectedPage" :max="pagesCount" />
         </q-item-section>
       </q-item>
       <q-separator />
