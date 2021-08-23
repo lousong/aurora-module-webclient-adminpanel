@@ -80,10 +80,18 @@ class AdminPanelSettings {
     }
   }
 
+  getBaseUrl () {
+    let baseUrl = this.baseUrl
+    if (_.isEmpty(baseUrl)) {
+      baseUrl = urlUtils.getAdminAppPath()
+    }
+    return baseUrl
+  }
+
   showErrorIfConfigIsAccessible () {
     axios({
       method: 'get',
-      url: urlUtils.getApiHost() + 'data/settings/config.json',
+      url: this.getBaseUrl() + 'data/settings/config.json',
     })
       .then((response) => {
         const isOkResponse = !!response && response.status === 200 && !!response.data
@@ -263,11 +271,7 @@ export default {
   },
 
   getBaseUrl () {
-    let baseUrl = settings.baseUrl
-    if (_.isEmpty(baseUrl)) {
-      baseUrl = urlUtils.getAdminAppPath()
-    }
-    return baseUrl
+    return settings.getBaseUrl()
   },
 
   saveAdminAccountData (data) {
