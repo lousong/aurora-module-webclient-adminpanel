@@ -246,7 +246,8 @@ export default {
       theme: settings.theme,
       mobileTheme: settings.mobileTheme,
       language: settings.language,
-      timeFormat: settings.timeFormat
+      timeFormat: settings.timeFormat,
+      autodetectLanguage: settings.autodetectLanguage
     }
   },
 
