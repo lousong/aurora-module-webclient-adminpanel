@@ -29,7 +29,7 @@ export default {
         postData.Parameters = JSON.stringify(parameters)
       }
 
-      // The AutnToken needs to be read from the cookie (тще акщь store) to always match the cookies sent to the server.
+      // The AuthToken needs to be read from the cookie (not from store) to always match the cookies sent to the server.
       // If a user is also logged in the browser, then his AppData will be received and the login screen will be displayed,
       // because the user is not a superadmin.
       const authToken = VueCookies.get('AuthToken')
