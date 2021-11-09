@@ -121,8 +121,8 @@ export default {
       tabs: [],
       selectedTab: '',
 
-      listSplitterWidth: localStorage.getItem('users-list-splitter-width') || 20,
-      tabsSplitterWidth: localStorage.getItem('users-tabs-splitter-width') || 20,
+      listSplitterWidth: typesUtils.pInt(localStorage.getItem('users-list-splitter-width'), 20),
+      tabsSplitterWidth: typesUtils.pInt(localStorage.getItem('users-tabs-splitter-width'), 20),
 
       filters: [],
       currentFiltersRoutes: {},
@@ -210,12 +210,12 @@ export default {
       }
     },
 
-    listSplitterWidth () {
-      localStorage.setItem('users-list-splitter-width', this.listSplitterWidth)
+    listSplitterWidth (listSplitterWidth) {
+      localStorage.setItem('users-list-splitter-width', listSplitterWidth)
     },
 
-    tabsSplitterWidth () {
-      localStorage.setItem('users-tabs-splitter-width', this.tabsSplitterWidth)
+    tabsSplitterWidth (tabsSplitterWidth) {
+      localStorage.setItem('users-tabs-splitter-width', tabsSplitterWidth)
     }
   },
 

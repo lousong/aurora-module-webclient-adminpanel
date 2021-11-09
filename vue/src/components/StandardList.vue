@@ -15,6 +15,9 @@
       </q-item>
       <q-separator />
     </q-list>
+    <q-inner-loading style="position: relative; min-height: 4px;" :showing="loading">
+      <q-linear-progress query />
+    </q-inner-loading>
     <q-scroll-area class="col-grow relative-position">
       <div v-if="search" class="text-right">
         <q-btn dense flat no-caps color="primary" class="no-hover q-mr-sm" :label="$t('COREWEBCLIENT.ACTION_CLEAR_SEARCH')"
@@ -47,9 +50,6 @@
           <q-separator />
         </div>
       </q-list>
-      <q-inner-loading style="justify-content: flex-start; min-height: 50px;" :showing="loading">
-        <q-linear-progress query />
-      </q-inner-loading>
     </q-scroll-area>
     <q-list class="col-auto" v-if="totalCountText || pagesCount > 1">
       <q-separator />
