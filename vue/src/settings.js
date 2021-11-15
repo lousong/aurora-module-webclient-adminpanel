@@ -1,4 +1,4 @@
-import { i18n } from 'boot/i18n'
+import { i18n, loadLanguageAsync } from 'boot/i18n'
 import axios from 'axios'
 import VueCookies from 'vue-cookies'
 import store from 'src/store'
@@ -167,7 +167,7 @@ export default {
     settings = new AdminPanelSettings(appData)
     settings.showErrorsIfSystemNotConfigured()
     if (!_.isEmpty(settings.shortLanguage) && i18n.availableLocales.indexOf(settings.shortLanguage) !== -1) {
-      i18n.locale = settings.shortLanguage
+      loadLanguageAsync(settings.shortLanguage)
     }
     VueCookies.config('', settings.cookiePath, '', settings.cookieSecure)
   },

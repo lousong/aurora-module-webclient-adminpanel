@@ -11,6 +11,32 @@ export const i18n = new VueI18n({
   preserveDirectiveContent: true
 })
 
+const loadedLanguages = ['en']
+
+function setI18nLanguage (lang) {
+  i18n.locale = lang
+  document.querySelector('html').setAttribute('lang', lang)
+  return lang
+}
+
+export function loadLanguageAsync(lang) {
+  if (i18n.locale === lang) {
+    return Promise.resolve(setI18nLanguage(lang))
+  }
+
+  if (loadedLanguages.includes(lang)) {
+    return Promise.resolve(setI18nLanguage(lang))
+  }
+
+  return import('../i18n/' + lang + '/index.json').then(
+    messages => {
+      i18n.setLocaleMessage(lang, messages.default)
+      loadedLanguages.push(lang)
+      return setI18nLanguage(lang)
+    }
+  )
+}
+
 export default ({ app }) => {
   // Set i18n instance on app
   app.i18n = i18n
