@@ -1,0 +1,199 @@
+<template>
+  <q-scroll-area class="full-height full-width relative-position">
+    <div class="q-pa-lg">
+      <div class="row q-mb-md">
+        <div class="col text-h5" v-if="!createMode" v-t="'COREWEBCLIENT.HEADING_COMMON_SETTINGS'"></div>
+        <div class="col text-h5" v-if="createMode" v-t="'ADMINPANELWEBCLIENT.HEADING_CREATE_GROUP'"></div>
+      </div>
+      <q-card flat bordered class="card-edit-settings">
+        <q-card-section>
+          <div class="row q-mb-md">
+            <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_GROUP_NAME'"></div>
+            <div class="col-5" v-if="createMode">
+              <q-input outlined dense bg-color="white" v-model="groupName"/>
+            </div>
+            <div class="col-5 q-mt-sm" v-if="!createMode">{{ groupName }}</div>
+          </div>
+        </q-card-section>
+      </q-card>
+      <div class="q-py-md text-right">
+       <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="negative" @click="deleteGroup"
+               :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_GROUP')" v-if="!createMode">
+        </q-btn>
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
+               :label="$t('COREWEBCLIENT.ACTION_SAVE')" v-if="!createMode">
+        </q-btn>
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
+               :label="$t('COREWEBCLIENT.ACTION_CREATE')" v-if="createMode">
+        </q-btn>
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="secondary" @click="routeGroups"
+               :label="$t('COREWEBCLIENT.ACTION_CANCEL')" v-if="createMode" >
+        </q-btn>
+      </div>
+    </div>
+    <q-inner-loading style="justify-content: flex-start;" :showing="loading || deleting || saving">
+      <q-linear-progress query />
+    </q-inner-loading>
+  </q-scroll-area>
+</template>
+
+<script>
+import _ from 'lodash'
+
+import errors from 'src/utils/errors'
+import notification from 'src/utils/notification'
+import typesUtils from 'src/utils/types'
+import webApi from 'src/utils/web-api'
+
+import GroupModel from 'src/classes/group'
+
+export default {
+  name: 'EditGroup',
+
+  props: {
+    deletingIds: Array,
+  },
+
+  data () {
+    return {
+      group: null,
+      groupId: 0,
+      groupName: '',
+      saving: false,
+      loading: false
+    }
+  },
+
+  computed: {
+    currentTenantId () {
+      return this.$store.getters['tenants/getCurrentTenantId']
+    },
+
+    currentGroupId () {
+      return this.$store.getters['groups/getCurrentGroupId']
+    },
+
+    allGroups () {
+      return this.$store.getters['groups/getGroups']
+    },
+
+    createMode () {
+      return this.group?.id === 0
+    },
+
+    deleting () {
+      return this.deletingIds.indexOf(this.group?.id) !== -1
+    },
+  },
+
+  async mounted () {
+    this.loading = false
+    this.saving = false
+    this.parseRoute()
+  },
+
+  watch: {
+    $route() {
+      this.parseRoute()
+    },
+
+    allGroups () {
+      this.populate()
+    },
+  },
+
+  methods: {
+    parseRoute () {
+      if (this.$route.path === '/groups/create') {
+        const group = new GroupModel({
+          TenantId: this.currentTenantId
+        })
+        this.fillUp(group)
+      } else {
+        const groupId = typesUtils.pPositiveInt(this.$route?.params?.id)
+        if (this.group?.id !== groupId) {
+          this.group = {
+            id: groupId,
+          }
+          this.populate()
+        }
+      }
+    },
+
+    populate () {
+      const group = this.$store.getters['groups/getGroup'](this.group.id)
+      if (group) {
+        this.fillUp(group)
+      }
+    },
+
+    fillUp (group) {
+      this.group = group
+      this.groupId = group.id
+      this.groupName = group.name
+    },
+
+    routeGroups () {
+      this.$router.push('/groups')
+    },
+
+    save () {
+      if (!this.saving) {
+        this.saving = true
+        const parameters = {
+          Name: this.groupName,
+          TenantId: this.group.tenantId
+        }
+        const createMode = this.createMode
+        if (!createMode) {
+          parameters.GroupId = this.currentGroupId
+        }
+        webApi.sendRequest({
+          moduleName: 'Core',
+          methodName: createMode ? 'CreateGroup' : 'UpdateGroup',
+          parameters,
+        }).then(result => {
+          if (createMode) {
+            this.handleCreateResult(result, parameters)
+          } else {
+            this.handleUpdateResult(result, parameters)
+          }
+          this.saving = false
+        }, response => {
+          this.saving = false
+          const errorConst = createMode ? 'ERROR_CREATE_ENTITY_GROUP' : 'ERROR_UPDATE_ENTITY_GROUP'
+          notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.' + errorConst)))
+        })
+      }
+    },
+
+    handleCreateResult (result) {
+      if (_.isSafeInteger(result)) {
+        notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_ENTITY_GROUP'))
+        this.loading = false
+        this.populate()
+        this.$emit('group-created', result)
+      } else {
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_ENTITY_GROUP'))
+      }
+    },
+
+    handleUpdateResult (result, data) {
+      if (result === true) {
+        this.$store.commit('groups/updateGroup', { id: this.groupId, data })
+        notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_GROUP'))
+      } else {
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_ENTITY_GROUP'))
+      }
+    },
+
+    deleteGroup () {
+      this.$emit('delete-group', this.group.id)
+    },
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

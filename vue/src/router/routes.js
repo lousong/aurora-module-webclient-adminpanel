@@ -9,6 +9,7 @@ const routes = [
       { path: '/logout', name: 'logout', component: () => import('pages/Login.vue') },
       { path: '/system', name: 'system', component: () => import('pages/System.vue') },
       { path: '/users', name: 'users', component: () => import('pages/Users.vue') },
+      { path: '/groups', name: 'groups', component: () => import('pages/Groups.vue') },
     ]
   },
   {

@@ -110,10 +110,16 @@ export default {
       this.selectedTenantId = this.currentTenantId
     }
 
-    let allPages = [{
-      pageName: 'users',
-      pageTitle: 'ADMINPANELWEBCLIENT.HEADING_USERS_SETTINGS_TABNAME',
-    }]
+    let allPages = [
+      {
+        pageName: 'groups',
+        pageTitle: 'ADMINPANELWEBCLIENT.HEADING_GROUPS_SETTINGS_TABNAME',
+      },
+      {
+        pageName: 'users',
+        pageTitle: 'ADMINPANELWEBCLIENT.HEADING_USERS_SETTINGS_TABNAME',
+      }
+    ]
 
     const otherPages = modulesManager.getPages()
     if (typesUtils.isNonEmptyArray(otherPages)) {
