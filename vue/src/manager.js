@@ -34,4 +34,10 @@ export default {
       }
     ]
   },
+
+  async getFiltersForUsers () {
+    return [
+      await import('./components/GroupFilterForUsers')
+    ]
+  },
 }

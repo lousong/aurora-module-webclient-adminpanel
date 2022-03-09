@@ -79,17 +79,18 @@ export default {
 
       deletingIds: [],
 
-      listSplitterWidth: localStorage.getItem('groups-list-splitter-width') || 20,
+      listSplitterWidth: typesUtils.pInt(localStorage.getItem('groups-list-splitter-width'), 20),
     }
   },
 
   computed: {
-    currentGroupId () {
-      return this.$store.getters['groups/getCurrentGroupId']
+    currentTenantId () {
+      return this.$store.getters['tenants/getCurrentTenantId']
     },
 
     allGroups () {
-      return this.$store.getters['groups/getGroups']
+      const groups = this.$store.getters['groups/getGroups']
+      return typesUtils.pArray(groups[this.currentTenantId])
     },
 
     pagesCount () {
@@ -124,7 +125,6 @@ export default {
 
     allGroups () {
       this.populate()
-      let isRouteChanged = false
       if (this.justCreatedId && this.allGroups.find(group => {
         return group.id === this.justCreatedId
       })) {
@@ -132,12 +132,8 @@ export default {
           return group.id === this.justCreatedId
         })) {
           this.route(this.justCreatedId)
-          isRouteChanged = true
         }
         this.justCreatedId = 0
-      }
-      if (this.selectedGroupId === 0 && !isRouteChanged) {
-        this.route(this.currentGroupId)
       }
     },
 
@@ -155,25 +151,13 @@ export default {
       }
     },
 
-    currentGroupId () {
-      if (this.currentGroupId !== this.selectedGroupId) {
-        this.route(this.currentGroupId)
-      }
-    },
-
-    selectedGroupId () {
-      if (this.currentGroupId !== this.selectedGroupId && this.selectedGroupId !== 0) {
-        this.$store.commit('groups/setCurrentGroupId', this.selectedGroupId)
-      }
-    },
-
     listSplitterWidth () {
       localStorage.setItem('groups-list-splitter-width', this.listSplitterWidth)
     },
   },
 
   mounted () {
-    this.$store.dispatch('groups/requestGroups')
+    this.requestGroups()
     this.$router.addRoute('groups', { path: 'id/:id', component: EditGroup })
     this.$router.addRoute('groups', { path: 'create', component: EditGroup })
     this.$router.addRoute('groups', { path: 'search/:search', component: Empty })
@@ -186,6 +170,12 @@ export default {
   },
 
   methods: {
+    requestGroups () {
+      this.$store.dispatch('groups/requestGroups', {
+        tenantId: this.currentTenantId
+      })
+    },
+
     populate () {
       const search = this.search.toLowerCase()
       const groups = search === ''
@@ -220,7 +210,7 @@ export default {
     handleCreateGroup (id) {
       this.justCreatedId = id
       this.route()
-      this.$store.dispatch('groups/requestGroups')
+      this.requestGroups()
     },
 
     afterCheck (ids) {
@@ -259,8 +249,6 @@ export default {
         methodName: 'DeleteGroups',
         parameters: {
           IdList: ids,
-          DeletionConfirmedByAdmin: true,
-          GroupId: this.currentGroupId,
           Type: 'Group',
         },
       }).then(result => {
@@ -282,12 +270,12 @@ export default {
         } else {
           notification.showError(this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_GROUP_PLURAL', ids.length))
         }
-        this.$store.dispatch('groups/requestGroups')
+        this.requestGroups()
       }, error => {
         this.deletingIds = []
         this.loadingGroups = false
         notification.showError(errors.getTextFromResponse(error, this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_GROUP_PLURAL', ids.length)))
-        this.$store.dispatch('groups/requestGroups')
+        this.requestGroups()
       })
     },
   },

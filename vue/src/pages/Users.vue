@@ -1,24 +1,45 @@
 <template>
   <q-splitter :after-class="!showTabs ? 'q-splitter__right-panel' : ''" class="full-height full-width"
-              v-model="listSplitterWidth" :limits="[10,30]">
+              v-model="listSplitterWidth" :limits="[10,30]"
+  >
     <template v-slot:before>
       <div class="flex column full-height">
         <q-toolbar class="col-auto q-py-sm list-border">
           <div class="flex">
             <q-btn flat color="grey-8" size="mg" no-wrap :disable="checkedIds.length === 0"
-                   @click="askDeleteCheckedUsers">
-              <Trash></Trash>
+                   @click="askDeleteCheckedUsers"
+            >
+              <trash-icon></trash-icon>
               <span>{{ countLabel }}</span>
               <q-tooltip>
                 {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
               </q-tooltip>
             </q-btn>
-            <q-btn flat color="grey-8" size="mg" @click="routeCreateUser" v-if="allowCreateUser">
-              <Add></Add>
+            <q-btn flat color="grey-8" size="mg" @click="routeCreateUser" v-if="allowCreateUser"
+                   :disable="checkedOrSelectedUsersIds.length === 0"
+            >
+              <add-icon></add-icon>
               <q-tooltip>
                 {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
               </q-tooltip>
             </q-btn>
+            <span v-if="groups.length > 0">
+              <q-btn-dropdown flat color="grey-8" size="mg">
+                <template v-slot:label>
+                  <add-to-group-icon></add-to-group-icon>
+                  <q-tooltip>
+                    {{ $t('ADMINPANELWEBCLIENT.ACTION_ADD_USER_TO_GROUP') }}
+                  </q-tooltip>
+                </template>
+                <q-list>
+                  <q-item clickable v-close-popup v-for="group in groups" :key="group.id" @click="addUsersToGroup(group.id)">
+                    <q-item-section>
+                      <q-item-label>{{ group.name }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
+            </span>
             <component v-for="filter in filters" :key="filter.name" v-bind:is="filter" @filter-selected="routeFilter"
                        @filter-filled-up="populateFiltersGetParameters" @allow-create-user="handleAllowCreateUser"/>
           </div>
@@ -86,8 +107,9 @@ import settings from 'src/settings'
 import ConfirmDialog from 'src/components/ConfirmDialog'
 import StandardList from 'src/components/StandardList'
 
-import Add from 'src/assets/icons/Add'
-import Trash from 'src/assets/icons/Trash'
+import AddIcon from 'src/assets/icons/Add'
+import AddToGroupIcon from 'src/assets/icons/AddToGroup'
+import TrashIcon from 'src/assets/icons/Trash'
 
 export default {
   name: 'Domains',
@@ -95,8 +117,9 @@ export default {
   components: {
     ConfirmDialog,
     StandardList,
-    Add,
-    Trash
+    AddIcon,
+    AddToGroupIcon,
+    TrashIcon
   },
 
   data() {
@@ -160,6 +183,21 @@ export default {
       const createIndex = this.$route.path.indexOf('/create')
       return createIndex !== -1 && createIndex === (this.$route.path.length - 7)
     },
+
+    groups () {
+      const groups = this.$store.getters['groups/getGroups']
+      return typesUtils.pArray(groups[this.currentTenantId])
+    },
+
+    checkedOrSelectedUsersIds () {
+      if (this.checkedIds.length > 0) {
+        return this.checkedIds
+      }
+      if (this.selectedUserId !== 0) {
+        return [this.selectedUserId]
+      }
+      return []
+    }
   },
 
   watch: {
@@ -396,6 +434,16 @@ export default {
         this.loadingUsers = false
         notification.showError(errors.getTextFromResponse(error, this.$tc('ADMINPANELWEBCLIENT.ERROR_DELETE_ENTITIES_USER_PLURAL', ids.length)))
       })
+    },
+
+    addUsersToGroup (groupId) {
+      if (this.checkedOrSelectedUsersIds.length > 0) {
+        this.$store.dispatch('groups/addUsersToGroup', {
+          tenantId: this.currentTenantId,
+          groupId,
+          usersIds: this.checkedOrSelectedUsersIds
+        })
+      }
     },
   },
 }

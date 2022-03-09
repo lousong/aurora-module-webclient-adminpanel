@@ -1,7 +1,10 @@
 import Vue from 'vue'
+import { i18n } from 'src/boot/i18n'
 import _ from 'lodash'
 import store from 'src/store'
 
+import errors from 'src/utils/errors'
+import notification from 'src/utils/notification'
 import types from 'src/utils/types'
 import webApi from 'src/utils/web-api'
 
@@ -11,62 +14,78 @@ export default {
   namespaced: true,
 
   state: {
-    groups: [],
-    currentGroupId: null,
+    groups: {},
   },
 
   mutations: {
-    setGroups (state, { groups }) {
-      state.groups = groups
-      if (groups.length === 0) {
-        state.currentGroupId = null
-      } else if (!groups.find(group => group.id === state.currentGroupId)) {
-        state.currentGroupId = groups[0].id
-      }
+    setGroups (state, { tenantId, groups }) {
+      Vue.set(state.groups, tenantId, groups)
     },
 
-    setCurrentGroupId (state, groupId) {
-      state.currentGroupId = groupId
-    },
-
-    updateGroup (state, { id, data }) {
-      const groupIndex = state.groups.findIndex(group => group.id === id)
+    updateGroup (state, { tenantId, id, data }) {
+      const tenantGroups = types.pArray(state.groups[tenantId])
+      const groupIndex = tenantGroups.findIndex(group => group.id === id)
       if (groupIndex !== -1) {
         const group = new GroupModel()
-        group.copy(state.groups[groupIndex])
+        group.copy(tenantGroups[groupIndex])
         group.update(data.Name, data.SiteName, data)
-        Vue.set(state.groups, groupIndex, group)
+        Vue.set(state.groups[tenantId], groupIndex, group)
       }
     },
   },
 
   actions: {
-    parseGroups ({ commit }, groupsServerData) {
-      const groups = _.map(groupsServerData, function (serverData) {
+    parseGroups ({ commit }, { tenantId, groupsData }) {
+      const groups = _.map(groupsData, function (serverData) {
         return new GroupModel(serverData)
       })
-      commit('setGroups', { groups })
+      commit('setGroups', { tenantId, groups })
     },
 
-    requestGroups ({ dispatch }) {
+    requestGroups ({ dispatch }, { tenantId }) {
       if (store.getters['user/isUserSuperAdmin']) {
         webApi.sendRequest({
           moduleName: 'Core',
           methodName: 'GetGroups',
           parameters: {
-            TenantId: store.getters['tenants/getCurrentTenantId']
+            TenantId: tenantId
+          },
+        }).then(result => {
+          if (_.isArray(result?.Items)) {
+            dispatch('parseGroups', { tenantId, groupsData: result.Items })
+          } else {
+            dispatch('parseGroups', { tenantId, groupsData: [] })
+          }
+        }, response => {
+          dispatch('parseGroups', { tenantId, groupsData: [] })
+          notification.showError(errors.getTextFromResponse(response))
+        })
+      }
+    },
+
+    addUsersToGroup ({ state, dispatch }, { tenantId, groupId, usersIds }) {
+      if (store.getters['user/isUserSuperAdmin']) {
+        webApi.sendRequest({
+          moduleName: 'Core',
+          methodName: 'AddUsersToGroup',
+          parameters: {
+            GroupId: groupId,
+            UserIds: usersIds
           },
         }).then(result => {
           console.log('result', result)
-          if (_.isArray(result?.Items)) {
-            dispatch('parseGroups', result.Items)
+          if (result) {
+            const tenantGroups = types.pArray(state.groups[tenantId])
+            const group = tenantGroups.find(group => group.id === groupId)
+            if (group) {
+              store.commit('user/addUsersToGroup', { group, usersIds })
+            }
+            notification.showReport(i18n.tc('ADMINPANELWEBCLIENT.REPORT_ADD_TO_GROUP_PLURAL', usersIds.length))
           } else {
-            dispatch('parseGroups', [])
+            notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_ADD_TO_GROUP_PLURAL', usersIds.length))
           }
         }, response => {
-          dispatch('parseGroups', [])
-          // Do not show error because groups are requested after savind database settings and tables could be not created yet
-          // notification.showError(errors.getTextFromResponse(response))
+          notification.showError(errors.getTextFromResponse(response, i18n.tc('ADMINPANELWEBCLIENT.ERROR_ADD_TO_GROUP_PLURAL', usersIds.length)))
         })
       }
     },
@@ -74,23 +93,13 @@ export default {
 
   getters: {
     getGroups (state) {
-      return types.pArray(state.groups)
-    },
-
-    getCurrentGroupId (state) {
-      return state.currentGroupId
+      return types.pObject(state.groups)
     },
 
     getGroup (state) {
-      return (id) => {
-        return state.groups.find(group => group.id === id)
-      }
-    },
-
-    getGroupName (state) {
-      return (id) => {
-        const group = state.groups.find(group => group.id === id)
-        return types.pString(group?.name)
+      return (tenantId, id) => {
+        const tenantGroups = types.pArray(state.groups[tenantId])
+        return tenantGroups.find(group => group.id === id)
       }
     },
   },

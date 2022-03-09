@@ -74,7 +74,7 @@ export default {
           }
         }, response => {
           dispatch('parseTenants', [])
-          // Do not show error because tenants are requested after savind database settings and tables could be not created yet
+          // Do not show error because tenants are requested after saving database settings and tables could be not created yet
           // notification.showError(errors.getTextFromResponse(response))
         })
       }

@@ -1,0 +1,132 @@
+<template>
+  <div v-if="filterOptions.length > 0">
+    <q-select outlined dense class="bg-white groups-select"
+              v-model="currentFilter" :options="filterOptions">
+      <template v-slot:selected>
+        <div class="ellipsis">{{ currentFilter.label }}</div>
+      </template>
+    </q-select>
+  </div>
+</template>
+
+<script>
+import typesUtils from 'src/utils/types'
+
+export default {
+  name: 'GroupFilterForUsers',
+
+  filterRoute: 'group/:group',
+
+  data () {
+    return {
+      filterOptions: [],
+      filterValue: null,
+      currentFilter: null,
+    }
+  },
+
+  computed: {
+    currentTenantId () {
+      return this.$store.getters['tenants/getCurrentTenantId']
+    },
+
+    visible () {
+      return this.filterOptions.length > 0
+    },
+
+    allGroupLists () {
+      return this.$store.getters['groups/getGroups']
+    },
+
+    groups () {
+      return typesUtils.pArray(this.allGroupLists[this.currentTenantId])
+    }
+  },
+
+  watch: {
+    $route (to, from) {
+      this.fillUpFilterValue()
+      this.currentFilter = this.findCurrentFilter()
+    },
+
+    filterOptions () {
+      this.fillUpFilterValue()
+      this.currentFilter = this.findCurrentFilter()
+    },
+
+    currentTenantId () {
+      this.requestGroups()
+    },
+
+    currentFilter (option) {
+      this.selectFilter(option.value)
+    },
+
+    groups () {
+      this.fillUpFilterOptions()
+    }
+  },
+
+  mounted () {
+    this.fillUpFilterOptions()
+    this.requestGroups()
+  },
+
+  methods: {
+    requestGroups () {
+      this.$store.dispatch('groups/requestGroups', {
+        tenantId: this.currentTenantId
+      })
+    },
+
+    fillUpFilterOptions () {
+      const options = this.groups.map(group => {
+        return {
+          label: group.name,
+          value: group.id,
+        }
+      })
+      if (options.length > 0) {
+        options.unshift({
+          label: this.$t('ADMINPANELWEBCLIENT.LABEL_ALL_GROUPS'),
+          value: -1,
+        })
+      }
+      this.filterOptions = options
+      this.currentFilter = this.findCurrentFilter()
+    },
+
+    findCurrentFilter () {
+      if (this.filterOptions.length) {
+        const option = this.filterOptions.find(filter => filter.value === this.filterValue)
+        return option || this.filterOptions[0]
+      }
+      return ''
+    },
+
+    fillUpFilterValue () {
+      this.filterValue = typesUtils.pInt(this.$route?.params?.group, -1)
+      this.$emit('filter-filled-up', {
+        GroupId: this.filterValue
+      })
+    },
+
+    selectFilter (value) {
+      if (value === -1) {
+        this.$emit('filter-selected', {
+          routeName: 'group',
+        })
+      } else {
+        this.$emit('filter-selected', {
+          routeName: 'group',
+          routeValue: value,
+        })
+      }
+    },
+  },
+}
+</script>
+
+<style scoped>
+
+</style>

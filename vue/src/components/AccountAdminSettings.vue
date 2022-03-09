@@ -124,7 +124,6 @@ export default {
       const oldPassword = _.trim(this.oldPassword)
       const newPassword = _.trim(this.newPassword)
       const confirmNewPassword = _.trim(this.confirmNewPassword)
-      console.log(this.adminHasPassword)
 
       if (oldPassword === '' && newPassword === '' && confirmNewPassword === '') {
         return true

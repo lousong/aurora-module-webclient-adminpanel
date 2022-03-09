@@ -253,7 +253,6 @@ export default {
           WriteSeparateLog: this.writeSeparateLog,
           Forced: true,
         }, mainDataParameters)
-        console.log('parameters', parameters)
         if (_.isFunction(this.$refs?.otherDataComponents?.forEach)) {
           this.$refs.otherDataComponents.forEach(component => {
             const otherParameters = _.isFunction(component.getSaveParameters)

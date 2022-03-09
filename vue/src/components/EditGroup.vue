@@ -9,10 +9,9 @@
         <q-card-section>
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_GROUP_NAME'"></div>
-            <div class="col-5" v-if="createMode">
+            <div class="col-5">
               <q-input outlined dense bg-color="white" v-model="groupName"/>
             </div>
-            <div class="col-5 q-mt-sm" v-if="!createMode">{{ groupName }}</div>
           </div>
         </q-card-section>
       </q-card>
@@ -69,10 +68,6 @@ export default {
       return this.$store.getters['tenants/getCurrentTenantId']
     },
 
-    currentGroupId () {
-      return this.$store.getters['groups/getCurrentGroupId']
-    },
-
     allGroups () {
       return this.$store.getters['groups/getGroups']
     },
@@ -121,7 +116,7 @@ export default {
     },
 
     populate () {
-      const group = this.$store.getters['groups/getGroup'](this.group.id)
+      const group = this.$store.getters['groups/getGroup'](this.currentTenantId, this.group.id)
       if (group) {
         this.fillUp(group)
       }
@@ -146,7 +141,7 @@ export default {
         }
         const createMode = this.createMode
         if (!createMode) {
-          parameters.GroupId = this.currentGroupId
+          parameters.GroupId = this.group.id
         }
         webApi.sendRequest({
           moduleName: 'Core',
@@ -180,7 +175,7 @@ export default {
 
     handleUpdateResult (result, data) {
       if (result === true) {
-        this.$store.commit('groups/updateGroup', { id: this.groupId, data })
+        this.$store.commit('groups/updateGroup', { tenantId: this.currentTenantId, id: this.groupId, data })
         notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_GROUP'))
       } else {
         notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_ENTITY_GROUP'))
