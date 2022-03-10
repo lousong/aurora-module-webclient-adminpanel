@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { i18n } from 'src/boot/i18n'
 import _ from 'lodash'
 import store from 'src/store'
+import cache from 'src/cache'
 
 import errors from 'src/utils/errors'
 import notification from 'src/utils/notification'
@@ -73,12 +74,11 @@ export default {
             UserIds: usersIds
           },
         }).then(result => {
-          console.log('result', result)
           if (result) {
             const tenantGroups = types.pArray(state.groups[tenantId])
             const group = tenantGroups.find(group => group.id === groupId)
             if (group) {
-              store.commit('user/addUsersToGroup', { group, usersIds })
+              cache.addUsersToGroup(group, usersIds)
             }
             notification.showReport(i18n.tc('ADMINPANELWEBCLIENT.REPORT_ADD_TO_GROUP_PLURAL', usersIds.length))
           } else {

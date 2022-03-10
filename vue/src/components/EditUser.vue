@@ -25,6 +25,41 @@
           <component v-for="component in otherDataComponents" :key="component.name" v-bind:is="component"
                      ref="otherDataComponents" :currentTenantId="currentTenantId" :user="user" :createMode="createMode"
                      @save="handleSave" />
+          <div class="row q-mt-md" v-if="!createMode && allTenantGroups.length > 0">
+            <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_USER_GROUPS'"></div>
+            <div class="col-10">
+              <q-select
+                dense outlined bg-color="white"
+                use-input use-chips multiple
+                v-model="selectedGroupOptions" :options="groupOptions"
+                @filter="getGroupOptions"
+              >
+                <template v-slot:selected>
+                  <span v-if="selectedGroupOptions">
+                    <q-chip flat v-for="option in selectedGroupOptions" :key="option.value" removable @remove="removeFromSelectedGroups(option.value)">
+                      <div>
+                        {{ option.label }}
+                      </div>
+                    </q-chip>
+                  </span>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey" v-t="'ADMINPANELWEBCLIENT.LABEL_GROUPS_NO_OPTIONS'"></q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:option="scope">
+                  <q-item v-close-popup v-bind="scope.itemProps" v-on="scope.itemEvents">
+                    <q-item-section class="non-selectable">
+                      <q-item-label>
+                        {{ scope.opt.label }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+          </div>
         </q-card-section>
       </q-card>
       <div class="q-pt-md text-right">
@@ -85,6 +120,9 @@ export default {
       isTenantAdmin: false,
       writeSeparateLog: false,
 
+      selectedGroupOptions: [],
+      groupOptions: [],
+
       loading: false,
       saving: false,
     }
@@ -93,6 +131,11 @@ export default {
   computed: {
     currentTenantId () {
       return this.$store.getters['tenants/getCurrentTenantId']
+    },
+
+    allTenantGroups () {
+      const groups = this.$store.getters['groups/getGroups']
+      return typesUtils.pArray(groups[this.currentTenantId])
     },
 
     deleting () {
@@ -104,6 +147,17 @@ export default {
     $route(to, from) {
       this.parseRoute()
       this.getUserMainDataComponent()
+    },
+
+    'user.groups' () {
+      if (_.isArray(this.user.groups)) {
+        this.selectedGroupOptions = this.user.groups.map(group => {
+          return {
+            label: group.name,
+            value: group.id
+          }
+        })
+      }
     },
   },
 
@@ -157,6 +211,12 @@ export default {
       this.publicId = user.publicId
       this.isTenantAdmin = user.role === UserRoles.TenantAdmin
       this.writeSeparateLog = user.writeSeparateLog
+      this.selectedGroupOptions = user.groups.map(group => {
+        return {
+          label: group.name,
+          value: group.id
+        }
+      })
     },
 
     populate () {
@@ -172,6 +232,29 @@ export default {
           }
         }
       })
+    },
+
+    getGroupOptions (search, update, abort) {
+      const searchLowerCase = search.toLowerCase()
+      const selectedGroupsIds = this.selectedGroupOptions.map(option => option.value)
+      let groups = this.allTenantGroups.filter(group => selectedGroupsIds.indexOf(group.id) === -1)
+      if (searchLowerCase !== '') {
+        groups = groups.filter(group => group.name.toLowerCase().indexOf(searchLowerCase) !== -1)
+      }
+      update(() => {
+        this.groupOptions = groups
+          .map(group => {
+            return {
+              label: group.name,
+              value: group.id
+            }
+          })
+          .slice(0, 100)
+      })
+    },
+
+    removeFromSelectedGroups (value) {
+      this.selectedGroupOptions = this.selectedGroupOptions.filter(option => option.value !== value)
     },
 
     /**
@@ -191,7 +274,13 @@ export default {
         })
         : false
       return hasMainDataChanges || hasOtherDataChanges || this.isTenantAdmin !== (this.user?.role === UserRoles.TenantAdmin) ||
-        this.writeSeparateLog !== this.user?.writeSeparateLog
+        this.writeSeparateLog !== this.user?.writeSeparateLog || this.hasGroupChanges()
+    },
+
+    hasGroupChanges () {
+      const selectedIds = this.selectedGroupOptions.map(option => option.value).sort()
+      const userIds = (this.user.groups || []).map(group => group.id).sort()
+      return !_.isEqual(selectedIds, userIds)
     },
 
     /**
@@ -252,6 +341,7 @@ export default {
           Role: this.isTenantAdmin ? UserRoles.TenantAdmin : UserRoles.NormalUser,
           WriteSeparateLog: this.writeSeparateLog,
           Forced: true,
+          GroupIds: this.selectedGroupOptions.map(option => option.value)
         }, mainDataParameters)
         if (_.isFunction(this.$refs?.otherDataComponents?.forEach)) {
           this.$refs.otherDataComponents.forEach(component => {
@@ -294,7 +384,7 @@ export default {
     handleUpdateResult (result, parameters) {
       if (result === true) {
         cache.getUser(parameters.TenantId, parameters.UserId).then(({ user }) => {
-          user.update(parameters)
+          user.update(parameters, this.allTenantGroups)
           this.populate()
         })
         notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_USER'))

@@ -39,6 +39,7 @@ export default {
       })
     })
   },
+
   getUser (tenantId, userId) {
     return new Promise((resolve, reject) => {
       let user = users.find(user => {
@@ -70,6 +71,14 @@ export default {
           notification.showError(errors.getTextFromResponse(response))
           resolve({ user: null, userId })
         })
+      }
+    })
+  },
+
+  addUsersToGroup (group, usersIds) {
+    users.forEach(user => {
+      if (usersIds.indexOf(user.id) !== -1) {
+        user.addGroup(group)
       }
     })
   },

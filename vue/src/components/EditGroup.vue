@@ -10,7 +10,7 @@
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_GROUP_NAME'"></div>
             <div class="col-5">
-              <q-input outlined dense bg-color="white" v-model="groupName"/>
+              <q-input outlined dense bg-color="white" v-model="groupName" @keyup.enter="save"/>
             </div>
           </div>
         </q-card-section>
@@ -25,7 +25,7 @@
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
                :label="$t('COREWEBCLIENT.ACTION_CREATE')" v-if="createMode">
         </q-btn>
-        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="secondary" @click="routeGroups"
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="secondary" @click="cancelCreate"
                :label="$t('COREWEBCLIENT.ACTION_CANCEL')" v-if="createMode" >
         </q-btn>
       </div>
@@ -81,6 +81,14 @@ export default {
     },
   },
 
+  beforeRouteLeave (to, from, next) {
+    this.doBeforeRouteLeave(to, from, next)
+  },
+
+  beforeRouteUpdate (to, from, next) {
+    this.doBeforeRouteLeave(to, from, next)
+  },
+
   async mounted () {
     this.loading = false
     this.saving = false
@@ -128,8 +136,28 @@ export default {
       this.groupName = group.name
     },
 
-    routeGroups () {
+    cancelCreate () {
+      this.revertChanges()
       this.$router.push('/groups')
+    },
+
+    /**
+     * Method is used in doBeforeRouteLeave mixin
+     */
+    hasChanges () {
+      if (this.loading) {
+        return false
+      }
+      return this.group?.name !== this.groupName
+    },
+
+    /**
+     * Method is used in doBeforeRouteLeave mixin,
+     * do not use async methods - just simple and plain reverting of values
+     * !! hasChanges method must return true after executing revertChanges method
+     */
+    revertChanges () {
+      this.groupName = this.group?.name
     },
 
     save () {
@@ -166,7 +194,7 @@ export default {
       if (_.isSafeInteger(result)) {
         notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_ENTITY_GROUP'))
         this.loading = false
-        this.populate()
+        this.revertChanges()
         this.$emit('group-created', result)
       } else {
         notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_ENTITY_GROUP'))
@@ -176,6 +204,7 @@ export default {
     handleUpdateResult (result, data) {
       if (result === true) {
         this.$store.commit('groups/updateGroup', { tenantId: this.currentTenantId, id: this.groupId, data })
+        this.populate()
         notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_UPDATE_ENTITY_GROUP'))
       } else {
         notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_UPDATE_ENTITY_GROUP'))

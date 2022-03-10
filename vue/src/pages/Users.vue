@@ -15,9 +15,7 @@
                 {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
               </q-tooltip>
             </q-btn>
-            <q-btn flat color="grey-8" size="mg" @click="routeCreateUser" v-if="allowCreateUser"
-                   :disable="checkedOrSelectedUsersIds.length === 0"
-            >
+            <q-btn flat color="grey-8" size="mg" @click="routeCreateUser" v-if="allowCreateUser">
               <add-icon></add-icon>
               <q-tooltip>
                 {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}

@@ -1,8 +1,11 @@
+import Vue from 'vue'
 import _ from 'lodash'
 
 import typesUtils from 'src/utils/types'
 
 import enums from 'src/enums'
+
+import GroupModel from 'src/classes/group'
 
 class UserModel {
   constructor (tenantId, serverData, completeData = null) {
@@ -13,6 +16,8 @@ class UserModel {
     this.uuid = typesUtils.pString(serverData?.UUID)
     this.quotaBytes = typesUtils.pInt(serverData?.QuotaBytes)
 
+    Vue.set(this, 'groups', typesUtils.pArray(serverData.Groups).map(groupData => new GroupModel(groupData)))
+
     this.setCompleteData(completeData)
   }
 
@@ -22,7 +27,7 @@ class UserModel {
     this.update(data)
   }
 
-  update (data) {
+  update (data, allTenantGroups = null) {
     const UserRoles = enums.getUserRoles()
     this.role = typesUtils.pEnum(data?.Role, UserRoles, UserRoles.Anonymous)
     this.writeSeparateLog = typesUtils.pBool(data?.WriteSeparateLog)
@@ -33,6 +38,17 @@ class UserModel {
 
     if (data?.QuotaBytes) {
       this.quotaBytes = typesUtils.pInt(data?.QuotaBytes)
+    }
+
+    if (_.isArray(allTenantGroups)) {
+      const groupIds = typesUtils.pArray(data?.GroupIds)
+      Vue.set(this, 'groups', groupIds.map(id => allTenantGroups.find(group => group.id === id)))
+    }
+  }
+
+  addGroup (groupToAdd) {
+    if (!this.groups.find(group => group.id === groupToAdd.id)) {
+      Vue.set(this, 'groups', this.groups.concat([groupToAdd]))
     }
   }
 
