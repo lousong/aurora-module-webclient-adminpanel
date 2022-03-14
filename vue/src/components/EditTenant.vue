@@ -45,7 +45,7 @@
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
                :label="$t('COREWEBCLIENT.ACTION_CREATE')" v-if="createMode">
         </q-btn>
-        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="secondary" @click="save"
+        <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="secondary" @click="cancel"
                :label="$t('COREWEBCLIENT.ACTION_CANCEL')" v-if="createMode" >
         </q-btn>
       </div>
@@ -109,6 +109,14 @@ export default {
     },
   },
 
+  beforeRouteLeave (to, from, next) {
+    this.doBeforeRouteLeave(to, from, next)
+  },
+
+  beforeRouteUpdate (to, from, next) {
+    this.doBeforeRouteLeave(to, from, next)
+  },
+
   async mounted () {
     this.loading = false
     this.saving = false
@@ -163,6 +171,31 @@ export default {
       this.tenantSiteName = tenant.siteName
       this.description = tenant.completeData?.Description
       this.webDomain = tenant.completeData?.WebDomain
+    },
+
+    /**
+     * Method is used in doBeforeRouteLeave mixin
+     */
+    hasChanges () {
+      if (this.loading) {
+        return false
+      }
+      return this.tenant?.name !== this.tenantName || this.tenant?.siteName !== this.tenantSiteName ||
+        this.tenant?.completeData?.Description !== this.description || this.tenant?.completeData?.WebDomain !== this.webDomain
+    },
+
+    /**
+     * Method is used in doBeforeRouteLeave mixin,
+     * do not use async methods - just simple and plain reverting of values
+     * !! hasChanges method must return true after executing revertChanges method
+     */
+    revertChanges () {
+      this.fillUp(this.tenant)
+    },
+
+    cancel () {
+      this.revertChanges()
+      this.$emit('cancel-create')
     },
 
     save () {

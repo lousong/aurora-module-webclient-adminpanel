@@ -394,6 +394,7 @@ export default {
     },
 
     cancel () {
+      this.revertChanges()
       this.$emit('cancel-create')
     },
 
