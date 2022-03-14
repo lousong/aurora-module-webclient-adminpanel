@@ -123,6 +123,11 @@ export default {
       }
     },
 
+    currentTenantId () {
+      this.$router.push('/groups')
+      this.requestGroups()
+    },
+
     allGroups () {
       this.populate()
       if (this.justCreatedId && this.allGroups.find(group => {

@@ -22,7 +22,7 @@
               </q-tooltip>
             </q-btn>
             <span v-if="groups.length > 0">
-              <q-btn-dropdown flat color="grey-8" size="mg">
+              <q-btn-dropdown flat color="grey-8" size="mg" :disable="checkedOrSelectedUsersIds.length === 0">
                 <template v-slot:label>
                   <add-to-group-icon></add-to-group-icon>
                   <q-tooltip>

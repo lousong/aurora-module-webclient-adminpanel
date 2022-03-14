@@ -13,6 +13,14 @@
               <q-input outlined dense bg-color="white" v-model="groupName" @keyup.enter="save"/>
             </div>
           </div>
+          <div class="row q-mb-md">
+            <div class="col-2 q-mt-sm"></div>
+            <div class="col-5">
+              <a href="javascript:void(0)" v-t="'ADMINPANELWEBCLIENT.ACTION_SHOW_GROUP_USERS'"
+                 @click="showGroupUsers"
+              ></a>
+            </div>
+          </div>
         </q-card-section>
       </q-card>
       <div class="q-py-md text-right">
@@ -160,28 +168,41 @@ export default {
       this.groupName = this.group?.name
     },
 
+    isValid () {
+      if (_.trim(this.groupName) === '') {
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_GROUP_NAME_EMPTY'))
+        return false
+      }
+      return true
+    },
+
+    getSaveParameters () {
+      const parameters = {
+        Name: this.groupName,
+        TenantId: this.group.tenantId
+      }
+      if (!this.createMode) {
+        parameters.GroupId = this.group.id
+      }
+      return parameters
+    },
+
     save () {
-      if (!this.saving) {
+      if (!this.saving && this.isValid()) {
         this.saving = true
-        const parameters = {
-          Name: this.groupName,
-          TenantId: this.group.tenantId
-        }
         const createMode = this.createMode
-        if (!createMode) {
-          parameters.GroupId = this.group.id
-        }
+        const parameters = this.getSaveParameters()
         webApi.sendRequest({
           moduleName: 'Core',
           methodName: createMode ? 'CreateGroup' : 'UpdateGroup',
           parameters,
         }).then(result => {
+          this.saving = false
           if (createMode) {
             this.handleCreateResult(result, parameters)
           } else {
             this.handleUpdateResult(result, parameters)
           }
-          this.saving = false
         }, response => {
           this.saving = false
           const errorConst = createMode ? 'ERROR_CREATE_ENTITY_GROUP' : 'ERROR_UPDATE_ENTITY_GROUP'
@@ -214,10 +235,20 @@ export default {
     deleteGroup () {
       this.$emit('delete-group', this.group.id)
     },
+
+    showGroupUsers () {
+      this.$router.push(`/users/group/${this.group.id}`)
+    },
   }
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+a {
+  text-decoration: none;
+  color: darken($primary, 20%);
+}
+a:hover {
+  text-decoration: underline;
+}
 </style>

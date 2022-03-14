@@ -91,6 +91,10 @@ export default {
           label: this.$t('ADMINPANELWEBCLIENT.LABEL_ALL_GROUPS'),
           value: -1,
         })
+        options.push({
+          label: this.$t('ADMINPANELWEBCLIENT.LABEL_NOT_IN_ANY_GROUP'),
+          value: 0,
+        })
       }
       this.filterOptions = options
       this.currentFilter = this.findCurrentFilter()
