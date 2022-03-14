@@ -35,6 +35,7 @@ class AdminPanelSettings {
     this.enableEventLogging = typesUtils.pBool(coreData.EnableEventLogging)
     this.loggingLevel = typesUtils.pInt(coreData.LoggingLevel, 100)
     // only for admin
+    this.allowGroups = typesUtils.pBool(coreData.AllowGroups)
     this.adminHasPassword = typesUtils.pBool(coreData.AdminHasPassword)
     this.adminLanguage = typesUtils.pString(coreData.AdminLanguage)
     this.adminLogin = typesUtils.pString(coreData.AdminLogin)
@@ -174,6 +175,10 @@ export default {
 
   getEnableMultiTenant () {
     return settings.enableMultiTenant
+  },
+
+  getAllowGroups () {
+    return settings.allowGroups
   },
 
   getTabsOrder () {

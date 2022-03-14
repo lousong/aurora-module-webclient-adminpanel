@@ -11,6 +11,7 @@
 
 <script>
 import typesUtils from 'src/utils/types'
+import settings from 'src/settings'
 
 export default {
   name: 'GroupFilterForUsers',
@@ -19,6 +20,7 @@ export default {
 
   data () {
     return {
+      allowGroups: settings.getAllowGroups(),
       filterOptions: [],
       filterValue: null,
       currentFilter: null,
@@ -74,9 +76,11 @@ export default {
 
   methods: {
     requestGroups () {
-      this.$store.dispatch('groups/requestGroups', {
-        tenantId: this.currentTenantId
-      })
+      if (this.allowGroups) {
+        this.$store.dispatch('groups/requestGroups', {
+          tenantId: this.currentTenantId
+        })
+      }
     },
 
     fillUpFilterOptions () {

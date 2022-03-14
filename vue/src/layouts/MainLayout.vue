@@ -112,14 +112,17 @@ export default {
 
     let allPages = [
       {
-        pageName: 'groups',
-        pageTitle: 'ADMINPANELWEBCLIENT.HEADING_GROUPS_SETTINGS_TABNAME',
-      },
-      {
         pageName: 'users',
         pageTitle: 'ADMINPANELWEBCLIENT.HEADING_USERS_SETTINGS_TABNAME',
       }
     ]
+
+    if (settings.getAllowGroups()) {
+      allPages.unshift({
+        pageName: 'groups',
+        pageTitle: 'ADMINPANELWEBCLIENT.HEADING_GROUPS_SETTINGS_TABNAME',
+      })
+    }
 
     const otherPages = modulesManager.getPages()
     if (typesUtils.isNonEmptyArray(otherPages)) {
