@@ -35,9 +35,9 @@
                 @filter="getGroupOptions"
               >
                 <template v-slot:selected>
-                  <span v-if="selectedGroupOptions">
+                  <span v-if="selectedGroupOptions" class="groups-container">
                     <q-chip flat v-for="option in selectedGroupOptions" :key="option.value" removable @remove="removeFromSelectedGroups(option.value)">
-                      <div>
+                      <div class="ellipsis">
                         {{ option.label }}
                       </div>
                     </q-chip>
@@ -406,5 +406,8 @@ export default {
 </script>
 
 <style scoped>
-
+.groups-container {
+  display: block;
+  width: 100%;
+}
 </style>
