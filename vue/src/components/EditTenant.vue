@@ -236,7 +236,7 @@ export default {
       if (_.isSafeInteger(result)) {
         notification.showReport(this.$t('ADMINPANELWEBCLIENT.REPORT_CREATE_ENTITY_TENANT'))
         this.loading = false
-        this.populate()
+        this.revertChanges()
         this.$emit('tenant-created', result)
       } else {
         notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_CREATE_ENTITY_TENANT'))
