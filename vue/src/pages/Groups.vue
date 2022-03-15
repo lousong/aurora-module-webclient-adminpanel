@@ -124,7 +124,9 @@ export default {
     },
 
     currentTenantId () {
-      this.$router.push('/groups')
+      if (this.$route.path !== '/groups') {
+        this.$router.push('/groups')
+      }
       this.requestGroups()
     },
 
