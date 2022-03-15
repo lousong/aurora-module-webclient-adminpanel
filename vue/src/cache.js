@@ -82,4 +82,12 @@ export default {
       }
     })
   },
+
+  removeUsersFromGroup (group, usersIds) {
+    users.forEach(user => {
+      if (usersIds.indexOf(user.id) !== -1) {
+        user.removeGroup(group)
+      }
+    })
+  },
 }

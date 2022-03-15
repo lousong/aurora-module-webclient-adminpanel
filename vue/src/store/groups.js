@@ -89,6 +89,33 @@ export default {
         })
       }
     },
+
+    removeUsersFromGroup ({ state, dispatch }, { tenantId, groupId, usersIds, callback }) {
+      if (store.getters['user/isUserSuperAdmin']) {
+        webApi.sendRequest({
+          moduleName: 'Core',
+          methodName: 'RemoveUsersFromGroup',
+          parameters: {
+            GroupId: groupId,
+            UserIds: usersIds
+          },
+        }).then(result => {
+          if (result) {
+            const tenantGroups = types.pArray(state.groups[tenantId])
+            const group = tenantGroups.find(group => group.id === groupId)
+            if (group) {
+              cache.removeUsersFromGroup(group, usersIds)
+              callback()
+            }
+            notification.showReport(i18n.tc('ADMINPANELWEBCLIENT.REPORT_ADD_TO_GROUP_PLURAL', usersIds.length))
+          } else {
+            notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_ADD_TO_GROUP_PLURAL', usersIds.length))
+          }
+        }, response => {
+          notification.showError(errors.getTextFromResponse(response, i18n.tc('ADMINPANELWEBCLIENT.ERROR_ADD_TO_GROUP_PLURAL', usersIds.length)))
+        })
+      }
+    },
   },
 
   getters: {

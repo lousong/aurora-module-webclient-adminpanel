@@ -1,9 +1,8 @@
 <template>
   <div v-if="filterOptions.length > 0">
-    <q-select outlined dense class="bg-white"
-              v-model="currentFilter" :options="filterOptions">
+    <q-select outlined dense class="bg-white" v-model="currentFilter" :options="filterOptions">
       <template v-slot:selected>
-        <div class="ellipsis">{{ currentFilter.label }}</div>
+        <div class="ellipsis" style="max-width: 250px;">{{ currentFilter.label }}</div>
       </template>
     </q-select>
   </div>
@@ -136,5 +135,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

@@ -52,6 +52,10 @@ class UserModel {
     }
   }
 
+  removeGroup (groupToRemove) {
+    Vue.set(this, 'groups', this.groups.filter(group => group.id !== groupToRemove.id))
+  }
+
   getData (field) {
     return this.completeData && this.completeData[field]
   }

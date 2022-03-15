@@ -37,6 +37,12 @@
                   </q-item>
                 </q-list>
               </q-btn-dropdown>
+              <q-btn flat color="grey-8" size="mg" @click="removeFromGroup" :disable="disableRemoveFromGroup">
+                <remove-from-group-icon></remove-from-group-icon>
+                <q-tooltip>
+                  {{ $t('ADMINPANELWEBCLIENT.ACTION_REMOVE_USER_FROM_GROUP') }}
+                </q-tooltip>
+              </q-btn>
             </span>
             <component v-for="filter in filters" :key="filter.name" v-bind:is="filter" @filter-selected="routeFilter"
                        @filter-filled-up="populateFiltersGetParameters" @allow-create-user="handleAllowCreateUser"/>
@@ -107,6 +113,7 @@ import StandardList from 'src/components/StandardList'
 
 import AddIcon from 'src/assets/icons/Add'
 import AddToGroupIcon from 'src/assets/icons/AddToGroup'
+import RemoveFromGroupIcon from 'src/assets/icons/RemoveFromGroup'
 import TrashIcon from 'src/assets/icons/Trash'
 
 export default {
@@ -117,6 +124,7 @@ export default {
     StandardList,
     AddIcon,
     AddToGroupIcon,
+    RemoveFromGroupIcon,
     TrashIcon
   },
 
@@ -138,6 +146,7 @@ export default {
       justCreatedId: 0,
 
       deletingIds: [],
+      selectedGroupId: -1,
 
       tabs: [],
       selectedTab: '',
@@ -195,6 +204,14 @@ export default {
         return [this.selectedUserId]
       }
       return []
+    },
+
+    groupFilterSelected () {
+      return this.selectedGroupId > 0
+    },
+
+    disableRemoveFromGroup () {
+      return !this.groupFilterSelected || this.checkedOrSelectedUsersIds.length <= 0
     }
   },
 
@@ -222,6 +239,8 @@ export default {
         if (this.selectedUserId !== userId) {
           this.selectedUserId = userId
         }
+
+        this.selectedGroupId = typesUtils.pInt(this.$route?.params?.group)
 
         const pathParts = this.$route.path.split('/')
         const lastPart = pathParts.length > 0 ? pathParts[pathParts.length - 1] : ''
@@ -440,6 +459,17 @@ export default {
           tenantId: this.currentTenantId,
           groupId,
           usersIds: this.checkedOrSelectedUsersIds
+        })
+      }
+    },
+
+    async removeFromGroup () {
+      if (this.checkedOrSelectedUsersIds.length > 0) {
+        await this.$store.dispatch('groups/removeUsersFromGroup', {
+          tenantId: this.currentTenantId,
+          groupId: this.selectedGroupId,
+          usersIds: this.checkedOrSelectedUsersIds,
+          callback: this.populate.bind(this)
         })
       }
     },
