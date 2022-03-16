@@ -13,7 +13,7 @@
               <q-input outlined dense bg-color="white" v-model="groupName" @keyup.enter="save"/>
             </div>
           </div>
-          <div class="row q-mb-md">
+          <div class="row q-mb-md" v-if="!createMode">
             <div class="col-2 q-mt-sm"></div>
             <div class="col-5">
               <a href="javascript:void(0)" v-t="'ADMINPANELWEBCLIENT.ACTION_SHOW_GROUP_USERS'"
