@@ -107,12 +107,12 @@ export default {
               cache.removeUsersFromGroup(group, usersIds)
               callback()
             }
-            notification.showReport(i18n.tc('ADMINPANELWEBCLIENT.REPORT_ADD_TO_GROUP_PLURAL', usersIds.length))
+            notification.showReport(i18n.tc('ADMINPANELWEBCLIENT.REPORT_REMOVE_FROM_GROUP_PLURAL', usersIds.length))
           } else {
-            notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_ADD_TO_GROUP_PLURAL', usersIds.length))
+            notification.showError(i18n.tc('ADMINPANELWEBCLIENT.ERROR_REMOVE_FROM_GROUP_PLURAL', usersIds.length))
           }
         }, response => {
-          notification.showError(errors.getTextFromResponse(response, i18n.tc('ADMINPANELWEBCLIENT.ERROR_ADD_TO_GROUP_PLURAL', usersIds.length)))
+          notification.showError(errors.getTextFromResponse(response, i18n.tc('ADMINPANELWEBCLIENT.ERROR_REMOVE_FROM_GROUP_PLURAL', usersIds.length)))
         })
       }
     },
