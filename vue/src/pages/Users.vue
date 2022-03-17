@@ -21,8 +21,10 @@
                 {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
               </q-tooltip>
             </q-btn>
-            <span v-if="groups.length > 0">
-              <q-btn-dropdown flat color="grey-8" size="mg" :disable="checkedOrSelectedUsersIds.length === 0">
+            <span v-if="allGroups.length > 0">
+              <q-btn-dropdown flat color="grey-8" size="mg"
+                              :disable="checkedOrSelectedUsersIds.length === 0 || groups.length === 0"
+              >
                 <template v-slot:label>
                   <add-to-group-icon></add-to-group-icon>
                   <q-tooltip>
@@ -191,9 +193,14 @@ export default {
       return createIndex !== -1 && createIndex === (this.$route.path.length - 7)
     },
 
-    groups () {
+    allGroups () {
       const groups = this.$store.getters['groups/getGroups']
       return typesUtils.pArray(groups[this.currentTenantId])
+    },
+
+    groups () {
+      const selectedGroupId = this.selectedGroupId
+      return this.allGroups.filter(group => group.id !== selectedGroupId)
     },
 
     checkedOrSelectedUsersIds () {
@@ -478,4 +485,7 @@ export default {
 </script>
 
 <style lang="scss">
+.q-menu.q-position-engine {
+  z-index: 10000;
+}
 </style>
