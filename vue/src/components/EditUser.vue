@@ -135,7 +135,8 @@ export default {
 
     allTenantGroups () {
       const groups = this.$store.getters['groups/getGroups']
-      return typesUtils.pArray(groups[this.currentTenantId])
+      const allTenantGroups = typesUtils.pArray(groups[this.currentTenantId])
+      return allTenantGroups.filter(group => !group.isTeam)
     },
 
     deleting () {

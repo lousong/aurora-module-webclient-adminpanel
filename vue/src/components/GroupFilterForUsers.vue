@@ -4,6 +4,16 @@
       <template v-slot:selected>
         <div class="ellipsis" style="max-width: 250px;">{{ currentFilter.label }}</div>
       </template>
+      <template v-slot:option="scope">
+        <q-item v-close-popup v-bind="scope.itemProps" v-on="scope.itemEvents">
+          <q-item-section class="non-selectable">
+            <q-item-label>
+              <q-icon name="person_outline" v-if="scope.opt.isTeam"></q-icon>
+              {{ scope.opt.label }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
     </q-select>
   </div>
 </template>
@@ -87,16 +97,19 @@ export default {
         return {
           label: group.name,
           value: group.id,
+          isTeam: group.isTeam,
         }
       })
       if (options.length > 0) {
         options.unshift({
           label: this.$t('ADMINPANELWEBCLIENT.LABEL_ALL_GROUPS'),
           value: -1,
+          isTeam: false,
         })
         options.push({
           label: this.$t('ADMINPANELWEBCLIENT.LABEL_NOT_IN_ANY_GROUP'),
           value: 0,
+          isTeam: false,
         })
       }
       this.filterOptions = options

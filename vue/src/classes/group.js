@@ -5,6 +5,7 @@ class GroupModel {
     this.tenantId = typesUtils.pInt(serverData.TenantId)
     this.id = typesUtils.pInt(serverData.Id)
     this.name = typesUtils.pString(serverData.Name)
+    this.isTeam = typesUtils.pBool(serverData.IsAll)
   }
 
   update (name) {
