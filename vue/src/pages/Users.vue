@@ -214,12 +214,9 @@ export default {
       return []
     },
 
-    groupFilterSelected () {
-      return this.selectedGroupId > 0
-    },
-
     disableRemoveFromGroup () {
-      return !this.groupFilterSelected || this.checkedOrSelectedUsersIds.length <= 0
+      const selectedGroup = this.allTenantGroups.find(group => group.id === this.selectedGroupId)
+      return !selectedGroup || this.checkedOrSelectedUsersIds.length <= 0
     }
   },
 

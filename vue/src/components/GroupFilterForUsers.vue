@@ -8,7 +8,7 @@
         <q-item v-close-popup v-bind="scope.itemProps" v-on="scope.itemEvents">
           <q-item-section class="non-selectable">
             <q-item-label>
-              <q-icon name="person_outline" v-if="scope.opt.isTeam"></q-icon>
+              <team-group-icon name="person_outline" v-if="scope.opt.isTeam"></team-group-icon>
               {{ scope.opt.label }}
             </q-item-label>
           </q-item-section>
@@ -22,6 +22,8 @@
 import typesUtils from 'src/utils/types'
 import settings from 'src/settings'
 
+import TeamGroupIcon from 'assets/icons/TeamGroup'
+
 export default {
   name: 'GroupFilterForUsers',
 
@@ -34,6 +36,10 @@ export default {
       filterValue: null,
       currentFilter: null,
     }
+  },
+
+  components: {
+    TeamGroupIcon,
   },
 
   computed: {

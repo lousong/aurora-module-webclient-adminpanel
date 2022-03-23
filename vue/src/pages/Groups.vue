@@ -19,11 +19,16 @@
             </q-tooltip>
           </q-btn>
         </q-toolbar>
-        <StandardList class="col-grow list-border" :items="groupItems" :selectedItem="selectedGroupId" :loading="loadingGroups"
+        <standard-list class="col-grow list-border" :items="groupItems" :selectedItem="selectedGroupId" :loading="loadingGroups"
                       :search="search" :page="page" :pagesCount="pagesCount"
                       :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_GROUP'"
                       :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_GROUP'"
-                      ref="groupList" @route="route" @check="afterCheck"/>
+                      ref="groupList" @route="route" @check="afterCheck"
+        >
+          <q-item-section side slot="right-icon">
+            <team-group-icon></team-group-icon>
+          </q-item-section>
+        </standard-list>
       </div>
     </template>
     <template v-slot:after>
@@ -49,6 +54,7 @@ import EditGroup from 'components/EditGroup'
 import Empty from 'components/Empty'
 import StandardList from 'components/StandardList'
 import Add from 'src/assets/icons/Add'
+import TeamGroupIcon from 'src/assets/icons/TeamGroup'
 import Trash from 'src/assets/icons/Trash'
 
 export default {
@@ -58,7 +64,8 @@ export default {
     ConfirmDialog,
     StandardList,
     Add,
-    Trash
+    TeamGroupIcon,
+    Trash,
   },
 
   data() {
@@ -151,6 +158,8 @@ export default {
             id: group.id,
             title: group.name,
             checked: false,
+            disableCheck: group.isTeam,
+            showRightIcon: group.isTeam,
           }
         })
       } else {

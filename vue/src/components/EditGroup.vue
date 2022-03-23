@@ -10,7 +10,7 @@
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_GROUP_NAME'"></div>
             <div class="col-5">
-              <q-input outlined dense bg-color="white" v-model="groupName" @keyup.enter="save"/>
+              <q-input outlined dense bg-color="white" v-model="groupName" :disable="isTeamGroup" @keyup.enter="save"/>
             </div>
           </div>
           <div class="row q-mb-md" v-if="!createMode">
@@ -25,10 +25,10 @@
       </q-card>
       <div class="q-py-md text-right">
        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="negative" @click="deleteGroup"
-               :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_GROUP')" v-if="!createMode">
+               :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_GROUP')" v-if="!createMode && !isTeamGroup">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
-               :label="$t('COREWEBCLIENT.ACTION_SAVE')" v-if="!createMode">
+               :label="$t('COREWEBCLIENT.ACTION_SAVE')" v-if="!createMode && !isTeamGroup">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
                :label="$t('COREWEBCLIENT.ACTION_CREATE')" v-if="createMode">
@@ -66,6 +66,7 @@ export default {
       group: null,
       groupId: 0,
       groupName: '',
+      isTeamGroup: false,
       saving: false,
       loading: false
     }
@@ -142,6 +143,7 @@ export default {
       this.group = group
       this.groupId = group.id
       this.groupName = group.name
+      this.isTeamGroup = group.isTeam
     },
 
     cancel () {
@@ -188,27 +190,28 @@ export default {
     },
 
     save () {
-      if (!this.saving && this.isValid()) {
-        this.saving = true
-        const createMode = this.createMode
-        const parameters = this.getSaveParameters()
-        webApi.sendRequest({
-          moduleName: 'Core',
-          methodName: createMode ? 'CreateGroup' : 'UpdateGroup',
-          parameters,
-        }).then(result => {
-          this.saving = false
-          if (createMode) {
-            this.handleCreateResult(result, parameters)
-          } else {
-            this.handleUpdateResult(result, parameters)
-          }
-        }, response => {
-          this.saving = false
-          const errorConst = createMode ? 'ERROR_CREATE_ENTITY_GROUP' : 'ERROR_UPDATE_ENTITY_GROUP'
-          notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.' + errorConst)))
-        })
+      if (this.isTeamGroup || this.saving || !this.isValid()) {
+        return
       }
+      this.saving = true
+      const createMode = this.createMode
+      const parameters = this.getSaveParameters()
+      webApi.sendRequest({
+        moduleName: 'Core',
+        methodName: createMode ? 'CreateGroup' : 'UpdateGroup',
+        parameters,
+      }).then(result => {
+        this.saving = false
+        if (createMode) {
+          this.handleCreateResult(result, parameters)
+        } else {
+          this.handleUpdateResult(result, parameters)
+        }
+      }, response => {
+        this.saving = false
+        const errorConst = createMode ? 'ERROR_CREATE_ENTITY_GROUP' : 'ERROR_UPDATE_ENTITY_GROUP'
+        notification.showError(errors.getTextFromResponse(response, this.$t('ADMINPANELWEBCLIENT.' + errorConst)))
+      })
     },
 
     handleCreateResult (result) {

@@ -38,7 +38,7 @@
         <div v-for="item in items" :key="item.id">
           <q-item clickable @click="selectItem(item.id)" :class="getCssClass(item.id, item.checked)">
             <q-item-section side>
-              <q-checkbox dense v-model="item.checked" />
+              <q-checkbox dense v-model="item.checked" :disable="item.disableCheck" />
             </q-item-section>
             <q-item-section>
               <q-item-label lines="1">{{ item.title }}</q-item-label>
@@ -46,6 +46,7 @@
             <q-item-section side v-if="item.rightText !== undefined">
               <q-item-label lines="1">{{ item.rightText }}</q-item-label>
             </q-item-section>
+            <slot name="right-icon" v-if="item.showRightIcon"></slot>
           </q-item>
           <q-separator />
         </div>
@@ -131,7 +132,9 @@ export default {
       }
       if (this.hasCheckedItems === true && this.checkedIds.length === 0) {
         this.items.forEach(item => {
-          item.checked = true
+          if (!item.disableCheck) {
+            item.checked = true
+          }
         })
       }
     },
