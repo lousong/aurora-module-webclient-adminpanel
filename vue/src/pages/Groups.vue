@@ -26,7 +26,7 @@
                       ref="groupList" @route="route" @check="afterCheck"
         >
           <q-item-section side slot="right-icon">
-            <team-group-icon></team-group-icon>
+            <team-group-icon :size="24"></team-group-icon>
           </q-item-section>
         </standard-list>
       </div>

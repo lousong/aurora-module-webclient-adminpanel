@@ -8,8 +8,8 @@
         <q-item v-close-popup v-bind="scope.itemProps" v-on="scope.itemEvents">
           <q-item-section class="non-selectable">
             <q-item-label>
-              <team-group-icon style="vertical-align: bottom;" :size="20" v-if="scope.opt.isTeam"></team-group-icon>
               <span>{{ scope.opt.label }}</span>
+              <team-group-icon class="on-right vertical-bottom" :size="18" v-if="scope.opt.isTeam"></team-group-icon>
             </q-item-label>
           </q-item-section>
         </q-item>

@@ -7,6 +7,12 @@
       </div>
       <q-card flat bordered class="card-edit-settings">
         <q-card-section>
+          <div class="row q-mb-md" v-if="isTeamGroup">
+            <div class="col-7 q-mt-sm">
+              <q-item-label caption v-t="'ADMINPANELWEBCLIENT.INFO_TEAM_GROUP_IN_TENANT'" v-if="enableMultiTenant"></q-item-label>
+              <q-item-label caption v-t="'ADMINPANELWEBCLIENT.INFO_TEAM_GROUP_IN_SYSTEM'" v-else></q-item-label>
+            </div>
+          </div>
           <div class="row q-mb-md">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_GROUP_NAME'"></div>
             <div class="col-5">
@@ -52,6 +58,8 @@ import notification from 'src/utils/notification'
 import typesUtils from 'src/utils/types'
 import webApi from 'src/utils/web-api'
 
+import settings from 'src/settings'
+
 import GroupModel from 'src/classes/group'
 
 export default {
@@ -63,6 +71,8 @@ export default {
 
   data () {
     return {
+      enableMultiTenant: settings.getEnableMultiTenant(),
+
       group: null,
       groupId: 0,
       groupName: '',
