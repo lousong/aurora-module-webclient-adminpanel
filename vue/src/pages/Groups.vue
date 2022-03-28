@@ -25,9 +25,11 @@
                       :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_GROUP'"
                       ref="groupList" @route="route" @check="afterCheck"
         >
-          <q-item-section side slot="right-icon">
-            <team-group-icon :size="24"></team-group-icon>
-          </q-item-section>
+          <template v-slot:right-icon="scope">
+            <q-item-section side>
+              <team-group-icon :size="24" :color="scope.color"></team-group-icon>
+            </q-item-section>
+          </template>
         </standard-list>
       </div>
     </template>
