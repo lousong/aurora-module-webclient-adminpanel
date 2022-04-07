@@ -198,8 +198,20 @@ export default {
       this.$emit('cancel-create')
     },
 
+    isValid () {
+      if (this.tenantName === '') {
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_TENANT_NAME_EMPTY'))
+        return false
+      }
+      if ((/[\\/:*?"<>|]/gi).test(this.tenantName)) {
+        notification.showError(this.$t('ADMINPANELWEBCLIENT.ERROR_TENANT_NAME_INVALID'))
+        return false
+      }
+      return true
+    },
+
     save () {
-      if (!this.saving) {
+      if (!this.saving && this.isValid()) {
         this.saving = true
         const parameters = {
           Name: this.tenantName,
