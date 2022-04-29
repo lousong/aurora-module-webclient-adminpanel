@@ -113,7 +113,7 @@ export default {
       mainDataComponent: null,
       otherDataComponents: [],
 
-      allowMakeTenant: settings.getEnableMultiTenant(),
+      allowMakeTenant: settings.getEnableMultiTenant() || true,
 
       user: null,
       publicId: '',
