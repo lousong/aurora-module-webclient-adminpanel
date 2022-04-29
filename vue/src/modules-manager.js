@@ -152,6 +152,21 @@ export default {
     return tenantEditDataComponent
   },
 
+  getAdminEntityTabs (getTabsHandlerName = null) {
+    let entityTabs = []
+    if (getTabsHandlerName !== null && allModules !== null) {
+      allModules.forEach(module => {
+        const
+          getTabsHandler = module[getTabsHandlerName],
+          moduleSystemTabs = _.isFunction(getTabsHandler) && getTabsHandler()
+        if (_.isArray(moduleSystemTabs)) {
+          entityTabs = entityTabs.concat(moduleSystemTabs)
+        }
+      })
+    }
+    return entityTabs === null ? [] : entityTabs
+  },
+
   getAdminUserTabs () {
     if (userTabs === null && allModules !== null) {
       userTabs = []
