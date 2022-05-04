@@ -63,9 +63,7 @@ class UserModel {
   updateData (fieldsData) {
     if (!_.isEmpty(this.completeData)) {
       fieldsData.forEach(data => {
-        if (this.completeData[data.field] !== undefined) {
-          this.completeData[data.field] = data.value
-        }
+        this.completeData[data.field] = data.value
       })
     }
   }
