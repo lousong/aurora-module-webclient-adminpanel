@@ -2,7 +2,6 @@ import _ from 'lodash'
 import axios from 'axios'
 import { saveAs } from 'file-saver'
 import VueCookies from 'vue-cookies'
-import querystring from 'querystring'
 
 import errors from 'src/utils/errors'
 import urlUtils from 'src/utils/url'
@@ -41,7 +40,7 @@ export default {
       axios({
         method: 'post',
         url: urlUtils.getApiHost() + '?/Api/',
-        data: querystring.stringify(postData),
+        data: new URLSearchParams(postData),
         headers,
       })
         .then((response) => {
