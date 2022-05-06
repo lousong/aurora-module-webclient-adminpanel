@@ -1,3 +1,4 @@
+import Quasar from 'quasar'
 import { i18n, loadLanguageAsync } from 'boot/i18n'
 import axios from 'axios'
 import VueCookies from 'vue-cookies'
@@ -164,11 +165,68 @@ class AdminPanelSettings {
 let settings = null
 
 export default {
-  init (appData) {
+  async initQuasarLang (shortLanguage) {
+    try {
+      const quasarLangs = {
+        ar: 'ar',
+        bg: 'bg',
+        'zh-tw': 'zh-hant',
+        'zh-cn': 'zh-hans',
+        cs: 'cs',
+        da: 'da',
+        nl: 'nl',
+        en: 'en-us',
+        et: 'et',
+        fi: 'fi',
+        fr: 'fr',
+        de: 'de',
+        el: 'el',
+        he: 'he',
+        hu: 'hu',
+        it: 'it',
+        ja: 'ja',
+        ko: 'ko-kr',
+        lv: 'lv',
+        // lt: 'lt',
+        nb: 'nb-no',
+        fa: 'fa',
+        pl: 'pl',
+        'pt-br': 'pt-br',
+        pt: 'pt',
+        ro: 'ro',
+        ru: 'ru',
+        sr: 'sr',
+        sl: 'sl',
+        es: 'es',
+        sv: 'sv',
+        th: 'th',
+        tr: 'tr',
+        uk: 'uk',
+        vi: 'vi'
+      }
+      const quasarLang = quasarLangs[shortLanguage]
+      console.log({ quasarLang, shortLanguage })
+      if (quasarLang) {
+        await import(
+          /* webpackInclude: /(de|en-us)\.js$/ */
+          'quasar/lang/' + quasarLang
+        )
+          .then(lang => {
+            Quasar.lang.set(lang.default)
+          })
+      }
+    } catch (err) {
+      // Requested Quasar Language Pack does not exist,
+      // let's not break the app, so catching error
+    }
+  },
+
+  async init (appData) {
     settings = new AdminPanelSettings(appData)
     settings.showErrorsIfSystemNotConfigured()
     if (!_.isEmpty(settings.shortLanguage) && i18n.availableLocales.indexOf(settings.shortLanguage) !== -1) {
       loadLanguageAsync(settings.shortLanguage)
+      this.initQuasarLang(settings.shortLanguage)
     }
     VueCookies.config('', settings.cookiePath, '', settings.cookieSecure)
   },
