@@ -1,44 +1,46 @@
 <template>
-  <q-splitter after-class="q-splitter__right-panel" class="full-height full-width"
-              v-model="listSplitterWidth" :limits="[10,30]">
-    <template v-slot:before>
-      <div class="flex column full-height ">
-        <q-toolbar class="col-auto q-py-sm list-border">
-          <q-btn flat color="grey-8" size="mg" no-wrap :disable="checkedIds.length === 0"
-                 @click="askDeleteCheckedGroups">
-            <Trash></Trash>
-            <span>{{ countLabel }}</span>
-            <q-tooltip>
-              {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
-            </q-tooltip>
-          </q-btn>
-          <q-btn flat color="grey-8" size="mg" @click="routeCreateGroup">
-            <Add></Add>
-            <q-tooltip>
-              {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_GROUP') }}
-            </q-tooltip>
-          </q-btn>
-        </q-toolbar>
-        <standard-list class="col-grow list-border" :items="groupItems" :selectedItem="selectedGroupId" :loading="loadingGroups"
-                      :search="search" :page="page" :pagesCount="pagesCount"
-                      :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_GROUP'"
-                      :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_GROUP'"
-                      ref="groupList" @route="route" @check="afterCheck"
-        >
-          <template v-slot:right-icon="scope">
-            <q-item-section side>
-              <team-group-icon :size="24" :color="scope.color"></team-group-icon>
-            </q-item-section>
-          </template>
-        </standard-list>
-      </div>
-    </template>
-    <template v-slot:after>
-      <router-view @group-created="handleCreateGroup"
-                   @cancel-create="route" @delete-group="askDeleteGroup" :deletingIds="deletingIds"></router-view>
-    </template>
-    <ConfirmDialog ref="confirmDialog"/>
-  </q-splitter>
+  <main-layout>
+    <q-splitter after-class="q-splitter__right-panel" class="full-height full-width"
+                v-model="listSplitterWidth" :limits="[10,30]">
+      <template v-slot:before>
+        <div class="flex column full-height ">
+          <q-toolbar class="col-auto q-py-sm list-border">
+            <q-btn flat color="grey-8" size="mg" no-wrap :disable="checkedIds.length === 0"
+                   @click="askDeleteCheckedGroups">
+              <Trash></Trash>
+              <span>{{ countLabel }}</span>
+              <q-tooltip>
+                {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
+              </q-tooltip>
+            </q-btn>
+            <q-btn flat color="grey-8" size="mg" @click="routeCreateGroup">
+              <Add></Add>
+              <q-tooltip>
+                {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_GROUP') }}
+              </q-tooltip>
+            </q-btn>
+          </q-toolbar>
+          <standard-list class="col-grow list-border" :items="groupItems" :selectedItem="selectedGroupId" :loading="loadingGroups"
+                        :search="search" :page="page" :pagesCount="pagesCount"
+                        :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_GROUP'"
+                        :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_GROUP'"
+                        ref="groupList" @route="route" @check="afterCheck"
+          >
+            <template v-slot:right-icon="scope">
+              <q-item-section side>
+                <team-group-icon :size="24" :color="scope.color"></team-group-icon>
+              </q-item-section>
+            </template>
+          </standard-list>
+        </div>
+      </template>
+      <template v-slot:after>
+        <router-view @group-created="handleCreateGroup"
+                     @cancel-create="route" @delete-group="askDeleteGroup" :deletingIds="deletingIds"></router-view>
+      </template>
+      <ConfirmDialog ref="confirmDialog"/>
+    </q-splitter>
+  </main-layout>
 </template>
 
 <script>
@@ -51,9 +53,8 @@ import webApi from 'src/utils/web-api'
 
 import settings from 'src/settings'
 
+import MainLayout from 'src/layouts/MainLayout'
 import ConfirmDialog from 'components/ConfirmDialog'
-import EditGroup from 'components/EditGroup'
-import Empty from 'components/Empty'
 import StandardList from 'components/StandardList'
 import Add from 'src/assets/icons/Add'
 import TeamGroupIcon from 'src/assets/icons/TeamGroup'
@@ -63,6 +64,7 @@ export default {
   name: 'Groups',
 
   components: {
+    MainLayout,
     ConfirmDialog,
     StandardList,
     Add,
@@ -114,22 +116,7 @@ export default {
 
   watch: {
     $route (to, from) {
-      if (this.$route.path === '/groups/create') {
-        this.selectedGroupId = 0
-      } else {
-        const search = typesUtils.pString(this.$route?.params?.search)
-        const page = typesUtils.pPositiveInt(this.$route?.params?.page)
-        if (this.search !== search || this.page !== page || this.justCreatedId !== 0) {
-          this.search = search
-          this.page = page
-          this.populate()
-        }
-
-        const groupId = typesUtils.pNonNegativeInt(this.$route?.params?.id)
-        if (this.selectedGroupId !== groupId) {
-          this.selectedGroupId = groupId
-        }
-      }
+      this.parseRoute()
     },
 
     currentTenantId () {
@@ -176,14 +163,7 @@ export default {
 
   mounted () {
     this.requestGroups()
-    this.$router.addRoute('groups', { path: 'id/:id', component: EditGroup })
-    this.$router.addRoute('groups', { path: 'create', component: EditGroup })
-    this.$router.addRoute('groups', { path: 'search/:search', component: Empty })
-    this.$router.addRoute('groups', { path: 'search/:search/id/:id', component: EditGroup })
-    this.$router.addRoute('groups', { path: 'page/:page', component: Empty })
-    this.$router.addRoute('groups', { path: 'page/:page/id/:id', component: EditGroup })
-    this.$router.addRoute('groups', { path: 'search/:search/page/:page', component: Empty })
-    this.$router.addRoute('groups', { path: 'search/:search/page/:page/id/:id', component: EditGroup })
+    this.parseRoute()
     this.populate()
   },
 
@@ -192,6 +172,25 @@ export default {
       this.$store.dispatch('groups/requestGroups', {
         tenantId: this.currentTenantId
       })
+    },
+
+    parseRoute () {
+      if (this.$route.path === '/groups/create') {
+        this.selectedGroupId = 0
+      } else {
+        const search = typesUtils.pString(this.$route?.params?.search)
+        const page = typesUtils.pPositiveInt(this.$route?.params?.page)
+        if (this.search !== search || this.page !== page || this.justCreatedId !== 0) {
+          this.search = search
+          this.page = page
+          this.populate()
+        }
+
+        const groupId = typesUtils.pNonNegativeInt(this.$route?.params?.id)
+        if (this.selectedGroupId !== groupId) {
+          this.selectedGroupId = groupId
+        }
+      }
     },
 
     populate () {

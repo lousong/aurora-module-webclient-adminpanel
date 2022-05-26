@@ -4,8 +4,7 @@ import VueRouter from 'vue-router'
 import routes from './routes'
 
 import core from 'src/core'
-import store from 'src/store'
-import routesManager from 'src/router/routes-manager'
+import modulesManager from 'src/modules-manager'
 
 Vue.use(VueRouter)
 
@@ -29,17 +28,29 @@ export default function (/* { store, ssrContext } */) {
     mode: process.env.VUE_ROUTER_MODE,
     base: process.env.VUE_ROUTER_BASE
   })
+
+  let routesAdded = false
   Router.beforeEach((to, from, next) => {
     core.init().then(() => {
-      routesManager.initRoutes(Router)
-
-      if (to.name === 'logout') {
-        core.logout()
-      } else if (to.name !== 'login' && !store.getters['user/isUserSuperAdmin']) {
-        next({ name: 'login' })
-      } else {
-        next()
+      if (!routesAdded) {
+        modulesManager.getPages().forEach(page => {
+          const routeData = { name: page.pageName, path: page.pagePath, component: page.pageComponent }
+          if (page.pageChildren) {
+            routeData.children = page.pageChildren
+          }
+          Router.addRoute(page.pageName, routeData)
+        })
+        routesAdded = true
+        next(to.path)
+        return
       }
+
+      const correctedPath = modulesManager.correctPathForUser(to.matched, to.path)
+      if (to.path !== correctedPath) {
+        next(correctedPath)
+        return
+      }
+      next()
     }, (error) => {
       console.log('core.init reject', error)
     })

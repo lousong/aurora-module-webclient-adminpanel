@@ -8,6 +8,10 @@
 import Vue from 'vue'
 import _ from 'lodash'
 
+import types from 'src/utils/types'
+
+import modulesManager from 'src/modules-manager'
+
 import UnsavedChangesDialog from 'src/components/UnsavedChangesDialog'
 
 Vue.mixin({
@@ -59,10 +63,6 @@ export default {
     }
   },
 
-  mounted () {
-    this.setRoute()
-  },
-
   computed: {
     isUserSuperAdmin: function () {
       return this.$store.getters['user/isUserSuperAdmin']
@@ -74,7 +74,13 @@ export default {
 
   watch: {
     isUserSuperAdmin: function () {
-      this.setRoute()
+      const currentRoute = this.$router.currentRoute.value
+      const currentPath = currentRoute?.path
+      const matchedRoutes = types.pArray(currentRoute?.matched)
+      const correctedPath = modulesManager.correctPathForUser(matchedRoutes)
+      if (matchedRoutes.length > 0 && currentPath !== correctedPath) {
+        this.$router.push(correctedPath)
+      }
     },
   },
 

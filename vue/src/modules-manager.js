@@ -1,8 +1,11 @@
 import _ from 'lodash'
+import store from 'src/store'
 
 import typesUtils from 'src/utils/types'
 
+import enums from 'src/enums'
 import moduleList from 'src/modules'
+import settings from 'src/settings'
 
 let availableClientModules = []
 let availableBackendModules = []
@@ -12,12 +15,8 @@ let allModules = null
 let allModulesNames = []
 let pages = null
 
-let systemTabs = null
-
-let tenantTabs = null
 let tenantEditDataComponent = null
 
-let userTabs = null
 let userMainDataComponent = null
 let userOtherDataComponents = null
 let userFilters = null
@@ -93,49 +92,75 @@ export default {
   getPages () {
     if (pages === null && allModules !== null) {
       pages = []
-      _.each(allModules, oModule => {
-        const aPages = _.isFunction(oModule.getPages) && oModule.getPages()
-        if (_.isArray(aPages)) {
-          pages = pages.concat(aPages)
+      allModules.forEach(module => {
+        const modulePages = _.isFunction(module.getPages) && module.getPages()
+        if (_.isArray(modulePages)) {
+          pages = pages.concat(modulePages)
         }
       })
     }
     return pages === null ? [] : pages
   },
 
-  getAdminSystemTabs (router) {
-    if (systemTabs === null && allModules !== null) {
-      systemTabs = []
-      _.each(allModules, oModule => {
-        const aModuleSystemTabs = _.isFunction(oModule.getAdminSystemTabs) && oModule.getAdminSystemTabs()
-        if (_.isArray(aModuleSystemTabs)) {
-          systemTabs = systemTabs.concat(aModuleSystemTabs)
-        }
-      })
-      _.each(systemTabs, (tab) => {
-        if (typesUtils.isNonEmptyArray(tab.paths)) {
-          tab.paths.forEach(path => {
-            router.addRoute('system', { path, component: tab.component })
-          })
-        } else {
-          router.addRoute('system', { path: tab.tabName, component: tab.component })
-        }
-      })
-    }
-    return systemTabs === null ? [] : systemTabs
+  getAnonymousPages () {
+    const UserRoles = enums.getUserRoles()
+    return pages === null ? [] : pages.filter(page => page.pageUserRole === UserRoles.Anonymous)
   },
 
-  getAdminTenantTabs () {
-    if (tenantTabs === null && allModules !== null) {
-      tenantTabs = []
-      _.each(allModules, oModule => {
-        const aModuleSystemTabs = _.isFunction(oModule.getAdminTenantTabs) && oModule.getAdminTenantTabs()
-        if (_.isArray(aModuleSystemTabs)) {
-          tenantTabs = tenantTabs.concat(aModuleSystemTabs)
-        }
-      })
+  getSuperAdminPages () {
+    const UserRoles = enums.getUserRoles()
+    return pages === null ? [] : pages.filter(page => page.pageUserRole === UserRoles.SuperAdmin)
+  },
+
+  getDefaultPageForUser () {
+    const isUserSuperAdmin = store.getters['user/isUserSuperAdmin']
+    let page = null
+    if (isUserSuperAdmin) {
+      const
+        superAdminPages = this.getSuperAdminPages(),
+        pagesOrder = settings.getTabsBarOrder()
+      page = superAdminPages.find(page => page.pageName === pagesOrder[0]) || null
+    } else {
+      const anonymousPages = this.getAnonymousPages()
+      page = anonymousPages.length > 0 ? anonymousPages[0] : null
     }
-    return tenantTabs === null ? [] : tenantTabs
+    return page
+  },
+
+  /**
+   * Path is corrected depending on which page is allowed for user (if someone is authenticated) or anonymous (if no one is authenticated)
+   * @param matchedRoutes
+   * @param toPath
+   * @returns {string}
+   */
+  correctPathForUser (matchedRoutes, toPath = null) {
+    const
+      superAdminPages = this.getSuperAdminPages(),
+      anonymousPages = this.getAnonymousPages()
+    if (anonymousPages.length === 0 || superAdminPages.length === 0) {
+      return toPath || '/'
+    }
+
+    const matchedRouteName = _.isArray(matchedRoutes) && matchedRoutes.length > 0 ? matchedRoutes[0].name : null
+    const isUserSuperAdmin = store.getters['user/isUserSuperAdmin']
+    let page = null
+    if (matchedRouteName !== null) {
+      if (isUserSuperAdmin) {
+        page = superAdminPages.find(page => page.pageName === matchedRouteName) || null
+      } else {
+        page = anonymousPages.find(page => page.pageName === matchedRouteName) || null
+      }
+    }
+    if (page === null) {
+      page = this.getDefaultPageForUser()
+    }
+    if (page === null) {
+      return '/'
+    } else if (page.pageName === matchedRouteName) {
+      return toPath || page.pagePath
+    } else {
+      return page.pagePath
+    }
   },
 
   async getTenantOtherDataComponents () {
@@ -165,19 +190,6 @@ export default {
       })
     }
     return entityTabs === null ? [] : entityTabs
-  },
-
-  getAdminUserTabs () {
-    if (userTabs === null && allModules !== null) {
-      userTabs = []
-      _.each(allModules, oModule => {
-        const aModuleSystemTabs = _.isFunction(oModule.getAdminUserTabs) && oModule.getAdminUserTabs()
-        if (_.isArray(aModuleSystemTabs)) {
-          userTabs = userTabs.concat(aModuleSystemTabs)
-        }
-      })
-    }
-    return userTabs === null ? [] : userTabs
   },
 
   async getUserMainDataComponent () {
@@ -215,15 +227,13 @@ export default {
     return userOtherDataComponents
   },
 
-  async getFiltersForUsers () {
+  getFiltersForUsers () {
     if (userFilters === null && allModules !== null) {
       userFilters = []
       for (const module of allModules) {
-        if (_.isFunction(module.getFiltersForUsers)) {
-          const filters = await module.getFiltersForUsers()
-          if (_.isArray(filters)) {
-            userFilters = userFilters.concat(filters.map(filter => filter.default))
-          }
+        const filters = _.isFunction(module.getFiltersForUsers) && module.getFiltersForUsers()
+        if (_.isArray(filters)) {
+          userFilters = userFilters.concat(filters)
         }
       }
     }

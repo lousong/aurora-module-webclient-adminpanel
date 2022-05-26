@@ -1,101 +1,103 @@
 <template>
-  <q-splitter :after-class="!showTabs ? 'q-splitter__right-panel' : ''" class="full-height full-width"
-              v-model="listSplitterWidth" :limits="[10,30]"
-  >
-    <template v-slot:before>
-      <div class="flex column full-height">
-        <q-toolbar class="col-auto q-py-sm list-border">
-          <div class="flex">
-            <q-btn flat color="grey-8" size="mg" no-wrap :disable="checkedIds.length === 0"
-                   @click="askDeleteCheckedUsers"
-            >
-              <trash-icon></trash-icon>
-              <span>{{ countLabel }}</span>
-              <q-tooltip>
-                {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
-              </q-tooltip>
-            </q-btn>
-            <q-btn flat color="grey-8" size="mg" @click="routeCreateUser" v-if="allowCreateUser">
-              <add-icon></add-icon>
-              <q-tooltip>
-                {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
-              </q-tooltip>
-            </q-btn>
-            <span v-if="allTenantGroups.length > 0">
-              <q-btn-dropdown flat color="grey-8" size="mg"
-                              :disable="checkedOrSelectedUsersIds.length === 0 || groups.length === 0"
+  <main-layout>
+    <q-splitter :after-class="!showTabs ? 'q-splitter__right-panel' : ''" class="full-height full-width"
+                v-model="listSplitterWidth" :limits="[10,30]"
+    >
+      <template v-slot:before>
+        <div class="flex column full-height">
+          <q-toolbar class="col-auto q-py-sm list-border">
+            <div class="flex">
+              <q-btn flat color="grey-8" size="mg" no-wrap :disable="checkedIds.length === 0"
+                     @click="askDeleteCheckedUsers"
               >
-                <template v-slot:label>
-                  <add-to-group-icon></add-to-group-icon>
-                  <q-tooltip>
-                    {{ $t('ADMINPANELWEBCLIENT.ACTION_ADD_USER_TO_GROUP') }}
-                  </q-tooltip>
-                </template>
-                <q-list>
-                  <q-item clickable v-close-popup v-for="group in groups" :key="group.id" @click="addUsersToGroup(group.id)">
-                    <q-item-section>
-                      <q-item-label>{{ group.name }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-              <q-btn flat color="grey-8" size="mg" @click="removeFromGroup" :disable="disableRemoveFromGroup">
-                <remove-from-group-icon></remove-from-group-icon>
+                <trash-icon></trash-icon>
+                <span>{{ countLabel }}</span>
                 <q-tooltip>
-                  {{ $t('ADMINPANELWEBCLIENT.ACTION_REMOVE_USER_FROM_GROUP') }}
+                  {{ $t('COREWEBCLIENT.ACTION_DELETE') }}
                 </q-tooltip>
               </q-btn>
-            </span>
-            <component v-for="filter in filters" :key="filter.name" v-bind:is="filter" @filter-selected="routeFilter"
-                       @filter-filled-up="populateFiltersGetParameters" @allow-create-user="handleAllowCreateUser"/>
-          </div>
-        </q-toolbar>
-        <StandardList class="col-grow list-border" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
-                      :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
-                      :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_USER'"
-                      :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_USER'"
-                      ref="userList" @route="route" @check="afterCheck"/>
-      </div>
-    </template>
-    <template v-slot:after>
-      <q-splitter after-class="q-splitter__right-panel" v-if="showTabs" class="full-height full-width"
-                  v-model="tabsSplitterWidth" :limits="[10,30]">
-        <template v-slot:before>
-          <q-list>
-            <div>
-              <q-item clickable @click="route(selectedUserId)" :class="selectedTab === '' ? 'bg-selected-item' : ''">
-                <q-item-section>
-                  <q-item-label lines="1" v-t="'ADMINPANELWEBCLIENT.LABEL_COMMON_SETTINGS_TAB'"></q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-separator/>
+              <q-btn flat color="grey-8" size="mg" @click="routeCreateUser" v-if="allowCreateUser">
+                <add-icon></add-icon>
+                <q-tooltip>
+                  {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
+                </q-tooltip>
+              </q-btn>
+              <span v-if="allTenantGroups.length > 0">
+                <q-btn-dropdown flat color="grey-8" size="mg"
+                                :disable="checkedOrSelectedUsersIds.length === 0 || groups.length === 0"
+                >
+                  <template v-slot:label>
+                    <add-to-group-icon></add-to-group-icon>
+                    <q-tooltip>
+                      {{ $t('ADMINPANELWEBCLIENT.ACTION_ADD_USER_TO_GROUP') }}
+                    </q-tooltip>
+                  </template>
+                  <q-list>
+                    <q-item clickable v-close-popup v-for="group in groups" :key="group.id" @click="addUsersToGroup(group.id)">
+                      <q-item-section>
+                        <q-item-label>{{ group.name }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-btn-dropdown>
+                <q-btn flat color="grey-8" size="mg" @click="removeFromGroup" :disable="disableRemoveFromGroup">
+                  <remove-from-group-icon></remove-from-group-icon>
+                  <q-tooltip>
+                    {{ $t('ADMINPANELWEBCLIENT.ACTION_REMOVE_USER_FROM_GROUP') }}
+                  </q-tooltip>
+                </q-btn>
+              </span>
+              <component v-for="filter in filters" :key="filter.name" v-bind:is="filter" @filter-selected="routeFilter"
+                         @filter-filled-up="populateFiltersGetParameters" @allow-create-user="handleAllowCreateUser"/>
             </div>
-            <div v-for="tab in tabs" :key="tab.tabName">
-              <q-item clickable @click="route(selectedUserId, tab.tabName)"
-                      :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
-                <q-item-section>
-                  <q-item-label lines="1">{{ $t(tab.title) }}</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-separator/>
-            </div>
-            <q-inner-loading style="justify-content: flex-start;" :showing="deleting">
-              <q-linear-progress query/>
-            </q-inner-loading>
-          </q-list>
-        </template>
-        <template v-slot:after>
-          <router-view @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
-                       @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"
-                       :createMode="createMode"></router-view>
-        </template>
-      </q-splitter>
-      <router-view v-if="!showTabs" @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
-                   @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"
-                   :createMode="createMode"></router-view>
-    </template>
-    <ConfirmDialog ref="confirmDialog"/>
-  </q-splitter>
+          </q-toolbar>
+          <StandardList class="col-grow list-border" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
+                        :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
+                        :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_USER'"
+                        :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_USER'"
+                        ref="userList" @route="route" @check="afterCheck"/>
+        </div>
+      </template>
+      <template v-slot:after>
+        <q-splitter after-class="q-splitter__right-panel" v-if="showTabs" class="full-height full-width"
+                    v-model="tabsSplitterWidth" :limits="[10,30]">
+          <template v-slot:before>
+            <q-list>
+              <div>
+                <q-item clickable @click="route(selectedUserId)" :class="selectedTab === '' ? 'bg-selected-item' : ''">
+                  <q-item-section>
+                    <q-item-label lines="1" v-t="'ADMINPANELWEBCLIENT.LABEL_COMMON_SETTINGS_TAB'"></q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-separator/>
+              </div>
+              <div v-for="tab in tabs" :key="tab.tabName">
+                <q-item clickable @click="route(selectedUserId, tab.tabName)"
+                        :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
+                  <q-item-section>
+                    <q-item-label lines="1">{{ $t(tab.tabTitle) }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-separator/>
+              </div>
+              <q-inner-loading style="justify-content: flex-start;" :showing="deleting">
+                <q-linear-progress query/>
+              </q-inner-loading>
+            </q-list>
+          </template>
+          <template v-slot:after>
+            <router-view @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
+                         @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"
+                         :createMode="createMode"></router-view>
+          </template>
+        </q-splitter>
+        <router-view v-if="!showTabs" @no-user-found="handleNoUserFound" @user-created="handleCreateUser"
+                     @cancel-create="route" @delete-user="askDeleteUser" :deletingIds="deletingIds"
+                     :createMode="createMode"></router-view>
+      </template>
+      <ConfirmDialog ref="confirmDialog"/>
+    </q-splitter>
+  </main-layout>
 </template>
 
 <script>
@@ -110,6 +112,7 @@ import cache from 'src/cache'
 import modulesManager from 'src/modules-manager'
 import settings from 'src/settings'
 
+import MainLayout from 'src/layouts/MainLayout'
 import ConfirmDialog from 'src/components/ConfirmDialog'
 import StandardList from 'src/components/StandardList'
 
@@ -122,6 +125,7 @@ export default {
   name: 'Domains',
 
   components: {
+    MainLayout,
     ConfirmDialog,
     StandardList,
     AddIcon,
@@ -229,29 +233,7 @@ export default {
     },
 
     $route (to, from) {
-      if (this.createMode) {
-        this.selectedUserId = 0
-      } else {
-        const search = typesUtils.pString(this.$route?.params?.search)
-        const page = typesUtils.pPositiveInt(this.$route?.params?.page)
-        if (this.search !== search || this.page !== page || this.justCreatedId !== 0) {
-          this.search = search
-          this.page = page
-          this.populate()
-        }
-
-        const userId = typesUtils.pNonNegativeInt(this.$route?.params?.id)
-        if (this.selectedUserId !== userId) {
-          this.selectedUserId = userId
-        }
-
-        this.selectedGroupId = typesUtils.pInt(this.$route?.params?.group)
-
-        const pathParts = this.$route.path.split('/')
-        const lastPart = pathParts.length > 0 ? pathParts[pathParts.length - 1] : ''
-        const tab = this.tabs.find(tab => { return tab.tabName === lastPart })
-        this.selectedTab = tab ? tab.tabName : ''
-      }
+      this.parseRoute()
     },
 
     users () {
@@ -279,41 +261,56 @@ export default {
     }
   },
 
-  async mounted () {
-    await this.populateFilters()
+  mounted () {
+    this.populateFilters()
     this.populateTabs()
     this.populate()
+    this.parseRoute()
   },
 
   methods: {
+    parseRoute () {
+      if (this.createMode) {
+        this.selectedUserId = 0
+      } else {
+        const search = typesUtils.pString(this.$route?.params?.search)
+        const page = typesUtils.pPositiveInt(this.$route?.params?.page)
+        if (this.search !== search || this.page !== page || this.justCreatedId !== 0) {
+          this.search = search
+          this.page = page
+          this.populate()
+        }
+
+        const userId = typesUtils.pNonNegativeInt(this.$route?.params?.id)
+        if (this.selectedUserId !== userId) {
+          this.selectedUserId = userId
+        }
+
+        this.selectedGroupId = typesUtils.pInt(this.$route?.params?.group)
+
+        const pathParts = this.$route.path.split('/')
+        const lastPart = pathParts.length > 0 ? pathParts[pathParts.length - 1] : ''
+        const tab = this.tabs.find(tab => { return tab.tabName === lastPart })
+        this.selectedTab = tab ? tab.tabName : ''
+      }
+    },
+
     handleAllowCreateUser (data) {
       if (data.tenantId === this.currentTenantId) {
         this.allowCreateUser = data.allowCreateUser
       }
     },
 
-    async populateFilters () {
-      this.filters = await modulesManager.getFiltersForUsers()
+    populateFilters () {
+      this.filters = modulesManager.getFiltersForUsers()
     },
 
     populateTabs () {
-      const tabsRoutes = []
-      this.tabs = modulesManager.getAdminUserTabs()
-      _.each(this.tabs, (tab) => {
-        if (typesUtils.isNonEmptyArray(tab.paths)) {
-          tab.paths.forEach(path => {
-            this.$router.addRoute('users', { path, component: tab.component })
-            tabsRoutes.push({ path, component: tab.component })
-          })
-        } else {
-          this.$router.addRoute('users', { path: tab.tabName, component: tab.component })
-          tabsRoutes.push({ path: tab.tabName, component: tab.component })
+      this.tabs = modulesManager.getAdminEntityTabs('getAdminUserTabs').map(tab => {
+        return {
+          tabName: tab.tabName,
+          tabTitle: tab.tabTitle,
         }
-      })
-      tabsRoutes.forEach(tabRoute => {
-        this.filters.forEach(filterComponent => {
-          this.$router.addRoute('users', { path: filterComponent.filterRoute + '/' + tabRoute.path, component: tabRoute.component })
-        })
       })
     },
 
@@ -356,8 +353,10 @@ export default {
     },
 
     routeFilter (data) {
-      this.currentFiltersRoutes[data.routeName] = data.routeValue
-      this.route()
+      if (this.currentFiltersRoutes[data.routeName] !== data.routeValue) {
+        this.currentFiltersRoutes[data.routeName] = data.routeValue
+        this.route()
+      }
     },
 
     route (userId = 0, tabName = '') {

@@ -1,4 +1,5 @@
 <template>
+  <login-layout>
     <div class="q-pa-md">
       <div class="q-gutter-y-md column" style="width: 240px">
         <Logo class="logo"/>
@@ -25,6 +26,7 @@
         </q-btn>
       </div>
     </div>
+  </login-layout>
 </template>
 
 <script>
@@ -37,12 +39,16 @@ import notification from 'src/utils/notification'
 import webApi from 'src/utils/web-api'
 
 import Logo from 'assets/icons/Logo'
+import LoginLayout from 'src/layouts/LoginLayout'
 
 export default {
   name: 'Login',
+
   components: {
-    Logo
+    Logo,
+    LoginLayout
   },
+
   data() {
     return {
       loading: false,

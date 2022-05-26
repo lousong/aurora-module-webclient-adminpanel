@@ -1,50 +1,71 @@
+import _ from 'lodash'
+
 import modulesManager from 'src/modules-manager'
 
 import EditUser from 'src/components/EditUser'
 import Empty from 'src/components/Empty'
 
-let isInitialized = false
-
 export default {
-  initRoutes (router) {
-    if (!isInitialized) {
-      this.addUserRoutes(router)
-      this.addUserFiltersRoutes(router)
-      isInitialized = true
-    }
+  getAllUserRoutes () {
+    let userRoutes = this.getUserRoutes()
+    const userTabsRouteChildren = this.getRouteChildren('User')
+    const userFiltersRoutes = this.getUserFiltersRoutes(userTabsRouteChildren)
+    userFiltersRoutes.forEach(filterRoute => {
+      const routes = this.getUserRoutes(`${filterRoute.path}/`)
+      userRoutes = userRoutes.concat(routes)
+      userTabsRouteChildren.forEach(tabRoute => {
+        userRoutes.push({ path: `${filterRoute.path}/${tabRoute.path}`, component: tabRoute.component },)
+      })
+    })
+    userRoutes = userRoutes.concat(userTabsRouteChildren, userFiltersRoutes)
+    return userRoutes
   },
 
-  addUserRoutes (router, filterRoutePart = '') {
+  getRouteChildren (entity) {
+    const tabs = modulesManager.getAdminEntityTabs(`getAdmin${entity}Tabs`)
+    let children = []
+    tabs.forEach(tab => {
+      if (_.isArray(tab.tabRouteChildren)) {
+        children = children.concat(tab.tabRouteChildren)
+      }
+    })
+    return children
+  },
+
+  getUserRoutes (filterRoutePart = '') {
+    const routes = [
+      { path: filterRoutePart + 'create', component: EditUser },
+      { path: filterRoutePart + 'id/:id', component: EditUser },
+      { path: filterRoutePart + 'search/:search', component: Empty },
+      { path: filterRoutePart + 'search/:search/id/:id', component: EditUser },
+      { path: filterRoutePart + 'page/:page', component: Empty },
+      { path: filterRoutePart + 'page/:page/id/:id', component: EditUser },
+      { path: filterRoutePart + 'search/:search/page/:page', component: Empty },
+      { path: filterRoutePart + 'search/:search/page/:page/id/:id', component: EditUser },
+    ]
     if (filterRoutePart === '') {
-      router.addRoute('users', { path: 'create', component: EditUser })
+      routes.push({ path: 'create', component: EditUser })
     }
-    router.addRoute('users', { path: filterRoutePart + 'create', component: EditUser })
-    router.addRoute('users', { path: filterRoutePart + 'id/:id', component: EditUser })
-    router.addRoute('users', { path: filterRoutePart + 'search/:search', component: Empty })
-    router.addRoute('users', { path: filterRoutePart + 'search/:search/id/:id', component: EditUser })
-    router.addRoute('users', { path: filterRoutePart + 'page/:page', component: Empty })
-    router.addRoute('users', { path: filterRoutePart + 'page/:page/id/:id', component: EditUser })
-    router.addRoute('users', { path: filterRoutePart + 'search/:search/page/:page', component: Empty })
-    router.addRoute('users', { path: filterRoutePart + 'search/:search/page/:page/id/:id', component: EditUser })
+    return routes
   },
 
-  async addUserFiltersRoutes (router) {
-    const filters = await modulesManager.getFiltersForUsers()
+  getUserFiltersRoutes () {
+    const filters = modulesManager.getFiltersForUsers()
+    const filtersRoutes = []
     filters.forEach(filterComponent => {
-      router.addRoute('users', { path: filterComponent.filterRoute, component: Empty })
-      this.addUserRoutes(router, filterComponent.filterRoute + '/')
+      filtersRoutes.push({ path: filterComponent.filterRoute, component: Empty })
     })
     if (filters.length > 1) {
       filters.forEach(filterComponent1 => {
         filters.forEach(filterComponent2 => {
           if (filterComponent1.filterRoute !== filterComponent2.filterRoute) {
-            const path = filterComponent1.filterRoute + '/' + filterComponent2.filterRoute
-            router.addRoute('users', { path, component: Empty })
-            this.addUserRoutes(router, path + '/')
+            const path = `${filterComponent1.filterRoute}/${filterComponent2.filterRoute}`
+            filtersRoutes.push({ path: path, component: Empty })
           }
         })
       })
     }
     // TODO: if there are more than 2 filters
+    return filtersRoutes
   },
 }
