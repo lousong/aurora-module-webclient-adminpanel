@@ -74,7 +74,7 @@ export default {
 
   watch: {
     isUserSuperAdmin: function () {
-      const currentRoute = this.$router.currentRoute.value
+      const currentRoute = this.$router.currentRoute
       const currentPath = currentRoute?.path
       const matchedRoutes = types.pArray(currentRoute?.matched)
       const correctedPath = modulesManager.correctPathForUser(matchedRoutes)

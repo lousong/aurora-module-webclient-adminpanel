@@ -21,7 +21,7 @@ export default {
     const pages = [
       {
         pageName: 'login',
-        pagePath: '',
+        pagePath: '/',
         pageComponent: () => import('pages/Login.vue'),
         pageUserRole: UserRoles.Anonymous,
       },

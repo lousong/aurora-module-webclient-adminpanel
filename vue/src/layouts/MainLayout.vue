@@ -27,9 +27,9 @@
           </q-btn-dropdown>
         </template>
         <q-space />
-        <q-route-tab to="/logout" :ripple="false" class="q-px-none q-tab--logout">
+        <q-tab :ripple="false" class="q-px-none q-tab--logout" @click="logout">
           <div class="q-px-md tab-label" v-t="'COREWEBCLIENT.ACTION_LOGOUT'"></div>
-        </q-route-tab>
+        </q-tab>
       </q-tabs>
     </q-header>
     <q-page-container style="height: 100vh">
@@ -43,6 +43,7 @@
 <script>
 import _ from 'lodash'
 
+import core from 'src/core'
 import modulesManager from 'src/modules-manager'
 import settings from 'src/settings'
 
@@ -108,6 +109,10 @@ export default {
   methods: {
     changeTenant (id) {
       this.$store.commit('tenants/setCurrentTenantId', id)
+    },
+
+    logout () {
+      core.logout()
     },
   },
 }
