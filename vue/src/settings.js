@@ -205,7 +205,6 @@ export default {
         vi: 'vi'
       }
       const quasarLang = quasarLangs[shortLanguage]
-      console.log({ quasarLang, shortLanguage })
       if (quasarLang) {
         await import(
           /* webpackInclude: /(de|en-us)\.js$/ */
