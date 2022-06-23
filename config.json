@@ -4,7 +4,7 @@
 		"bool"
 	],
 	"Disabled_Description": [
-		"",
+		"Setting to true disables the module",
 		"string"
 	],
 	"EntitiesPerPage": [
@@ -12,7 +12,7 @@
 		"int"
 	],
 	"EntitiesPerPage_Description": [
-		"",
+		"Number of items (users, domains etc.) shown per page in admin interface",
 		"string"
 	],
 	"TabsOrder": [
@@ -28,7 +28,7 @@
 		"array"
 	],
 	"TabsOrder_Description": [
-		"",
+		"Defines list of adminpanel interface sections and the order of displaying those",
 		"string"
 	],
 	"EntitiesOrder": [
@@ -36,7 +36,7 @@
 		"array"
 	],
 	"EntitiesOrder_Description": [
-		"",
+		"Defines list of top menu entries and the order of displaying those",
 		"string"
 	]
 }
