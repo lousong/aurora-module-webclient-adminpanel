@@ -9,10 +9,13 @@ import GroupModel from 'src/classes/group'
 
 class UserModel {
   constructor (tenantId, serverData, completeData = null) {
+    const UserRoles = enums.getUserRoles()
+
     this.tenantId = tenantId
     this.id = typesUtils.pInt(serverData?.Id)
     this.name = typesUtils.pString(serverData?.Name)
     this.publicId = typesUtils.pString(serverData?.PublicId)
+    this.role = typesUtils.pEnum(serverData?.Role, UserRoles, UserRoles.Anonymous)
     this.uuid = typesUtils.pString(serverData?.UUID)
     this.quotaBytes = typesUtils.pInt(serverData?.QuotaBytes)
 
@@ -29,7 +32,9 @@ class UserModel {
 
   update (data, allTenantGroups = null) {
     const UserRoles = enums.getUserRoles()
-    this.role = typesUtils.pEnum(data?.Role, UserRoles, UserRoles.Anonymous)
+    if (data !== null) {
+      this.role = typesUtils.pEnum(data?.Role, UserRoles, UserRoles.Anonymous)
+    }
     this.writeSeparateLog = typesUtils.pBool(data?.WriteSeparateLog)
 
     if (data?.PublicId) {

@@ -72,13 +72,15 @@
                 <q-separator/>
               </div>
               <div v-for="tab in tabs" :key="tab.tabName">
-                <q-item clickable @click="route(selectedUserId, tab.tabName)"
-                        :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
-                  <q-item-section>
-                    <q-item-label lines="1">{{ $t(tab.tabTitle) }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
+                <template v-if="tab.hideTabForUserRole !== selectedUserRole">
+                  <q-item clickable @click="route(selectedUserId, tab.tabName)"
+                          :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
+                    <q-item-section>
+                      <q-item-label lines="1">{{ $t(tab.tabTitle) }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                  <q-separator/>
+                </template>
               </div>
               <q-inner-loading style="justify-content: flex-start;" :showing="deleting">
                 <q-linear-progress query/>
@@ -120,6 +122,9 @@ import AddIcon from 'src/assets/icons/Add'
 import AddToGroupIcon from 'src/assets/icons/AddToGroup'
 import RemoveFromGroupIcon from 'src/assets/icons/RemoveFromGroup'
 import TrashIcon from 'src/assets/icons/Trash'
+
+import enums from 'src/enums'
+let UserRoles = {}
 
 export default {
   name: 'Domains',
@@ -221,7 +226,14 @@ export default {
     disableRemoveFromGroup () {
       const selectedGroup = this.allTenantGroups.find(group => group.id === this.selectedGroupId)
       return !selectedGroup || this.checkedOrSelectedUsersIds.length <= 0
-    }
+    },
+
+    selectedUserRole () {
+      const
+        selectedUser = this.users.find(user => user.id === this.selectedUserId),
+        selectedUserRole = selectedUser && selectedUser.role
+      return selectedUserRole || UserRoles.NormalUser
+    },
   },
 
   watch: {
@@ -262,6 +274,7 @@ export default {
   },
 
   mounted () {
+    UserRoles = enums.getUserRoles()
     this.populateFilters()
     this.populateTabs()
     this.populate()
@@ -310,6 +323,7 @@ export default {
         return {
           tabName: tab.tabName,
           tabTitle: tab.tabTitle,
+          hideTabForUserRole: tab.hideTabForUserRole
         }
       })
     },
