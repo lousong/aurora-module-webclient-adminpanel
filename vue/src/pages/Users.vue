@@ -22,7 +22,7 @@
                   {{ $t('ADMINPANELWEBCLIENT.ACTION_CREATE_ENTITY_USER') }}
                 </q-tooltip>
               </q-btn>
-              <span v-if="allTenantGroups.length > 0">
+              <span v-if="allTenantGroups.length > 0 && isUserSuperAdmin">
                 <q-btn-dropdown flat color="grey-8" size="mg"
                                 :disable="checkedOrSelectedUsersIds.length === 0 || groups.length === 0"
                 >
@@ -48,14 +48,22 @@
                 </q-btn>
               </span>
               <component v-for="filter in filters" :key="filter.name" v-bind:is="filter" @filter-selected="routeFilter"
-                         @filter-filled-up="populateFiltersGetParameters" @allow-create-user="handleAllowCreateUser"/>
+                        @filter-filled-up="populateFiltersGetParameters" @allow-create-user="handleAllowCreateUser"/>
             </div>
           </q-toolbar>
-          <StandardList class="col-grow list-border" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
-                        :totalCountText="totalCountText" :search="search" :page="page" :pagesCount="pagesCount"
+
+          <standard-list class="col-grow list-border" :items="userItems" :selectedItem="selectedUserId" :loading="loadingUsers"
+                        :search="search" :page="page" :pagesCount="pagesCount"
                         :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_USER'"
                         :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_USER'"
-                        ref="userList" @route="route" @check="afterCheck"/>
+                        ref="userList" @route="route" @check="afterCheck"
+          >
+            <template v-slot:right-icon>
+              <q-item-section side>
+                <span class="me">{{ $t('ADMINPANELWEBCLIENT.LABEL_ITS_ME') }}</span>
+              </q-item-section>
+            </template>
+          </standard-list>
         </div>
       </template>
       <template v-slot:after>
@@ -72,7 +80,7 @@
                 <q-separator/>
               </div>
               <div v-for="tab in tabs" :key="tab.tabName">
-                <template v-if="tab.hideTabForUserRole !== selectedUserRole">
+                <template v-if="tab.hideTabForSelectedUserRoles.indexOf(selectedUserRole) === -1">
                   <q-item clickable @click="route(selectedUserId, tab.tabName)"
                           :class="selectedTab === tab.tabName ? 'bg-selected-item' : ''">
                     <q-item-section>
@@ -234,6 +242,14 @@ export default {
         selectedUserRole = selectedUser && selectedUser.role
       return selectedUserRole || UserRoles.NormalUser
     },
+
+    isUserSuperAdmin () {
+      return this.$store.getters['user/isUserSuperAdmin']
+    },
+
+    userRole() {
+      return this.$store.getters['user/getUserRole']
+    },
   },
 
   watch: {
@@ -249,11 +265,13 @@ export default {
     },
 
     users () {
+      const userPublicId = this.$store.getters['user/getUserPublicId']
       this.userItems = this.users.map(user => {
         return {
           id: user.id,
           title: user.publicId,
           checked: false,
+          showRightIcon: user.publicId === userPublicId,
         }
       })
     },
@@ -323,7 +341,7 @@ export default {
         return {
           tabName: tab.tabName,
           tabTitle: tab.tabTitle,
-          hideTabForUserRole: tab.hideTabForUserRole
+          hideTabForSelectedUserRoles: tab.hideTabForSelectedUserRoles !== undefined ? tab.hideTabForSelectedUserRoles : []
         }
       })
     },

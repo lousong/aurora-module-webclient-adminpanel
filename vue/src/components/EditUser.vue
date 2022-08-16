@@ -22,10 +22,12 @@
                           :label="$t('ADMINPANELWEBCLIENT.LABEL_LOGGING_SEPARATE_LOG_FOR_USER')" />
             </div>
           </div>
-          <component v-for="component in otherDataComponents" :key="component.name" v-bind:is="component"
-                     ref="otherDataComponents" :currentTenantId="currentTenantId" :user="user" :createMode="createMode"
-                     @save="handleSave" />
-          <div class="row q-mt-md" v-if="!createMode && allTenantGroups.length > 0">
+          <template>
+            <component v-for="component in otherDataComponents" :key="component.name" v-bind:is="component"
+                      ref="otherDataComponents" :currentTenantId="currentTenantId" :user="user" :createMode="createMode"
+                      @save="handleSave"/>
+          </template>
+          <div class="row q-mt-md" v-if="!createMode && allTenantGroups.length > 0 && isUserSuperAdmin">
             <div class="col-2 q-mt-sm" v-t="'ADMINPANELWEBCLIENT.LABEL_USER_GROUPS'"></div>
             <div class="col-10">
               <q-select
@@ -113,8 +115,6 @@ export default {
       mainDataComponent: null,
       otherDataComponents: [],
 
-      allowMakeTenant: settings.getEnableMultiTenant() || true,
-
       user: null,
       publicId: '',
       isTenantAdmin: false,
@@ -141,6 +141,16 @@ export default {
 
     deleting () {
       return this.deletingIds.indexOf(this.user?.id) !== -1
+    },
+
+    isUserSuperAdmin () {
+      const isUserSuperAdmin = this.$store.getters['user/isUserSuperAdmin']
+      return isUserSuperAdmin
+    },
+
+    allowMakeTenant() {
+      const isUserSuperAdmin = this.$store.getters['user/isUserSuperAdmin']
+      return isUserSuperAdmin && (settings.getEnableMultiTenant() || true)
     },
   },
 
@@ -336,13 +346,14 @@ export default {
         const mainDataParameters = _.isFunction(this.$refs?.mainDataComponent?.getSaveParameters)
           ? this.$refs.mainDataComponent.getSaveParameters()
           : {}
+        const isUserSuperAdmin = this.$store.getters['user/isUserSuperAdmin']
         let parameters = _.extend({
           UserId: this.user.id,
           TenantId: this.user.tenantId,
-          Role: this.isTenantAdmin ? UserRoles.TenantAdmin : UserRoles.NormalUser,
+          Role: isUserSuperAdmin ? (this.isTenantAdmin ? UserRoles.TenantAdmin : UserRoles.NormalUser) : -1,
           WriteSeparateLog: this.writeSeparateLog,
           Forced: true,
-          GroupIds: this.selectedGroupOptions.map(option => option.value)
+          GroupIds: isUserSuperAdmin ? this.selectedGroupOptions.map(option => option.value) : null
         }, mainDataParameters)
         if (_.isFunction(this.$refs?.otherDataComponents?.forEach)) {
           this.$refs.otherDataComponents.forEach(component => {

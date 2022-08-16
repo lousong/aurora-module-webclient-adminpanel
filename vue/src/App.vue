@@ -64,8 +64,17 @@ export default {
   },
 
   computed: {
+    isUserSuperAdminOrTenantAdmin: function () {
+      return this.$store.getters['user/isUserSuperAdminOrTenantAdmin']
+    },
     isUserSuperAdmin: function () {
       return this.$store.getters['user/isUserSuperAdmin']
+    },
+    isUserTenantAdmin: function () {
+      return this.$store.getters['user/isUserTenantAdmin']
+    },
+    isUserAnonymous: function () {
+      return this.$store.getters['user/isUserAnonymous']
     },
     siteName: function () {
       return this.$store.getters['main/getSiteName']
@@ -73,7 +82,7 @@ export default {
   },
 
   watch: {
-    isUserSuperAdmin: function () {
+    isUserSuperAdminOrTenantAdmin: function () {
       const currentRoute = this.$router.currentRoute
       const currentPath = currentRoute?.path
       const matchedRoutes = types.pArray(currentRoute?.matched)
@@ -82,12 +91,24 @@ export default {
         this.$router.push(correctedPath)
       }
     },
+
+    isUserSuperAdmin: function () {
+      window.document.getElementsByTagName('body')[0].classList.add('body-backgroud')
+    },
+
+    isUserAnonymous: function () {
+      window.document.getElementsByTagName('body')[0].classList.add('body-backgroud')
+    },
+
+    isUserTenantAdmin: function () {
+      window.document.getElementsByTagName('body')[0].classList.add('body-tenant-backgroud')
+    },
   },
 
   methods: {
     setRoute () {
       const currentPath = this.$router.currentRoute && this.$router.currentRoute.path ? this.$router.currentRoute.path : ''
-      const newPath = this.isUserSuperAdmin ? '/system' : '/'
+      const newPath = this.isUserSuperAdminOrTenantAdmin ? '/system' : '/'
       if (currentPath !== newPath) {
         this.$router.push({ path: newPath })
       }
@@ -95,3 +116,13 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.body-backgroud {
+  background: #1998a4 no-repeat 0 0 / cover url("~assets/background.jpg");
+}
+
+.body-tenant-backgroud {
+  background: 'none';
+}
+</style>

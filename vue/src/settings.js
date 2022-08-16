@@ -3,6 +3,7 @@ import { i18n, loadLanguageAsync } from 'boot/i18n'
 import axios from 'axios'
 import VueCookies from 'vue-cookies'
 import store from 'src/store'
+import enums from 'src/enums'
 
 import _ from 'lodash'
 
@@ -242,17 +243,26 @@ export default {
     return settings?.tabsOrder || []
   },
 
-  getTabsBarOrder () {
-    const order = settings.entitiesOrder.map(entityName => {
-      switch (entityName) {
-        case 'Tenant': return 'tenants'
-        case 'User': return 'users'
-        case 'Group': return 'groups'
-        case 'Domain': return 'domains'
-        default: return entityName
-      }
-    })
-    order.unshift('system')
+  getTabsBarOrder (userRole) {
+    const UserRoles = enums.getUserRoles()
+    let order = []
+    if (userRole === UserRoles.SuperAdmin) {
+      order = settings.entitiesOrder.map(entityName => {
+        switch (entityName) {
+          case 'Tenant': return 'tenants'
+          case 'User': return 'users'
+          case 'Group': return 'groups'
+          case 'Domain': return 'domains'
+          default: return entityName
+        }
+      })
+      order.unshift('system')
+    } else if (userRole === UserRoles.TenantAdmin) {
+      order = [
+        'tenants',
+        'users'
+      ]
+    }
     return order
   },
 

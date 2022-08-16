@@ -27,7 +27,7 @@
           </q-btn-dropdown>
         </template>
         <q-space />
-        <q-tab :ripple="false" class="q-px-none q-tab--logout" @click="logout">
+        <q-tab :ripple="false" class="q-px-none q-tab--logout" @click="logout" v-if="isUserSuperAdmin">
           <div class="q-px-md tab-label" v-t="'COREWEBCLIENT.ACTION_LOGOUT'"></div>
         </q-tab>
       </q-tabs>
@@ -42,7 +42,6 @@
 
 <script>
 import _ from 'lodash'
-
 import core from 'src/core'
 import modulesManager from 'src/modules-manager'
 import settings from 'src/settings'
@@ -87,6 +86,10 @@ export default {
       const currentTenant = this.tenantOptions.find(tenant => tenant.id === this.selectedTenantId)
       return currentTenant ? currentTenant.name : ''
     },
+
+    isUserSuperAdmin () {
+      return this.$store.getters['user/isUserSuperAdmin']
+    },
   },
 
   watch: {
@@ -99,8 +102,10 @@ export default {
     this.selectedTenantId = this.currentTenantId
     this.$store.dispatch('tenants/requestTenants')
 
-    const pagesOrder = settings.getTabsBarOrder()
-    this.pages = _.sortBy(modulesManager.getSuperAdminPages(), (page) => {
+    const
+      userRole = this.$store.getters['user/getUserRole'],
+      pagesOrder = settings.getTabsBarOrder(userRole)
+    this.pages = _.sortBy(modulesManager.getPagesForUserRole(userRole), (page) => {
       const index = _.indexOf(pagesOrder, page.pageName)
       return index !== -1 ? index : pagesOrder.length
     })

@@ -1,6 +1,7 @@
 import enums from 'src/enums'
 import routesManager from 'src/router/routes-manager'
 import settings from 'src/settings'
+import store from 'src/store'
 
 import Empty from 'components/Empty'
 import EditTenant from 'components/EditTenant'
@@ -23,14 +24,14 @@ export default {
         pageName: 'login',
         pagePath: '/',
         pageComponent: () => import('pages/Login.vue'),
-        pageUserRole: UserRoles.Anonymous,
+        pageUserRoles: [UserRoles.Anonymous],
       },
       {
         pageName: 'system',
         pagePath: '/system',
         pageComponent: () => import('pages/System.vue'),
         pageChildren: routesManager.getRouteChildren('System'),
-        pageUserRole: UserRoles.SuperAdmin,
+        pageUserRoles: [UserRoles.SuperAdmin],
         pageTitle: 'ADMINPANELWEBCLIENT.HEADING_SYSTEM_SETTINGS_TABNAME',
       },
     ]
@@ -49,7 +50,7 @@ export default {
           { path: 'search/:search/page/:page', component: Empty },
           { path: 'search/:search/page/:page/id/:id', component: EditTenant },
         ].concat(routesManager.getRouteChildren('Tenant')),
-        pageUserRole: UserRoles.SuperAdmin,
+        pageUserRoles: [UserRoles.SuperAdmin, UserRoles.TenantAdmin],
         pageTitle: 'ADMINPANELWEBCLIENT.HEADING_TENANTS_SETTINGS_TABNAME',
       })
     }
@@ -68,7 +69,7 @@ export default {
           { path: 'search/:search/page/:page', component: Empty },
           { path: 'search/:search/page/:page/id/:id', component: EditGroup },
         ],
-        pageUserRole: UserRoles.SuperAdmin,
+        pageUserRoles: [UserRoles.SuperAdmin],
         pageTitle: 'ADMINPANELWEBCLIENT.HEADING_GROUPS_SETTINGS_TABNAME',
       })
     }
@@ -77,7 +78,7 @@ export default {
       pagePath: '/users',
       pageComponent: () => import('pages/Users.vue'),
       pageChildren: routesManager.getAllUserRoutes(),
-      pageUserRole: UserRoles.SuperAdmin,
+      pageUserRoles: [UserRoles.SuperAdmin, UserRoles.TenantAdmin],
       pageTitle: 'ADMINPANELWEBCLIENT.HEADING_USERS_SETTINGS_TABNAME',
     })
     return pages
@@ -110,8 +111,12 @@ export default {
   },
 
   getFiltersForUsers () {
-    return [
-      GroupFilterForUsers
-    ]
+    const isUserSuperAdmin = store.getters['user/isUserSuperAdmin']
+    if (isUserSuperAdmin) {
+      return [
+        GroupFilterForUsers
+      ]
+    }
+    return []
   },
 }

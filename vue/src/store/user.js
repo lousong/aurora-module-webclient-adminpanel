@@ -43,5 +43,28 @@ export default {
       const UserRoles = enums.getUserRoles()
       return state.userRole === UserRoles.SuperAdmin
     },
+
+    isUserAnonymous (state) {
+      const UserRoles = enums.getUserRoles()
+      return state.userRole === UserRoles.Anonymous
+    },
+
+    isUserTenantAdmin (state) {
+      const UserRoles = enums.getUserRoles()
+      return state.userRole === UserRoles.TenantAdmin
+    },
+
+    isUserSuperAdminOrTenantAdmin (state) {
+      const UserRoles = enums.getUserRoles()
+      return state.userRole === UserRoles.SuperAdmin || state.userRole === UserRoles.TenantAdmin
+    },
+
+    getUserRole(state) {
+      return state.userRole
+    },
+
+    getUserPublicId(state) {
+      return state.userPublicId
+    },
   },
 }

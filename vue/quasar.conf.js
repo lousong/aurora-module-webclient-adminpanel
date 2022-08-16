@@ -49,7 +49,7 @@ module.exports = function (ctx) {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       env: {
         API: ctx.dev
-          ? 'http://aurora-platform/'
+          ? 'http://localhost/p9/'
           : ''
       },
 

@@ -1,7 +1,7 @@
 <template>
   <div class="flex column">
     <q-list class="col-auto bg-grey-3">
-      <q-item>
+      <q-item v-if=!hideControls>
         <q-item-section side>
           <q-checkbox dense v-model="hasCheckedItems" />
         </q-item-section>
@@ -37,7 +37,7 @@
       <q-list>
         <div v-for="item in items" :key="item.id">
           <q-item clickable @click="selectItem(item.id)" :class="getCssClass(item.id, item.checked)">
-            <q-item-section side>
+            <q-item-section side v-if=!hideControls>
               <q-checkbox dense v-model="item.checked" :disable="item.disableCheck" />
             </q-item-section>
             <q-item-section>
@@ -85,13 +85,18 @@ export default {
 
     noItemsText: String,
     noItemsFoundText: String,
+
+    hideControls: {
+      default: false,
+      type: Boolean
+    },
   },
 
   data () {
     return {
       hasCheckedItems: false,
       enteredSearch: '',
-      selectedPage: 1,
+      selectedPage: 1
     }
   },
 

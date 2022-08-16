@@ -1,7 +1,3 @@
-body {
-  background: #1998a4 no-repeat 0 0 / cover url("~assets/background.jpg");
-}
-
 .q-header .q-tab__content {
   min-width: auto;
 }
@@ -139,4 +135,12 @@ $checked-item: #ebf7cb;
   display: inline-block;
   margin-left: -0.6em;
   width: 0.6em;
+}
+
+.me {
+  background: #f1f1f1;
+  border-radius: 10px 10px 10px 10px;
+  color: #6d6d6d;
+  float: right;
+  padding: 2px 8px;
 }

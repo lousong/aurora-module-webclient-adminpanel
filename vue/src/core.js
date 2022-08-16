@@ -93,7 +93,7 @@ const core = {
       }).then(result => {
         if (_.isObject(result)) {
           this.setAppData(result).then(() => {
-            if (store.getters['user/isUserSuperAdmin']) {
+            if (store.getters['user/isUserSuperAdminOrTenantAdmin']) {
               this.parseTenantsFromAppData()
               // Resets AuthToken cookie to continue signing in period,
               // also to make sure that AuthToken cookie is set with the correct path

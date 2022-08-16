@@ -142,10 +142,10 @@ module.exports = function (oAppData) {
 				{
 					return null;
 				}
-				return {
-					item: require('modules/%ModuleName%/js/views/HeaderItemView.js'),
-					name: Settings.HashModuleName
-				};
+				// return {
+				// 	item: require('modules/%ModuleName%/js/views/HeaderItemView.js'),
+				// 	name: Settings.HashModuleName
+				// };
 			},
 			getAbstractSettingsFormViewClass: function () {
 				return require('modules/%ModuleName%/js/views/CAbstractSettingsFormView.js');

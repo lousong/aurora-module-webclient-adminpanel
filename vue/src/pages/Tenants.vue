@@ -4,7 +4,7 @@
                 v-model="listSplitterWidth" :limits="[10,30]">
       <template v-slot:before>
         <div class="flex column full-height ">
-          <q-toolbar class="col-auto q-py-sm list-border">
+          <q-toolbar class="col-auto q-py-sm list-border" v-if=isUserSuperAdmin>
             <q-btn flat color="grey-8" size="mg" no-wrap :disable="checkedIds.length === 0"
                    @click="askDeleteCheckedTenants">
               <Trash></Trash>
@@ -24,6 +24,7 @@
                         :search="search" :page="page" :pagesCount="pagesCount"
                         :noItemsText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_TENANT'"
                         :noItemsFoundText="'ADMINPANELWEBCLIENT.INFO_NO_ENTITIES_FOUND_TENANT'"
+                        :hideControls="true"
                         ref="tenantList" @route="route" @check="afterCheck"/>
         </div>
       </template>
@@ -138,6 +139,10 @@ export default {
 
     showTabs () {
       return this.tabs.length > 0 && this.selectedTenantId > 0
+    },
+
+    isUserSuperAdmin () {
+      return this.$store.getters['user/isUserSuperAdmin']
     },
   },
 

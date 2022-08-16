@@ -37,7 +37,7 @@
       </q-card>
       <div class="q-py-md text-right">
        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="negative" @click="deleteTenant"
-               :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_TENANT')" v-if="!createMode">
+               :label="$t('ADMINPANELWEBCLIENT.ACTION_DELETE_TENANT')" v-if="!createMode && isUserSuperAdmin">
         </q-btn>
         <q-btn unelevated no-caps dense class="q-px-sm q-ml-sm" :ripple="false" color="primary" @click="save"
                :label="$t('COREWEBCLIENT.ACTION_SAVE')" v-if="!createMode">
@@ -106,6 +106,10 @@ export default {
 
     deleting () {
       return this.deletingIds.indexOf(this.tenant?.id) !== -1
+    },
+
+    isUserSuperAdmin () {
+      return this.$store.getters['user/isUserSuperAdmin']
     },
   },
 

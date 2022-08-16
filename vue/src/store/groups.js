@@ -44,7 +44,7 @@ export default {
     },
 
     requestGroups ({ dispatch }, { tenantId }) {
-      if (store.getters['user/isUserSuperAdmin']) {
+      if (store.getters['user/isUserSuperAdminOrTenantAdmin']) {
         webApi.sendRequest({
           moduleName: 'Core',
           methodName: 'GetGroups',
@@ -65,7 +65,7 @@ export default {
     },
 
     addUsersToGroup ({ state, dispatch }, { tenantId, groupId, usersIds }) {
-      if (store.getters['user/isUserSuperAdmin']) {
+      if (store.getters['user/isUserSuperAdminOrTenantAdmin']) {
         webApi.sendRequest({
           moduleName: 'Core',
           methodName: 'AddUsersToGroup',
@@ -91,7 +91,7 @@ export default {
     },
 
     removeUsersFromGroup ({ state, dispatch }, { tenantId, groupId, usersIds, callback }) {
-      if (store.getters['user/isUserSuperAdmin']) {
+      if (store.getters['user/isUserSuperAdminOrTenantAdmin']) {
         webApi.sendRequest({
           moduleName: 'Core',
           methodName: 'RemoveUsersFromGroup',

@@ -3,7 +3,6 @@ import store from 'src/store'
 
 import typesUtils from 'src/utils/types'
 
-import enums from 'src/enums'
 import moduleList from 'src/modules'
 import settings from 'src/settings'
 
@@ -102,28 +101,20 @@ export default {
     return pages === null ? [] : pages
   },
 
-  getAnonymousPages () {
-    const UserRoles = enums.getUserRoles()
-    return pages === null ? [] : pages.filter(page => page.pageUserRole === UserRoles.Anonymous)
-  },
-
-  getSuperAdminPages () {
-    const UserRoles = enums.getUserRoles()
-    return pages === null ? [] : pages.filter(page => page.pageUserRole === UserRoles.SuperAdmin)
+  getPagesForUserRole (userRole) {
+    if (pages !== null) {
+      return pages.filter(page => _.indexOf(page.pageUserRoles, userRole) !== -1)
+    }
+    return []
   },
 
   getDefaultPageForUser () {
-    const isUserSuperAdmin = store.getters['user/isUserSuperAdmin']
-    let page = null
-    if (isUserSuperAdmin) {
-      const
-        superAdminPages = this.getSuperAdminPages(),
-        pagesOrder = settings.getTabsBarOrder()
-      page = superAdminPages.find(page => page.pageName === pagesOrder[0]) || null
-    } else {
-      const anonymousPages = this.getAnonymousPages()
-      page = anonymousPages.length > 0 ? anonymousPages[0] : null
-    }
+    const
+      userRole = store.getters['user/getUserRole'],
+      pages = this.getPagesForUserRole(userRole),
+      pagesOrder = settings.getTabsBarOrder(userRole),
+      page = (pagesOrder.length > 0 && pages.find(page => page.pageName === pagesOrder[0])) || null
+
     return page
   },
 
@@ -135,21 +126,16 @@ export default {
    */
   correctPathForUser (matchedRoutes, toPath = null) {
     const
-      superAdminPages = this.getSuperAdminPages(),
-      anonymousPages = this.getAnonymousPages()
-    if (anonymousPages.length === 0 || superAdminPages.length === 0) {
+      userRole = store.getters['user/getUserRole'],
+      pages = this.getPagesForUserRole(userRole)
+    if (pages.length === 0) {
       return toPath || '/'
     }
 
     const matchedRouteName = _.isArray(matchedRoutes) && matchedRoutes.length > 0 ? matchedRoutes[0].name : null
-    const isUserSuperAdmin = store.getters['user/isUserSuperAdmin']
     let page = null
     if (matchedRouteName !== null) {
-      if (isUserSuperAdmin) {
-        page = superAdminPages.find(page => page.pageName === matchedRouteName) || null
-      } else {
-        page = anonymousPages.find(page => page.pageName === matchedRouteName) || null
-      }
+      page = pages.find(page => page.pageName === matchedRouteName) || null
     }
     if (page === null) {
       page = this.getDefaultPageForUser()
