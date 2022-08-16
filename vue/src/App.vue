@@ -67,15 +67,6 @@ export default {
     isUserSuperAdminOrTenantAdmin: function () {
       return this.$store.getters['user/isUserSuperAdminOrTenantAdmin']
     },
-    isUserSuperAdmin: function () {
-      return this.$store.getters['user/isUserSuperAdmin']
-    },
-    isUserTenantAdmin: function () {
-      return this.$store.getters['user/isUserTenantAdmin']
-    },
-    isUserAnonymous: function () {
-      return this.$store.getters['user/isUserAnonymous']
-    },
     siteName: function () {
       return this.$store.getters['main/getSiteName']
     },
@@ -91,18 +82,6 @@ export default {
         this.$router.push(correctedPath)
       }
     },
-
-    isUserSuperAdmin: function () {
-      window.document.getElementsByTagName('body')[0].classList.add('body-backgroud')
-    },
-
-    isUserAnonymous: function () {
-      window.document.getElementsByTagName('body')[0].classList.add('body-backgroud')
-    },
-
-    isUserTenantAdmin: function () {
-      window.document.getElementsByTagName('body')[0].classList.add('body-tenant-backgroud')
-    },
   },
 
   methods: {
@@ -113,7 +92,15 @@ export default {
         this.$router.push({ path: newPath })
       }
     }
-  }
+  },
+
+  mounted () {
+    if (window.frameElement) {
+      window.document.getElementsByTagName('body')[0].classList.add('body-tenant-backgroud')
+    } else {
+      window.document.getElementsByTagName('body')[0].classList.add('body-backgroud')
+    }
+  },
 }
 </script>
 
