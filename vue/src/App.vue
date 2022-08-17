@@ -95,9 +95,7 @@ export default {
   },
 
   mounted () {
-    if (window.frameElement) {
-      window.document.getElementsByTagName('body')[0].classList.add('body-tenant-backgroud')
-    } else {
+    if (!window.frameElement) {
       window.document.getElementsByTagName('body')[0].classList.add('body-backgroud')
     }
   },
@@ -107,9 +105,5 @@ export default {
 <style lang="scss">
 .body-backgroud {
   background: #1998a4 no-repeat 0 0 / cover url("~assets/background.jpg");
-}
-
-.body-tenant-backgroud {
-  background: 'none';
 }
 </style>

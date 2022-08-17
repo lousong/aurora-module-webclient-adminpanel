@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh LpR lfr">
     <q-header>
-      <q-tabs class="q-py-sm" no-caps align="left" indicator-color="transparent">
+      <q-tabs class="q-py-sm" v-bind:class="getTabsBarClass()" no-caps align="left" indicator-color="transparent">
         <template v-for="page in pages">
           <q-route-tab :key="page.pageName" :to="page.pagePath" :ripple="false" class="q-px-none" v-if="page.pageName !== 'tenants'">
             <div class="q-px-md tab-label">{{ $t(page.pageTitle)}}</div>
@@ -119,6 +119,12 @@ export default {
     logout () {
       core.logout()
     },
+
+    getTabsBarClass () {
+      return {
+        tabsbar: window.frameElement,
+      }
+    },
   },
 }
 </script>
@@ -127,5 +133,9 @@ export default {
 .tenants-dropdown {
   margin-left: -6px;
   margin-bottom: -1px;
+}
+
+.tabsbar {
+  border-top: solid 1px #d4d4d4
 }
 </style>
