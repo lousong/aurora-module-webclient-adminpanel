@@ -43,6 +43,8 @@ const core = {
           const UserRoles = enums.getUserRoles()
           if (result?.User?.Role === UserRoles.SuperAdmin) {
             VueCookies.remove('AuthToken', cookieSettings.cookieBasePath)
+          } else if (result?.User?.Role === UserRoles.TenantAdmin) {
+            authToken = secondAuthToken
           }
           this.commitAuthToken(authToken)
         }, response => {
